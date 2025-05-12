@@ -11,6 +11,7 @@ export default function EditarProductoPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
+  
   useEffect(() => {
     const fetchProducto = async () => {
       try {
