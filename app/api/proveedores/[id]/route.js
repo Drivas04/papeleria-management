@@ -1,7 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../../generated/prisma";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
+// Usar un singleton para la instancia de PrismaClient
+const globalForPrisma = globalThis;
+const prisma = globalForPrisma.prisma || new PrismaClient();
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // GET - Obtener un proveedor por ID
 export async function GET(request, { params }) {
@@ -76,8 +79,7 @@ export async function PUT(request, { params }) {
     const nombreExistente = await prisma.proveedor.findFirst({
       where: {
         nombre: {
-          equals: data.nombre,
-          mode: 'insensitive'
+          equals: data.nombre
         },
         id: {
           not: parseInt(id)
@@ -92,14 +94,11 @@ export async function PUT(request, { params }) {
       );
     }
     
-    // Preparar datos para la actualización
+    // Preparar datos para la actualización (solo campos válidos)
     const proveedorData = {
       nombre: data.nombre,
-      contacto: data.contacto,
-      telefono: data.telefono,
-      email: data.email,
-      direccion: data.direccion,
-      notas: data.notas
+      telefono: data.telefono || null,
+      direccion: data.direccion || null
     };
     
     // Actualizar el estado solo si viene en los datos

@@ -1,20 +1,19 @@
 "use client";
 
-import Header from "../../../components/Header";
-import UserForm from "../../../components/UserForm";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function NuevoUsuarioPage() {
+  const router = useRouter();
+
+  useEffect(() => {
+    // Redirigir automáticamente, ya que no permitimos crear nuevos usuarios
+    router.push("/dashboard/usuarios");
+  }, [router]);
+
   return (
-    <>
-      <Header pageTitle="Crear Nuevo Usuario" />
-      <main className="flex-1 p-6 bg-gray-50">
-        <div className="mb-6">
-          <h2 className="text-xl font-semibold text-gray-800">Información del Usuario</h2>
-          <p className="text-gray-600">Ingrese los datos para crear un nuevo usuario</p>
-        </div>
-        
-        <UserForm />
-      </main>
-    </>
+    <div className="flex justify-center items-center h-screen">
+      <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+    </div>
   );
 }

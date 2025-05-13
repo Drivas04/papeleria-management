@@ -155,10 +155,10 @@ export default function ProveedoresPage() {
                     Nombre
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Contacto
+                    Teléfono
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Teléfono
+                    Dirección
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Compras
@@ -185,22 +185,15 @@ export default function ProveedoresPage() {
                         <div className="text-sm font-medium text-gray-900">
                           {proveedor.nombre}
                         </div>
-                        <div className="text-xs text-gray-500">
-                          {proveedor.direccion?.substring(0, 30) || "Sin dirección"}
-                          {proveedor.direccion?.length > 30 ? "..." : ""}
-                        </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {proveedor.contacto || "No registrado"}
-                        </div>
-                        <div className="text-xs text-gray-500">
-                          {proveedor.email || "Sin email"}
-                        </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
                           {proveedor.telefono || "No registrado"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {proveedor.direccion || "No registrada"}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">

@@ -1,12 +1,25 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../generated/prisma";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
+import { getServerSession } from 'next-auth';
 
-const prisma = new PrismaClient();
+// Usar un singleton para la instancia de PrismaClient
+const globalForPrisma = globalThis;
+const prisma = globalForPrisma.prisma || new PrismaClient();
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // GET - Obtener todos los usuarios
 export async function GET(request) {
   try {
+    const session = await getServerSession();
+    
+    if (!session) {
+      return new NextResponse(
+        JSON.stringify({ error: 'No autenticado' }),
+        { status: 401 }
+      );
+    }
+    
     const usuarios = await prisma.usuario.findMany({
       include: {
         rol: true

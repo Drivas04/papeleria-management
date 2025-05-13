@@ -10,7 +10,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "sqlite"
   url      = env("DATABASE_URL")
 }
 
@@ -42,12 +42,10 @@ model Categoria {
 
 // Modelo para la tabla de proveedores
 model Proveedor {
-  id              Int       @id @default(autoincrement())
+  id              Int       @id @default(autoincrement()) // id_proveedor en el diagrama
   nombre          String    
-  direccion       String?
   telefono        String?
-  email           String?   @unique
-  fechaRegistro   DateTime  @default(now())
+  direccion       String?
   estado          Boolean   @default(true)
   compras         Compra[]
 
@@ -60,10 +58,11 @@ model Producto {
   codigo          String    @unique
   nombre          String
   descripcion     String?
-  precioCompra    Decimal   @db.Decimal(10, 2)
-  precioVenta     Decimal   @db.Decimal(10, 2)
+  precioCompra    Float
+  precioVenta     Float
   stock           Int       @default(0)
   stockMinimo     Int       @default(5)
+  stockMaximo     Int       @default(100)
   categoriaId     Int
   fechaRegistro   DateTime  @default(now())
   estado          Boolean   @default(true)
@@ -79,7 +78,7 @@ model Venta {
   id              Int           @id @default(autoincrement())
   clienteId       Int
   fecha           DateTime      @default(now())
-  total           Decimal       @db.Decimal(10, 2)
+  total           Float
   estado          String        @default("COMPLETADA") // COMPLETADA, ANULADA
   usuario         Usuario?      @relation(fields: [usuarioId], references: [id])
   usuarioId       Int?
@@ -95,8 +94,8 @@ model DetalleVenta {
   ventaId         Int
   productoId      Int
   cantidad        Int
-  precioUnitario  Decimal   @db.Decimal(10, 2)
-  subtotal        Decimal   @db.Decimal(10, 2)
+  precioUnitario  Float
+  subtotal        Float
   venta           Venta     @relation(fields: [ventaId], references: [id], onDelete: Cascade)
   producto        Producto  @relation(fields: [productoId], references: [id])
 
@@ -108,7 +107,7 @@ model Compra {
   id              Int             @id @default(autoincrement())
   proveedorId     Int
   fecha           DateTime        @default(now())
-  total           Decimal         @db.Decimal(10, 2)
+  total           Float
   estado          String          @default("COMPLETADA") // COMPLETADA, ANULADA
   usuario         Usuario?        @relation(fields: [usuarioId], references: [id])
   usuarioId       Int?
@@ -124,8 +123,8 @@ model DetalleCompra {
   compraId        Int
   productoId      Int
   cantidad        Int
-  precioUnitario  Decimal   @db.Decimal(10, 2)
-  subtotal        Decimal   @db.Decimal(10, 2)
+  precioUnitario  Float
+  subtotal        Float
   compra          Compra    @relation(fields: [compraId], references: [id], onDelete: Cascade)
   producto        Producto  @relation(fields: [productoId], references: [id])
 

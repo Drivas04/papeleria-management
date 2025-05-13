@@ -1,7 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../../generated/prisma";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
+// Usar un singleton para la instancia de PrismaClient
+const globalForPrisma = globalThis;
+const prisma = globalForPrisma.prisma || new PrismaClient();
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // GET - Obtener una categoría por ID
 export async function GET(request, { params }) {

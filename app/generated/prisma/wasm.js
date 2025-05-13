@@ -114,9 +114,6 @@ Prisma.NullTypes = {
  */
 
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
-  ReadUncommitted: 'ReadUncommitted',
-  ReadCommitted: 'ReadCommitted',
-  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 });
 
@@ -141,10 +138,8 @@ exports.Prisma.CategoriaScalarFieldEnum = {
 exports.Prisma.ProveedorScalarFieldEnum = {
   id: 'id',
   nombre: 'nombre',
-  direccion: 'direccion',
   telefono: 'telefono',
-  email: 'email',
-  fechaRegistro: 'fechaRegistro',
+  direccion: 'direccion',
   estado: 'estado'
 };
 
@@ -157,6 +152,7 @@ exports.Prisma.ProductoScalarFieldEnum = {
   precioVenta: 'precioVenta',
   stock: 'stock',
   stockMinimo: 'stockMinimo',
+  stockMaximo: 'stockMaximo',
   categoriaId: 'categoriaId',
   fechaRegistro: 'fechaRegistro',
   estado: 'estado'
@@ -218,11 +214,6 @@ exports.Prisma.UsuarioScalarFieldEnum = {
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
-};
-
-exports.Prisma.QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
 };
 
 exports.Prisma.NullsOrder = {

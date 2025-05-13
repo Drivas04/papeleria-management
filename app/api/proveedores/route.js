@@ -1,7 +1,10 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../generated/prisma";
 import { NextResponse } from "next/server";
 
-const prisma = new PrismaClient();
+// Usar un singleton para la instancia de PrismaClient
+const globalForPrisma = globalThis;
+const prisma = globalForPrisma.prisma || new PrismaClient();
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
 // GET - Listar proveedores
 export async function GET(request) {
@@ -69,8 +72,7 @@ export async function POST(request) {
     const existente = await prisma.proveedor.findFirst({
       where: {
         nombre: {
-          equals: data.nombre,
-          mode: 'insensitive'
+          equals: data.nombre
         }
       }
     });
@@ -82,14 +84,11 @@ export async function POST(request) {
       );
     }
     
-    // Preparar datos para la creación
+    // Preparar datos para la creación (solo incluir campos válidos según el modelo)
     const proveedorData = {
       nombre: data.nombre,
-      contacto: data.contacto,
-      telefono: data.telefono,
-      email: data.email,
-      direccion: data.direccion,
-      notas: data.notas,
+      direccion: data.direccion || null,
+      telefono: data.telefono || null,
       estado: true // Por defecto el proveedor está activo
     };
     

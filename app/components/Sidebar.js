@@ -1,83 +1,340 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { signOut } from "next-auth/react";
-import { 
-  HomeIcon, 
-  UserGroupIcon, 
-  TagIcon, 
-  CubeIcon,
-  BanknotesIcon,
-  TruckIcon,
-  UserCircleIcon,
-  ChartBarIcon,
-  ArrowLeftOnRectangleIcon
-} from "@heroicons/react/24/outline";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { signOut } from 'next-auth/react';
 
-const menuItems = [
-  { name: 'Dashboard', href: '/dashboard', icon: HomeIcon },
-  { name: 'Clientes', href: '/dashboard/clientes', icon: UserGroupIcon },
-  { name: 'Categorías', href: '/dashboard/categorias', icon: TagIcon },
-  { name: 'Productos', href: '/dashboard/productos', icon: CubeIcon },
-  { name: 'Ventas', href: '/dashboard/ventas', icon: BanknotesIcon },
-  { name: 'Proveedores', href: '/dashboard/proveedores', icon: TruckIcon },
-  { name: 'Compras', href: '/dashboard/compras', icon: ChartBarIcon },
-  { name: 'Usuarios', href: '/dashboard/usuarios', icon: UserCircleIcon }
-];
-
-export default function Sidebar({ user }) {
-  const [collapsed, setCollapsed] = useState(false);
+export default function Sidebar() {
   const pathname = usePathname();
+  const [isOpen, setIsOpen] = useState(false);
+  const [stats, setStats] = useState({
+    productosConBajoStock: 0,
+    productosConAltoStock: 0
+  });
+  
+  // Cargar estadísticas básicas para mostrar contadores
+  useEffect(() => {
+    const fetchStats = async () => {
+      try {
+        // Obtener productos con bajo stock
+        const bajoStockRes = await fetch('/api/productos?bajoStock=true');
+        const altoStockRes = await fetch('/api/productos?altoStock=true');
+        
+        if (bajoStockRes.ok && altoStockRes.ok) {
+          const bajoStockData = await bajoStockRes.json();
+          const altoStockData = await altoStockRes.json();
+          
+          setStats(prev => ({
+            ...prev,
+            productosConBajoStock: bajoStockData.length,
+            productosConAltoStock: altoStockData.length
+          }));
+        }
+      } catch (error) {
+        console.error('Error al cargar estadísticas:', error);
+      }
+    };
+    
+    fetchStats();
+  }, []);
 
-  const toggleSidebar = () => {
-    setCollapsed(!collapsed);
+  const isActive = (path) => {
+    // Para el dashboard principal, solo activar cuando la ruta es exactamente /dashboard
+    if (path === '/dashboard') {
+      return pathname === '/dashboard';
+    }
+    
+    // Para rutas específicas como /dashboard/compras/nueva, verificar coincidencia exacta
+    if (path.includes('/nueva') || path.includes('/nuevo') || path.includes('/editar')) {
+      return pathname === path || pathname.startsWith(`${path}/`);
+    }
+    
+    // Para secciones principales como /dashboard/compras, activar solo si estamos en esa sección exacta,
+    // y no en una subsección como /dashboard/compras/nueva
+    const pathParts = path.split('/').filter(Boolean);
+    const pathnameParts = pathname.split('/').filter(Boolean);
+    
+    // Si la ruta actual tiene más partes que la ruta del enlace y ambas coinciden hasta cierto punto,
+    // estamos en una subsección (como /dashboard/compras/nueva)
+    if (pathnameParts.length > pathParts.length) {
+      // Si en la ruta del navegador hay una parte adicional específica, no resaltar la sección principal
+      if (pathnameParts[pathParts.length] === 'nueva' || 
+          pathnameParts[pathParts.length] === 'nuevo' ||
+          pathnameParts[pathParts.length] === 'editar') {
+        return false;
+      }
+    }
+    
+    // Para otras rutas, activar si la ruta actual comienza con la ruta del enlace
+    return pathname === path || (pathname.startsWith(path) && pathname.charAt(path.length) === '/');
   };
-
-  const handleLogout = async () => {
-    await signOut({ callbackUrl: "/auth/login" });
+  
+  const handleSignOut = async () => {
+    await signOut({ redirect: true, callbackUrl: '/auth/login' });
   };
-
+  
   return (
-    <div className={`${collapsed ? 'w-16' : 'w-64'} min-h-screen bg-indigo-800 text-white transition-all duration-300 ease-in-out`}>
-      <div className="p-4 flex items-center justify-between">
-        {!collapsed && (
-          <h2 className="text-xl font-bold">Papelería Rosita</h2>
+    <>
+      {/* Sidebar para móviles */}
+      <div className="lg:hidden">
+        <button 
+          onClick={() => setIsOpen(!isOpen)} 
+          className="p-2 rounded-md text-gray-600 hover:bg-gray-100 focus:outline-none"
+        >
+          <svg className="h-6 w-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        
+        {isOpen && (
+          <div className="fixed inset-0 z-40 lg:hidden" aria-modal="true">
+            {/* Fondo oscuro */}
+            <div 
+              className="fixed inset-0 bg-gray-600 bg-opacity-75" 
+              onClick={() => setIsOpen(false)}
+            ></div>
+            
+            {/* Panel lateral */}
+            <div className="relative flex-1 flex flex-col max-w-xs w-full bg-white">
+              <div className="absolute top-0 right-0 -mr-12 pt-2">
+                <button 
+                  onClick={() => setIsOpen(false)}
+                  className="ml-1 flex items-center justify-center h-10 w-10 rounded-full focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white"
+                >
+                  <span className="sr-only">Cerrar menú</span>
+                  <svg className="h-6 w-6 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+              
+              {/* Contenido del sidebar móvil */}
+              <div className="flex-1 h-0 pt-5 pb-4 overflow-y-auto">
+                <div className="flex-shrink-0 flex items-center px-4">
+                  <span className="text-xl font-bold text-gray-800">Papelería</span>
+                </div>
+                <nav className="mt-5 px-2 space-y-1">
+                  {renderNavLinks()}
+                </nav>
+              </div>
+              <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
+                <button
+                  onClick={handleSignOut}
+                  className="flex items-center text-red-600 hover:text-red-900"
+                >
+                  <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                  </svg>
+                  Cerrar sesión
+                </button>
+              </div>
+            </div>
+          </div>
         )}
-        <button onClick={toggleSidebar} className="p-2 rounded-lg hover:bg-indigo-700">
-          {collapsed ? (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 5l7 7-7 7M5 5l7 7-7 7" />
+      </div>
+      
+      {/* Sidebar para escritorio */}
+      <div className="hidden lg:flex lg:flex-col lg:w-64 lg:fixed lg:inset-y-0 lg:border-r lg:border-gray-200 lg:bg-white">
+        <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+          <div className="flex items-center justify-center flex-shrink-0 px-4 mb-4">
+            <span className="text-xl font-bold text-gray-800">Papelería App</span>
+          </div>
+          
+          <nav className="mt-2 flex-1 px-4 space-y-4">
+            {renderNavLinks()}
+          </nav>
+        </div>
+        <div className="flex-shrink-0 flex border-t border-gray-200 p-4">
+          <button
+            onClick={handleSignOut}
+            className="flex items-center text-red-600 hover:text-red-900 w-full"
+          >
+            <svg className="h-5 w-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-          ) : (
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 19l-7-7 7-7m8 14l-7-7 7-7" />
-            </svg>
-          )}
-        </button>
+            Cerrar sesión
+          </button>
+        </div>
       </div>
-
-      <div className="mt-5">
-        <nav className="px-2">
-          {menuItems.map((item) => {
-            const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
-            return (
-              <Link href={item.href} key={item.name} className={`${isActive ? 'bg-indigo-900' : 'hover:bg-indigo-700'} flex items-center px-4 py-3 mb-1 rounded-md transition-colors`}>
-                <item.icon className="h-6 w-6" />
-                {!collapsed && <span className="ml-3">{item.name}</span>}
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
-
-      <div className="absolute bottom-0 w-full p-4">
-        <button onClick={handleLogout} className="w-full flex items-center px-4 py-3 rounded-md hover:bg-indigo-700 transition-colors">
-          <ArrowLeftOnRectangleIcon className="h-6 w-6" />
-          {!collapsed && <span className="ml-3">Cerrar sesión</span>}
-        </button>
-      </div>
-    </div>
+    </>
   );
+
+  function renderNavLinks() {
+    const navGroups = [
+      {
+        title: 'General',
+        links: [
+          {
+            href: '/dashboard',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+              </svg>
+            ),
+            text: 'Dashboard'
+          }
+        ]
+      },
+      {
+        title: 'Ventas',
+        links: [
+          {
+            href: '/dashboard/ventas',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            ),
+            text: 'Ventas',
+            badge: null
+          },
+          {
+            href: '/dashboard/ventas/nueva',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            ),
+            text: 'Nueva Venta',
+            badge: null
+          }
+        ]
+      },
+      {
+        title: 'Inventario',
+        links: [
+          {
+            href: '/dashboard/productos',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+              </svg>
+            ),
+            text: 'Productos',
+            badge: stats.productosConBajoStock > 0 ? stats.productosConBajoStock.toString() : null,
+            badgeColor: 'bg-red-100 text-red-800',
+            secondBadge: stats.productosConAltoStock > 0 ? stats.productosConAltoStock.toString() : null,
+            secondBadgeColor: 'bg-orange-100 text-orange-800'
+          },
+          {
+            href: '/dashboard/categorias',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+              </svg>
+            ),
+            text: 'Categorías',
+            badge: null
+          }
+        ]
+      },
+      {
+        title: 'Compras',
+        links: [
+          {
+            href: '/dashboard/compras',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            ),
+            text: 'Compras',
+            badge: null
+          },
+          {
+            href: '/dashboard/compras/nueva',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+              </svg>
+            ),
+            text: 'Nueva Compra',
+            badge: null
+          }
+        ]
+      },
+      {
+        title: 'Contactos',
+        links: [
+          {
+            href: '/dashboard/clientes',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            ),
+            text: 'Clientes',
+            badge: null
+          },
+          {
+            href: '/dashboard/proveedores',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+              </svg>
+            ),
+            text: 'Proveedores',
+            badge: null
+          }
+        ]
+      },
+      {
+        title: 'Administración',
+        links: [
+          {
+            href: '/dashboard/usuarios',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+            ),
+            text: 'Usuarios',
+            badge: null
+          }
+        ]
+      }
+    ];
+
+    return (
+      <>
+        {navGroups.map((group, groupIndex) => (
+          <div key={groupIndex} className="space-y-2">
+            <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              {group.title}
+            </h3>
+            {group.links.map((link, linkIndex) => (
+              <Link 
+                key={linkIndex}
+                href={link.href}
+                className={`flex items-center px-2 py-2 text-sm rounded-md ${
+                  isActive(link.href)
+                    ? 'bg-gray-100 text-blue-600 font-medium'
+                    : 'text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                <div className="flex items-center flex-grow">
+                  {link.icon}
+                  <span>{link.text}</span>
+                </div>
+                
+                <div className="flex space-x-1">
+                  {link.badge && (
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${link.badgeColor || 'bg-blue-100 text-blue-800'}`}>
+                      {link.badge}
+                    </span>
+                  )}
+                  {link.secondBadge && (
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${link.secondBadgeColor || 'bg-blue-100 text-blue-800'}`}>
+                      {link.secondBadge}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        ))}
+      </>
+    );
+  }
 }

@@ -2895,7 +2895,6 @@ export namespace Prisma {
      * The data used to create many Clientes.
      */
     data: ClienteCreateManyInput | ClienteCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -2914,7 +2913,6 @@ export namespace Prisma {
      * The data used to create many Clientes.
      */
     data: ClienteCreateManyInput | ClienteCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -3986,7 +3984,6 @@ export namespace Prisma {
      * The data used to create many Categorias.
      */
     data: CategoriaCreateManyInput | CategoriaCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -4005,7 +4002,6 @@ export namespace Prisma {
      * The data used to create many Categorias.
      */
     data: CategoriaCreateManyInput | CategoriaCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -4210,30 +4206,24 @@ export namespace Prisma {
   export type ProveedorMinAggregateOutputType = {
     id: number | null
     nombre: string | null
-    direccion: string | null
     telefono: string | null
-    email: string | null
-    fechaRegistro: Date | null
+    direccion: string | null
     estado: boolean | null
   }
 
   export type ProveedorMaxAggregateOutputType = {
     id: number | null
     nombre: string | null
-    direccion: string | null
     telefono: string | null
-    email: string | null
-    fechaRegistro: Date | null
+    direccion: string | null
     estado: boolean | null
   }
 
   export type ProveedorCountAggregateOutputType = {
     id: number
     nombre: number
-    direccion: number
     telefono: number
-    email: number
-    fechaRegistro: number
+    direccion: number
     estado: number
     _all: number
   }
@@ -4250,30 +4240,24 @@ export namespace Prisma {
   export type ProveedorMinAggregateInputType = {
     id?: true
     nombre?: true
-    direccion?: true
     telefono?: true
-    email?: true
-    fechaRegistro?: true
+    direccion?: true
     estado?: true
   }
 
   export type ProveedorMaxAggregateInputType = {
     id?: true
     nombre?: true
-    direccion?: true
     telefono?: true
-    email?: true
-    fechaRegistro?: true
+    direccion?: true
     estado?: true
   }
 
   export type ProveedorCountAggregateInputType = {
     id?: true
     nombre?: true
-    direccion?: true
     telefono?: true
-    email?: true
-    fechaRegistro?: true
+    direccion?: true
     estado?: true
     _all?: true
   }
@@ -4367,10 +4351,8 @@ export namespace Prisma {
   export type ProveedorGroupByOutputType = {
     id: number
     nombre: string
-    direccion: string | null
     telefono: string | null
-    email: string | null
-    fechaRegistro: Date
+    direccion: string | null
     estado: boolean
     _count: ProveedorCountAggregateOutputType | null
     _avg: ProveedorAvgAggregateOutputType | null
@@ -4396,10 +4378,8 @@ export namespace Prisma {
   export type ProveedorSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nombre?: boolean
-    direccion?: boolean
     telefono?: boolean
-    email?: boolean
-    fechaRegistro?: boolean
+    direccion?: boolean
     estado?: boolean
     compras?: boolean | Proveedor$comprasArgs<ExtArgs>
     _count?: boolean | ProveedorCountOutputTypeDefaultArgs<ExtArgs>
@@ -4408,34 +4388,28 @@ export namespace Prisma {
   export type ProveedorSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nombre?: boolean
-    direccion?: boolean
     telefono?: boolean
-    email?: boolean
-    fechaRegistro?: boolean
+    direccion?: boolean
     estado?: boolean
   }, ExtArgs["result"]["proveedor"]>
 
   export type ProveedorSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     nombre?: boolean
-    direccion?: boolean
     telefono?: boolean
-    email?: boolean
-    fechaRegistro?: boolean
+    direccion?: boolean
     estado?: boolean
   }, ExtArgs["result"]["proveedor"]>
 
   export type ProveedorSelectScalar = {
     id?: boolean
     nombre?: boolean
-    direccion?: boolean
     telefono?: boolean
-    email?: boolean
-    fechaRegistro?: boolean
+    direccion?: boolean
     estado?: boolean
   }
 
-  export type ProveedorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "direccion" | "telefono" | "email" | "fechaRegistro" | "estado", ExtArgs["result"]["proveedor"]>
+  export type ProveedorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "nombre" | "telefono" | "direccion" | "estado", ExtArgs["result"]["proveedor"]>
   export type ProveedorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     compras?: boolean | Proveedor$comprasArgs<ExtArgs>
     _count?: boolean | ProveedorCountOutputTypeDefaultArgs<ExtArgs>
@@ -4451,10 +4425,8 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       nombre: string
-      direccion: string | null
       telefono: string | null
-      email: string | null
-      fechaRegistro: Date
+      direccion: string | null
       estado: boolean
     }, ExtArgs["result"]["proveedor"]>
     composites: {}
@@ -4882,10 +4854,8 @@ export namespace Prisma {
   interface ProveedorFieldRefs {
     readonly id: FieldRef<"Proveedor", 'Int'>
     readonly nombre: FieldRef<"Proveedor", 'String'>
-    readonly direccion: FieldRef<"Proveedor", 'String'>
     readonly telefono: FieldRef<"Proveedor", 'String'>
-    readonly email: FieldRef<"Proveedor", 'String'>
-    readonly fechaRegistro: FieldRef<"Proveedor", 'DateTime'>
+    readonly direccion: FieldRef<"Proveedor", 'String'>
     readonly estado: FieldRef<"Proveedor", 'Boolean'>
   }
     
@@ -5116,7 +5086,6 @@ export namespace Prisma {
      * The data used to create many Proveedors.
      */
     data: ProveedorCreateManyInput | ProveedorCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -5135,7 +5104,6 @@ export namespace Prisma {
      * The data used to create many Proveedors.
      */
     data: ProveedorCreateManyInput | ProveedorCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -5331,19 +5299,21 @@ export namespace Prisma {
 
   export type ProductoAvgAggregateOutputType = {
     id: number | null
-    precioCompra: Decimal | null
-    precioVenta: Decimal | null
+    precioCompra: number | null
+    precioVenta: number | null
     stock: number | null
     stockMinimo: number | null
+    stockMaximo: number | null
     categoriaId: number | null
   }
 
   export type ProductoSumAggregateOutputType = {
     id: number | null
-    precioCompra: Decimal | null
-    precioVenta: Decimal | null
+    precioCompra: number | null
+    precioVenta: number | null
     stock: number | null
     stockMinimo: number | null
+    stockMaximo: number | null
     categoriaId: number | null
   }
 
@@ -5352,10 +5322,11 @@ export namespace Prisma {
     codigo: string | null
     nombre: string | null
     descripcion: string | null
-    precioCompra: Decimal | null
-    precioVenta: Decimal | null
+    precioCompra: number | null
+    precioVenta: number | null
     stock: number | null
     stockMinimo: number | null
+    stockMaximo: number | null
     categoriaId: number | null
     fechaRegistro: Date | null
     estado: boolean | null
@@ -5366,10 +5337,11 @@ export namespace Prisma {
     codigo: string | null
     nombre: string | null
     descripcion: string | null
-    precioCompra: Decimal | null
-    precioVenta: Decimal | null
+    precioCompra: number | null
+    precioVenta: number | null
     stock: number | null
     stockMinimo: number | null
+    stockMaximo: number | null
     categoriaId: number | null
     fechaRegistro: Date | null
     estado: boolean | null
@@ -5384,6 +5356,7 @@ export namespace Prisma {
     precioVenta: number
     stock: number
     stockMinimo: number
+    stockMaximo: number
     categoriaId: number
     fechaRegistro: number
     estado: number
@@ -5397,6 +5370,7 @@ export namespace Prisma {
     precioVenta?: true
     stock?: true
     stockMinimo?: true
+    stockMaximo?: true
     categoriaId?: true
   }
 
@@ -5406,6 +5380,7 @@ export namespace Prisma {
     precioVenta?: true
     stock?: true
     stockMinimo?: true
+    stockMaximo?: true
     categoriaId?: true
   }
 
@@ -5418,6 +5393,7 @@ export namespace Prisma {
     precioVenta?: true
     stock?: true
     stockMinimo?: true
+    stockMaximo?: true
     categoriaId?: true
     fechaRegistro?: true
     estado?: true
@@ -5432,6 +5408,7 @@ export namespace Prisma {
     precioVenta?: true
     stock?: true
     stockMinimo?: true
+    stockMaximo?: true
     categoriaId?: true
     fechaRegistro?: true
     estado?: true
@@ -5446,6 +5423,7 @@ export namespace Prisma {
     precioVenta?: true
     stock?: true
     stockMinimo?: true
+    stockMaximo?: true
     categoriaId?: true
     fechaRegistro?: true
     estado?: true
@@ -5543,10 +5521,11 @@ export namespace Prisma {
     codigo: string
     nombre: string
     descripcion: string | null
-    precioCompra: Decimal
-    precioVenta: Decimal
+    precioCompra: number
+    precioVenta: number
     stock: number
     stockMinimo: number
+    stockMaximo: number
     categoriaId: number
     fechaRegistro: Date
     estado: boolean
@@ -5580,6 +5559,7 @@ export namespace Prisma {
     precioVenta?: boolean
     stock?: boolean
     stockMinimo?: boolean
+    stockMaximo?: boolean
     categoriaId?: boolean
     fechaRegistro?: boolean
     estado?: boolean
@@ -5598,6 +5578,7 @@ export namespace Prisma {
     precioVenta?: boolean
     stock?: boolean
     stockMinimo?: boolean
+    stockMaximo?: boolean
     categoriaId?: boolean
     fechaRegistro?: boolean
     estado?: boolean
@@ -5613,6 +5594,7 @@ export namespace Prisma {
     precioVenta?: boolean
     stock?: boolean
     stockMinimo?: boolean
+    stockMaximo?: boolean
     categoriaId?: boolean
     fechaRegistro?: boolean
     estado?: boolean
@@ -5628,12 +5610,13 @@ export namespace Prisma {
     precioVenta?: boolean
     stock?: boolean
     stockMinimo?: boolean
+    stockMaximo?: boolean
     categoriaId?: boolean
     fechaRegistro?: boolean
     estado?: boolean
   }
 
-  export type ProductoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "codigo" | "nombre" | "descripcion" | "precioCompra" | "precioVenta" | "stock" | "stockMinimo" | "categoriaId" | "fechaRegistro" | "estado", ExtArgs["result"]["producto"]>
+  export type ProductoOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "codigo" | "nombre" | "descripcion" | "precioCompra" | "precioVenta" | "stock" | "stockMinimo" | "stockMaximo" | "categoriaId" | "fechaRegistro" | "estado", ExtArgs["result"]["producto"]>
   export type ProductoInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     categoria?: boolean | CategoriaDefaultArgs<ExtArgs>
     detallesVenta?: boolean | Producto$detallesVentaArgs<ExtArgs>
@@ -5659,10 +5642,11 @@ export namespace Prisma {
       codigo: string
       nombre: string
       descripcion: string | null
-      precioCompra: Prisma.Decimal
-      precioVenta: Prisma.Decimal
+      precioCompra: number
+      precioVenta: number
       stock: number
       stockMinimo: number
+      stockMaximo: number
       categoriaId: number
       fechaRegistro: Date
       estado: boolean
@@ -6096,10 +6080,11 @@ export namespace Prisma {
     readonly codigo: FieldRef<"Producto", 'String'>
     readonly nombre: FieldRef<"Producto", 'String'>
     readonly descripcion: FieldRef<"Producto", 'String'>
-    readonly precioCompra: FieldRef<"Producto", 'Decimal'>
-    readonly precioVenta: FieldRef<"Producto", 'Decimal'>
+    readonly precioCompra: FieldRef<"Producto", 'Float'>
+    readonly precioVenta: FieldRef<"Producto", 'Float'>
     readonly stock: FieldRef<"Producto", 'Int'>
     readonly stockMinimo: FieldRef<"Producto", 'Int'>
+    readonly stockMaximo: FieldRef<"Producto", 'Int'>
     readonly categoriaId: FieldRef<"Producto", 'Int'>
     readonly fechaRegistro: FieldRef<"Producto", 'DateTime'>
     readonly estado: FieldRef<"Producto", 'Boolean'>
@@ -6332,7 +6317,6 @@ export namespace Prisma {
      * The data used to create many Productos.
      */
     data: ProductoCreateManyInput | ProductoCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -6351,7 +6335,6 @@ export namespace Prisma {
      * The data used to create many Productos.
      */
     data: ProductoCreateManyInput | ProductoCreateManyInput[]
-    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -6580,14 +6563,14 @@ export namespace Prisma {
   export type VentaAvgAggregateOutputType = {
     id: number | null
     clienteId: number | null
-    total: Decimal | null
+    total: number | null
     usuarioId: number | null
   }
 
   export type VentaSumAggregateOutputType = {
     id: number | null
     clienteId: number | null
-    total: Decimal | null
+    total: number | null
     usuarioId: number | null
   }
 
@@ -6595,7 +6578,7 @@ export namespace Prisma {
     id: number | null
     clienteId: number | null
     fecha: Date | null
-    total: Decimal | null
+    total: number | null
     estado: string | null
     usuarioId: number | null
   }
@@ -6604,7 +6587,7 @@ export namespace Prisma {
     id: number | null
     clienteId: number | null
     fecha: Date | null
-    total: Decimal | null
+    total: number | null
     estado: string | null
     usuarioId: number | null
   }
@@ -6752,7 +6735,7 @@ export namespace Prisma {
     id: number
     clienteId: number
     fecha: Date
-    total: Decimal
+    total: number
     estado: string
     usuarioId: number | null
     _count: VentaCountAggregateOutputType | null
@@ -6847,7 +6830,7 @@ export namespace Prisma {
       id: number
       clienteId: number
       fecha: Date
-      total: Prisma.Decimal
+      total: number
       estado: string
       usuarioId: number | null
     }, ExtArgs["result"]["venta"]>
@@ -7279,7 +7262,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Venta", 'Int'>
     readonly clienteId: FieldRef<"Venta", 'Int'>
     readonly fecha: FieldRef<"Venta", 'DateTime'>
-    readonly total: FieldRef<"Venta", 'Decimal'>
+    readonly total: FieldRef<"Venta", 'Float'>
     readonly estado: FieldRef<"Venta", 'String'>
     readonly usuarioId: FieldRef<"Venta", 'Int'>
   }
@@ -7511,7 +7494,6 @@ export namespace Prisma {
      * The data used to create many Ventas.
      */
     data: VentaCreateManyInput | VentaCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -7530,7 +7512,6 @@ export namespace Prisma {
      * The data used to create many Ventas.
      */
     data: VentaCreateManyInput | VentaCreateManyInput[]
-    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -7756,8 +7737,8 @@ export namespace Prisma {
     ventaId: number | null
     productoId: number | null
     cantidad: number | null
-    precioUnitario: Decimal | null
-    subtotal: Decimal | null
+    precioUnitario: number | null
+    subtotal: number | null
   }
 
   export type DetalleVentaSumAggregateOutputType = {
@@ -7765,8 +7746,8 @@ export namespace Prisma {
     ventaId: number | null
     productoId: number | null
     cantidad: number | null
-    precioUnitario: Decimal | null
-    subtotal: Decimal | null
+    precioUnitario: number | null
+    subtotal: number | null
   }
 
   export type DetalleVentaMinAggregateOutputType = {
@@ -7774,8 +7755,8 @@ export namespace Prisma {
     ventaId: number | null
     productoId: number | null
     cantidad: number | null
-    precioUnitario: Decimal | null
-    subtotal: Decimal | null
+    precioUnitario: number | null
+    subtotal: number | null
   }
 
   export type DetalleVentaMaxAggregateOutputType = {
@@ -7783,8 +7764,8 @@ export namespace Prisma {
     ventaId: number | null
     productoId: number | null
     cantidad: number | null
-    precioUnitario: Decimal | null
-    subtotal: Decimal | null
+    precioUnitario: number | null
+    subtotal: number | null
   }
 
   export type DetalleVentaCountAggregateOutputType = {
@@ -7935,8 +7916,8 @@ export namespace Prisma {
     ventaId: number
     productoId: number
     cantidad: number
-    precioUnitario: Decimal
-    subtotal: Decimal
+    precioUnitario: number
+    subtotal: number
     _count: DetalleVentaCountAggregateOutputType | null
     _avg: DetalleVentaAvgAggregateOutputType | null
     _sum: DetalleVentaSumAggregateOutputType | null
@@ -8025,8 +8006,8 @@ export namespace Prisma {
       ventaId: number
       productoId: number
       cantidad: number
-      precioUnitario: Prisma.Decimal
-      subtotal: Prisma.Decimal
+      precioUnitario: number
+      subtotal: number
     }, ExtArgs["result"]["detalleVenta"]>
     composites: {}
   }
@@ -8456,8 +8437,8 @@ export namespace Prisma {
     readonly ventaId: FieldRef<"DetalleVenta", 'Int'>
     readonly productoId: FieldRef<"DetalleVenta", 'Int'>
     readonly cantidad: FieldRef<"DetalleVenta", 'Int'>
-    readonly precioUnitario: FieldRef<"DetalleVenta", 'Decimal'>
-    readonly subtotal: FieldRef<"DetalleVenta", 'Decimal'>
+    readonly precioUnitario: FieldRef<"DetalleVenta", 'Float'>
+    readonly subtotal: FieldRef<"DetalleVenta", 'Float'>
   }
     
 
@@ -8687,7 +8668,6 @@ export namespace Prisma {
      * The data used to create many DetalleVentas.
      */
     data: DetalleVentaCreateManyInput | DetalleVentaCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -8706,7 +8686,6 @@ export namespace Prisma {
      * The data used to create many DetalleVentas.
      */
     data: DetalleVentaCreateManyInput | DetalleVentaCreateManyInput[]
-    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -8887,14 +8866,14 @@ export namespace Prisma {
   export type CompraAvgAggregateOutputType = {
     id: number | null
     proveedorId: number | null
-    total: Decimal | null
+    total: number | null
     usuarioId: number | null
   }
 
   export type CompraSumAggregateOutputType = {
     id: number | null
     proveedorId: number | null
-    total: Decimal | null
+    total: number | null
     usuarioId: number | null
   }
 
@@ -8902,7 +8881,7 @@ export namespace Prisma {
     id: number | null
     proveedorId: number | null
     fecha: Date | null
-    total: Decimal | null
+    total: number | null
     estado: string | null
     usuarioId: number | null
   }
@@ -8911,7 +8890,7 @@ export namespace Prisma {
     id: number | null
     proveedorId: number | null
     fecha: Date | null
-    total: Decimal | null
+    total: number | null
     estado: string | null
     usuarioId: number | null
   }
@@ -9059,7 +9038,7 @@ export namespace Prisma {
     id: number
     proveedorId: number
     fecha: Date
-    total: Decimal
+    total: number
     estado: string
     usuarioId: number | null
     _count: CompraCountAggregateOutputType | null
@@ -9154,7 +9133,7 @@ export namespace Prisma {
       id: number
       proveedorId: number
       fecha: Date
-      total: Prisma.Decimal
+      total: number
       estado: string
       usuarioId: number | null
     }, ExtArgs["result"]["compra"]>
@@ -9586,7 +9565,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Compra", 'Int'>
     readonly proveedorId: FieldRef<"Compra", 'Int'>
     readonly fecha: FieldRef<"Compra", 'DateTime'>
-    readonly total: FieldRef<"Compra", 'Decimal'>
+    readonly total: FieldRef<"Compra", 'Float'>
     readonly estado: FieldRef<"Compra", 'String'>
     readonly usuarioId: FieldRef<"Compra", 'Int'>
   }
@@ -9818,7 +9797,6 @@ export namespace Prisma {
      * The data used to create many Compras.
      */
     data: CompraCreateManyInput | CompraCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -9837,7 +9815,6 @@ export namespace Prisma {
      * The data used to create many Compras.
      */
     data: CompraCreateManyInput | CompraCreateManyInput[]
-    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -10063,8 +10040,8 @@ export namespace Prisma {
     compraId: number | null
     productoId: number | null
     cantidad: number | null
-    precioUnitario: Decimal | null
-    subtotal: Decimal | null
+    precioUnitario: number | null
+    subtotal: number | null
   }
 
   export type DetalleCompraSumAggregateOutputType = {
@@ -10072,8 +10049,8 @@ export namespace Prisma {
     compraId: number | null
     productoId: number | null
     cantidad: number | null
-    precioUnitario: Decimal | null
-    subtotal: Decimal | null
+    precioUnitario: number | null
+    subtotal: number | null
   }
 
   export type DetalleCompraMinAggregateOutputType = {
@@ -10081,8 +10058,8 @@ export namespace Prisma {
     compraId: number | null
     productoId: number | null
     cantidad: number | null
-    precioUnitario: Decimal | null
-    subtotal: Decimal | null
+    precioUnitario: number | null
+    subtotal: number | null
   }
 
   export type DetalleCompraMaxAggregateOutputType = {
@@ -10090,8 +10067,8 @@ export namespace Prisma {
     compraId: number | null
     productoId: number | null
     cantidad: number | null
-    precioUnitario: Decimal | null
-    subtotal: Decimal | null
+    precioUnitario: number | null
+    subtotal: number | null
   }
 
   export type DetalleCompraCountAggregateOutputType = {
@@ -10242,8 +10219,8 @@ export namespace Prisma {
     compraId: number
     productoId: number
     cantidad: number
-    precioUnitario: Decimal
-    subtotal: Decimal
+    precioUnitario: number
+    subtotal: number
     _count: DetalleCompraCountAggregateOutputType | null
     _avg: DetalleCompraAvgAggregateOutputType | null
     _sum: DetalleCompraSumAggregateOutputType | null
@@ -10332,8 +10309,8 @@ export namespace Prisma {
       compraId: number
       productoId: number
       cantidad: number
-      precioUnitario: Prisma.Decimal
-      subtotal: Prisma.Decimal
+      precioUnitario: number
+      subtotal: number
     }, ExtArgs["result"]["detalleCompra"]>
     composites: {}
   }
@@ -10763,8 +10740,8 @@ export namespace Prisma {
     readonly compraId: FieldRef<"DetalleCompra", 'Int'>
     readonly productoId: FieldRef<"DetalleCompra", 'Int'>
     readonly cantidad: FieldRef<"DetalleCompra", 'Int'>
-    readonly precioUnitario: FieldRef<"DetalleCompra", 'Decimal'>
-    readonly subtotal: FieldRef<"DetalleCompra", 'Decimal'>
+    readonly precioUnitario: FieldRef<"DetalleCompra", 'Float'>
+    readonly subtotal: FieldRef<"DetalleCompra", 'Float'>
   }
     
 
@@ -10994,7 +10971,6 @@ export namespace Prisma {
      * The data used to create many DetalleCompras.
      */
     data: DetalleCompraCreateManyInput | DetalleCompraCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -11013,7 +10989,6 @@ export namespace Prisma {
      * The data used to create many DetalleCompras.
      */
     data: DetalleCompraCreateManyInput | DetalleCompraCreateManyInput[]
-    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -12056,7 +12031,6 @@ export namespace Prisma {
      * The data used to create many Rols.
      */
     data: RolCreateManyInput | RolCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -12075,7 +12049,6 @@ export namespace Prisma {
      * The data used to create many Rols.
      */
     data: RolCreateManyInput | RolCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -13217,7 +13190,6 @@ export namespace Prisma {
      * The data used to create many Usuarios.
      */
     data: UsuarioCreateManyInput | UsuarioCreateManyInput[]
-    skipDuplicates?: boolean
   }
 
   /**
@@ -13236,7 +13208,6 @@ export namespace Prisma {
      * The data used to create many Usuarios.
      */
     data: UsuarioCreateManyInput | UsuarioCreateManyInput[]
-    skipDuplicates?: boolean
     /**
      * Choose, which related nodes to fetch as well
      */
@@ -13455,9 +13426,6 @@ export namespace Prisma {
    */
 
   export const TransactionIsolationLevel: {
-    ReadUncommitted: 'ReadUncommitted',
-    ReadCommitted: 'ReadCommitted',
-    RepeatableRead: 'RepeatableRead',
     Serializable: 'Serializable'
   };
 
@@ -13491,10 +13459,8 @@ export namespace Prisma {
   export const ProveedorScalarFieldEnum: {
     id: 'id',
     nombre: 'nombre',
-    direccion: 'direccion',
     telefono: 'telefono',
-    email: 'email',
-    fechaRegistro: 'fechaRegistro',
+    direccion: 'direccion',
     estado: 'estado'
   };
 
@@ -13510,6 +13476,7 @@ export namespace Prisma {
     precioVenta: 'precioVenta',
     stock: 'stock',
     stockMinimo: 'stockMinimo',
+    stockMaximo: 'stockMaximo',
     categoriaId: 'categoriaId',
     fechaRegistro: 'fechaRegistro',
     estado: 'estado'
@@ -13597,14 +13564,6 @@ export namespace Prisma {
   export type SortOrder = (typeof SortOrder)[keyof typeof SortOrder]
 
 
-  export const QueryMode: {
-    default: 'default',
-    insensitive: 'insensitive'
-  };
-
-  export type QueryMode = (typeof QueryMode)[keyof typeof QueryMode]
-
-
   export const NullsOrder: {
     first: 'first',
     last: 'last'
@@ -13626,23 +13585,9 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int[]'
-   */
-  export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
-
-
-  /**
    * Reference to a field of type 'String'
    */
   export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
-    
-
-
-  /**
-   * Reference to a field of type 'String[]'
-   */
-  export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
     
 
 
@@ -13654,13 +13599,6 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'DateTime[]'
-   */
-  export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
@@ -13668,30 +13606,9 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Decimal'
-   */
-  export type DecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal'>
-    
-
-
-  /**
-   * Reference to a field of type 'Decimal[]'
-   */
-  export type ListDecimalFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Decimal[]'>
-    
-
-
-  /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
-
-
-  /**
-   * Reference to a field of type 'Float[]'
-   */
-  export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
     
   /**
    * Deep Input Types
@@ -13828,10 +13745,8 @@ export namespace Prisma {
     NOT?: ProveedorWhereInput | ProveedorWhereInput[]
     id?: IntFilter<"Proveedor"> | number
     nombre?: StringFilter<"Proveedor"> | string
-    direccion?: StringNullableFilter<"Proveedor"> | string | null
     telefono?: StringNullableFilter<"Proveedor"> | string | null
-    email?: StringNullableFilter<"Proveedor"> | string | null
-    fechaRegistro?: DateTimeFilter<"Proveedor"> | Date | string
+    direccion?: StringNullableFilter<"Proveedor"> | string | null
     estado?: BoolFilter<"Proveedor"> | boolean
     compras?: CompraListRelationFilter
   }
@@ -13839,35 +13754,29 @@ export namespace Prisma {
   export type ProveedorOrderByWithRelationInput = {
     id?: SortOrder
     nombre?: SortOrder
-    direccion?: SortOrderInput | SortOrder
     telefono?: SortOrderInput | SortOrder
-    email?: SortOrderInput | SortOrder
-    fechaRegistro?: SortOrder
+    direccion?: SortOrderInput | SortOrder
     estado?: SortOrder
     compras?: CompraOrderByRelationAggregateInput
   }
 
   export type ProveedorWhereUniqueInput = Prisma.AtLeast<{
     id?: number
-    email?: string
     AND?: ProveedorWhereInput | ProveedorWhereInput[]
     OR?: ProveedorWhereInput[]
     NOT?: ProveedorWhereInput | ProveedorWhereInput[]
     nombre?: StringFilter<"Proveedor"> | string
-    direccion?: StringNullableFilter<"Proveedor"> | string | null
     telefono?: StringNullableFilter<"Proveedor"> | string | null
-    fechaRegistro?: DateTimeFilter<"Proveedor"> | Date | string
+    direccion?: StringNullableFilter<"Proveedor"> | string | null
     estado?: BoolFilter<"Proveedor"> | boolean
     compras?: CompraListRelationFilter
-  }, "id" | "email">
+  }, "id">
 
   export type ProveedorOrderByWithAggregationInput = {
     id?: SortOrder
     nombre?: SortOrder
-    direccion?: SortOrderInput | SortOrder
     telefono?: SortOrderInput | SortOrder
-    email?: SortOrderInput | SortOrder
-    fechaRegistro?: SortOrder
+    direccion?: SortOrderInput | SortOrder
     estado?: SortOrder
     _count?: ProveedorCountOrderByAggregateInput
     _avg?: ProveedorAvgOrderByAggregateInput
@@ -13882,10 +13791,8 @@ export namespace Prisma {
     NOT?: ProveedorScalarWhereWithAggregatesInput | ProveedorScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Proveedor"> | number
     nombre?: StringWithAggregatesFilter<"Proveedor"> | string
-    direccion?: StringNullableWithAggregatesFilter<"Proveedor"> | string | null
     telefono?: StringNullableWithAggregatesFilter<"Proveedor"> | string | null
-    email?: StringNullableWithAggregatesFilter<"Proveedor"> | string | null
-    fechaRegistro?: DateTimeWithAggregatesFilter<"Proveedor"> | Date | string
+    direccion?: StringNullableWithAggregatesFilter<"Proveedor"> | string | null
     estado?: BoolWithAggregatesFilter<"Proveedor"> | boolean
   }
 
@@ -13897,10 +13804,11 @@ export namespace Prisma {
     codigo?: StringFilter<"Producto"> | string
     nombre?: StringFilter<"Producto"> | string
     descripcion?: StringNullableFilter<"Producto"> | string | null
-    precioCompra?: DecimalFilter<"Producto"> | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFilter<"Producto"> | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFilter<"Producto"> | number
+    precioVenta?: FloatFilter<"Producto"> | number
     stock?: IntFilter<"Producto"> | number
     stockMinimo?: IntFilter<"Producto"> | number
+    stockMaximo?: IntFilter<"Producto"> | number
     categoriaId?: IntFilter<"Producto"> | number
     fechaRegistro?: DateTimeFilter<"Producto"> | Date | string
     estado?: BoolFilter<"Producto"> | boolean
@@ -13918,6 +13826,7 @@ export namespace Prisma {
     precioVenta?: SortOrder
     stock?: SortOrder
     stockMinimo?: SortOrder
+    stockMaximo?: SortOrder
     categoriaId?: SortOrder
     fechaRegistro?: SortOrder
     estado?: SortOrder
@@ -13934,10 +13843,11 @@ export namespace Prisma {
     NOT?: ProductoWhereInput | ProductoWhereInput[]
     nombre?: StringFilter<"Producto"> | string
     descripcion?: StringNullableFilter<"Producto"> | string | null
-    precioCompra?: DecimalFilter<"Producto"> | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFilter<"Producto"> | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFilter<"Producto"> | number
+    precioVenta?: FloatFilter<"Producto"> | number
     stock?: IntFilter<"Producto"> | number
     stockMinimo?: IntFilter<"Producto"> | number
+    stockMaximo?: IntFilter<"Producto"> | number
     categoriaId?: IntFilter<"Producto"> | number
     fechaRegistro?: DateTimeFilter<"Producto"> | Date | string
     estado?: BoolFilter<"Producto"> | boolean
@@ -13955,6 +13865,7 @@ export namespace Prisma {
     precioVenta?: SortOrder
     stock?: SortOrder
     stockMinimo?: SortOrder
+    stockMaximo?: SortOrder
     categoriaId?: SortOrder
     fechaRegistro?: SortOrder
     estado?: SortOrder
@@ -13973,10 +13884,11 @@ export namespace Prisma {
     codigo?: StringWithAggregatesFilter<"Producto"> | string
     nombre?: StringWithAggregatesFilter<"Producto"> | string
     descripcion?: StringNullableWithAggregatesFilter<"Producto"> | string | null
-    precioCompra?: DecimalWithAggregatesFilter<"Producto"> | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalWithAggregatesFilter<"Producto"> | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatWithAggregatesFilter<"Producto"> | number
+    precioVenta?: FloatWithAggregatesFilter<"Producto"> | number
     stock?: IntWithAggregatesFilter<"Producto"> | number
     stockMinimo?: IntWithAggregatesFilter<"Producto"> | number
+    stockMaximo?: IntWithAggregatesFilter<"Producto"> | number
     categoriaId?: IntWithAggregatesFilter<"Producto"> | number
     fechaRegistro?: DateTimeWithAggregatesFilter<"Producto"> | Date | string
     estado?: BoolWithAggregatesFilter<"Producto"> | boolean
@@ -13989,7 +13901,7 @@ export namespace Prisma {
     id?: IntFilter<"Venta"> | number
     clienteId?: IntFilter<"Venta"> | number
     fecha?: DateTimeFilter<"Venta"> | Date | string
-    total?: DecimalFilter<"Venta"> | Decimal | DecimalJsLike | number | string
+    total?: FloatFilter<"Venta"> | number
     estado?: StringFilter<"Venta"> | string
     usuarioId?: IntNullableFilter<"Venta"> | number | null
     usuario?: XOR<UsuarioNullableScalarRelationFilter, UsuarioWhereInput> | null
@@ -14016,7 +13928,7 @@ export namespace Prisma {
     NOT?: VentaWhereInput | VentaWhereInput[]
     clienteId?: IntFilter<"Venta"> | number
     fecha?: DateTimeFilter<"Venta"> | Date | string
-    total?: DecimalFilter<"Venta"> | Decimal | DecimalJsLike | number | string
+    total?: FloatFilter<"Venta"> | number
     estado?: StringFilter<"Venta"> | string
     usuarioId?: IntNullableFilter<"Venta"> | number | null
     usuario?: XOR<UsuarioNullableScalarRelationFilter, UsuarioWhereInput> | null
@@ -14045,7 +13957,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Venta"> | number
     clienteId?: IntWithAggregatesFilter<"Venta"> | number
     fecha?: DateTimeWithAggregatesFilter<"Venta"> | Date | string
-    total?: DecimalWithAggregatesFilter<"Venta"> | Decimal | DecimalJsLike | number | string
+    total?: FloatWithAggregatesFilter<"Venta"> | number
     estado?: StringWithAggregatesFilter<"Venta"> | string
     usuarioId?: IntNullableWithAggregatesFilter<"Venta"> | number | null
   }
@@ -14058,8 +13970,8 @@ export namespace Prisma {
     ventaId?: IntFilter<"DetalleVenta"> | number
     productoId?: IntFilter<"DetalleVenta"> | number
     cantidad?: IntFilter<"DetalleVenta"> | number
-    precioUnitario?: DecimalFilter<"DetalleVenta"> | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFilter<"DetalleVenta"> | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFilter<"DetalleVenta"> | number
+    subtotal?: FloatFilter<"DetalleVenta"> | number
     venta?: XOR<VentaScalarRelationFilter, VentaWhereInput>
     producto?: XOR<ProductoScalarRelationFilter, ProductoWhereInput>
   }
@@ -14083,8 +13995,8 @@ export namespace Prisma {
     ventaId?: IntFilter<"DetalleVenta"> | number
     productoId?: IntFilter<"DetalleVenta"> | number
     cantidad?: IntFilter<"DetalleVenta"> | number
-    precioUnitario?: DecimalFilter<"DetalleVenta"> | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFilter<"DetalleVenta"> | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFilter<"DetalleVenta"> | number
+    subtotal?: FloatFilter<"DetalleVenta"> | number
     venta?: XOR<VentaScalarRelationFilter, VentaWhereInput>
     producto?: XOR<ProductoScalarRelationFilter, ProductoWhereInput>
   }, "id">
@@ -14111,8 +14023,8 @@ export namespace Prisma {
     ventaId?: IntWithAggregatesFilter<"DetalleVenta"> | number
     productoId?: IntWithAggregatesFilter<"DetalleVenta"> | number
     cantidad?: IntWithAggregatesFilter<"DetalleVenta"> | number
-    precioUnitario?: DecimalWithAggregatesFilter<"DetalleVenta"> | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalWithAggregatesFilter<"DetalleVenta"> | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatWithAggregatesFilter<"DetalleVenta"> | number
+    subtotal?: FloatWithAggregatesFilter<"DetalleVenta"> | number
   }
 
   export type CompraWhereInput = {
@@ -14122,7 +14034,7 @@ export namespace Prisma {
     id?: IntFilter<"Compra"> | number
     proveedorId?: IntFilter<"Compra"> | number
     fecha?: DateTimeFilter<"Compra"> | Date | string
-    total?: DecimalFilter<"Compra"> | Decimal | DecimalJsLike | number | string
+    total?: FloatFilter<"Compra"> | number
     estado?: StringFilter<"Compra"> | string
     usuarioId?: IntNullableFilter<"Compra"> | number | null
     usuario?: XOR<UsuarioNullableScalarRelationFilter, UsuarioWhereInput> | null
@@ -14149,7 +14061,7 @@ export namespace Prisma {
     NOT?: CompraWhereInput | CompraWhereInput[]
     proveedorId?: IntFilter<"Compra"> | number
     fecha?: DateTimeFilter<"Compra"> | Date | string
-    total?: DecimalFilter<"Compra"> | Decimal | DecimalJsLike | number | string
+    total?: FloatFilter<"Compra"> | number
     estado?: StringFilter<"Compra"> | string
     usuarioId?: IntNullableFilter<"Compra"> | number | null
     usuario?: XOR<UsuarioNullableScalarRelationFilter, UsuarioWhereInput> | null
@@ -14178,7 +14090,7 @@ export namespace Prisma {
     id?: IntWithAggregatesFilter<"Compra"> | number
     proveedorId?: IntWithAggregatesFilter<"Compra"> | number
     fecha?: DateTimeWithAggregatesFilter<"Compra"> | Date | string
-    total?: DecimalWithAggregatesFilter<"Compra"> | Decimal | DecimalJsLike | number | string
+    total?: FloatWithAggregatesFilter<"Compra"> | number
     estado?: StringWithAggregatesFilter<"Compra"> | string
     usuarioId?: IntNullableWithAggregatesFilter<"Compra"> | number | null
   }
@@ -14191,8 +14103,8 @@ export namespace Prisma {
     compraId?: IntFilter<"DetalleCompra"> | number
     productoId?: IntFilter<"DetalleCompra"> | number
     cantidad?: IntFilter<"DetalleCompra"> | number
-    precioUnitario?: DecimalFilter<"DetalleCompra"> | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFilter<"DetalleCompra"> | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFilter<"DetalleCompra"> | number
+    subtotal?: FloatFilter<"DetalleCompra"> | number
     compra?: XOR<CompraScalarRelationFilter, CompraWhereInput>
     producto?: XOR<ProductoScalarRelationFilter, ProductoWhereInput>
   }
@@ -14216,8 +14128,8 @@ export namespace Prisma {
     compraId?: IntFilter<"DetalleCompra"> | number
     productoId?: IntFilter<"DetalleCompra"> | number
     cantidad?: IntFilter<"DetalleCompra"> | number
-    precioUnitario?: DecimalFilter<"DetalleCompra"> | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFilter<"DetalleCompra"> | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFilter<"DetalleCompra"> | number
+    subtotal?: FloatFilter<"DetalleCompra"> | number
     compra?: XOR<CompraScalarRelationFilter, CompraWhereInput>
     producto?: XOR<ProductoScalarRelationFilter, ProductoWhereInput>
   }, "id">
@@ -14244,8 +14156,8 @@ export namespace Prisma {
     compraId?: IntWithAggregatesFilter<"DetalleCompra"> | number
     productoId?: IntWithAggregatesFilter<"DetalleCompra"> | number
     cantidad?: IntWithAggregatesFilter<"DetalleCompra"> | number
-    precioUnitario?: DecimalWithAggregatesFilter<"DetalleCompra"> | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalWithAggregatesFilter<"DetalleCompra"> | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatWithAggregatesFilter<"DetalleCompra"> | number
+    subtotal?: FloatWithAggregatesFilter<"DetalleCompra"> | number
   }
 
   export type RolWhereInput = {
@@ -14503,10 +14415,8 @@ export namespace Prisma {
 
   export type ProveedorCreateInput = {
     nombre: string
-    direccion?: string | null
     telefono?: string | null
-    email?: string | null
-    fechaRegistro?: Date | string
+    direccion?: string | null
     estado?: boolean
     compras?: CompraCreateNestedManyWithoutProveedorInput
   }
@@ -14514,20 +14424,16 @@ export namespace Prisma {
   export type ProveedorUncheckedCreateInput = {
     id?: number
     nombre: string
-    direccion?: string | null
     telefono?: string | null
-    email?: string | null
-    fechaRegistro?: Date | string
+    direccion?: string | null
     estado?: boolean
     compras?: CompraUncheckedCreateNestedManyWithoutProveedorInput
   }
 
   export type ProveedorUpdateInput = {
     nombre?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: BoolFieldUpdateOperationsInput | boolean
     compras?: CompraUpdateManyWithoutProveedorNestedInput
   }
@@ -14535,10 +14441,8 @@ export namespace Prisma {
   export type ProveedorUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     nombre?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: BoolFieldUpdateOperationsInput | boolean
     compras?: CompraUncheckedUpdateManyWithoutProveedorNestedInput
   }
@@ -14546,29 +14450,23 @@ export namespace Prisma {
   export type ProveedorCreateManyInput = {
     id?: number
     nombre: string
-    direccion?: string | null
     telefono?: string | null
-    email?: string | null
-    fechaRegistro?: Date | string
+    direccion?: string | null
     estado?: boolean
   }
 
   export type ProveedorUpdateManyMutationInput = {
     nombre?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProveedorUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     nombre?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -14576,10 +14474,11 @@ export namespace Prisma {
     codigo: string
     nombre: string
     descripcion?: string | null
-    precioCompra: Decimal | DecimalJsLike | number | string
-    precioVenta: Decimal | DecimalJsLike | number | string
+    precioCompra: number
+    precioVenta: number
     stock?: number
     stockMinimo?: number
+    stockMaximo?: number
     fechaRegistro?: Date | string
     estado?: boolean
     categoria: CategoriaCreateNestedOneWithoutProductosInput
@@ -14592,10 +14491,11 @@ export namespace Prisma {
     codigo: string
     nombre: string
     descripcion?: string | null
-    precioCompra: Decimal | DecimalJsLike | number | string
-    precioVenta: Decimal | DecimalJsLike | number | string
+    precioCompra: number
+    precioVenta: number
     stock?: number
     stockMinimo?: number
+    stockMaximo?: number
     categoriaId: number
     fechaRegistro?: Date | string
     estado?: boolean
@@ -14607,10 +14507,11 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: NullableStringFieldUpdateOperationsInput | string | null
-    precioCompra?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFieldUpdateOperationsInput | number
+    precioVenta?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     stockMinimo?: IntFieldUpdateOperationsInput | number
+    stockMaximo?: IntFieldUpdateOperationsInput | number
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     estado?: BoolFieldUpdateOperationsInput | boolean
     categoria?: CategoriaUpdateOneRequiredWithoutProductosNestedInput
@@ -14623,10 +14524,11 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: NullableStringFieldUpdateOperationsInput | string | null
-    precioCompra?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFieldUpdateOperationsInput | number
+    precioVenta?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     stockMinimo?: IntFieldUpdateOperationsInput | number
+    stockMaximo?: IntFieldUpdateOperationsInput | number
     categoriaId?: IntFieldUpdateOperationsInput | number
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     estado?: BoolFieldUpdateOperationsInput | boolean
@@ -14639,10 +14541,11 @@ export namespace Prisma {
     codigo: string
     nombre: string
     descripcion?: string | null
-    precioCompra: Decimal | DecimalJsLike | number | string
-    precioVenta: Decimal | DecimalJsLike | number | string
+    precioCompra: number
+    precioVenta: number
     stock?: number
     stockMinimo?: number
+    stockMaximo?: number
     categoriaId: number
     fechaRegistro?: Date | string
     estado?: boolean
@@ -14652,10 +14555,11 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: NullableStringFieldUpdateOperationsInput | string | null
-    precioCompra?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFieldUpdateOperationsInput | number
+    precioVenta?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     stockMinimo?: IntFieldUpdateOperationsInput | number
+    stockMaximo?: IntFieldUpdateOperationsInput | number
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     estado?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -14665,10 +14569,11 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: NullableStringFieldUpdateOperationsInput | string | null
-    precioCompra?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFieldUpdateOperationsInput | number
+    precioVenta?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     stockMinimo?: IntFieldUpdateOperationsInput | number
+    stockMaximo?: IntFieldUpdateOperationsInput | number
     categoriaId?: IntFieldUpdateOperationsInput | number
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     estado?: BoolFieldUpdateOperationsInput | boolean
@@ -14676,7 +14581,7 @@ export namespace Prisma {
 
   export type VentaCreateInput = {
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuario?: UsuarioCreateNestedOneWithoutVentasInput
     cliente: ClienteCreateNestedOneWithoutVentasInput
@@ -14687,7 +14592,7 @@ export namespace Prisma {
     id?: number
     clienteId: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuarioId?: number | null
     detalles?: DetalleVentaUncheckedCreateNestedManyWithoutVentaInput
@@ -14695,7 +14600,7 @@ export namespace Prisma {
 
   export type VentaUpdateInput = {
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuario?: UsuarioUpdateOneWithoutVentasNestedInput
     cliente?: ClienteUpdateOneRequiredWithoutVentasNestedInput
@@ -14706,7 +14611,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     clienteId?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
     detalles?: DetalleVentaUncheckedUpdateManyWithoutVentaNestedInput
@@ -14716,14 +14621,14 @@ export namespace Prisma {
     id?: number
     clienteId: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuarioId?: number | null
   }
 
   export type VentaUpdateManyMutationInput = {
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
   }
 
@@ -14731,15 +14636,15 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     clienteId?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type DetalleVentaCreateInput = {
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
     venta: VentaCreateNestedOneWithoutDetallesInput
     producto: ProductoCreateNestedOneWithoutDetallesVentaInput
   }
@@ -14749,14 +14654,14 @@ export namespace Prisma {
     ventaId: number
     productoId: number
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
   }
 
   export type DetalleVentaUpdateInput = {
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
     venta?: VentaUpdateOneRequiredWithoutDetallesNestedInput
     producto?: ProductoUpdateOneRequiredWithoutDetallesVentaNestedInput
   }
@@ -14766,8 +14671,8 @@ export namespace Prisma {
     ventaId?: IntFieldUpdateOperationsInput | number
     productoId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type DetalleVentaCreateManyInput = {
@@ -14775,14 +14680,14 @@ export namespace Prisma {
     ventaId: number
     productoId: number
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
   }
 
   export type DetalleVentaUpdateManyMutationInput = {
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type DetalleVentaUncheckedUpdateManyInput = {
@@ -14790,13 +14695,13 @@ export namespace Prisma {
     ventaId?: IntFieldUpdateOperationsInput | number
     productoId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type CompraCreateInput = {
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuario?: UsuarioCreateNestedOneWithoutComprasInput
     proveedor: ProveedorCreateNestedOneWithoutComprasInput
@@ -14807,7 +14712,7 @@ export namespace Prisma {
     id?: number
     proveedorId: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuarioId?: number | null
     detalles?: DetalleCompraUncheckedCreateNestedManyWithoutCompraInput
@@ -14815,7 +14720,7 @@ export namespace Prisma {
 
   export type CompraUpdateInput = {
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuario?: UsuarioUpdateOneWithoutComprasNestedInput
     proveedor?: ProveedorUpdateOneRequiredWithoutComprasNestedInput
@@ -14826,7 +14731,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     proveedorId?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
     detalles?: DetalleCompraUncheckedUpdateManyWithoutCompraNestedInput
@@ -14836,14 +14741,14 @@ export namespace Prisma {
     id?: number
     proveedorId: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuarioId?: number | null
   }
 
   export type CompraUpdateManyMutationInput = {
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
   }
 
@@ -14851,15 +14756,15 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     proveedorId?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type DetalleCompraCreateInput = {
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
     compra: CompraCreateNestedOneWithoutDetallesInput
     producto: ProductoCreateNestedOneWithoutDetallesCompraInput
   }
@@ -14869,14 +14774,14 @@ export namespace Prisma {
     compraId: number
     productoId: number
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
   }
 
   export type DetalleCompraUpdateInput = {
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
     compra?: CompraUpdateOneRequiredWithoutDetallesNestedInput
     producto?: ProductoUpdateOneRequiredWithoutDetallesCompraNestedInput
   }
@@ -14886,8 +14791,8 @@ export namespace Prisma {
     compraId?: IntFieldUpdateOperationsInput | number
     productoId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type DetalleCompraCreateManyInput = {
@@ -14895,14 +14800,14 @@ export namespace Prisma {
     compraId: number
     productoId: number
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
   }
 
   export type DetalleCompraUpdateManyMutationInput = {
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type DetalleCompraUncheckedUpdateManyInput = {
@@ -14910,8 +14815,8 @@ export namespace Prisma {
     compraId?: IntFieldUpdateOperationsInput | number
     productoId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type RolCreateInput = {
@@ -15040,8 +14945,8 @@ export namespace Prisma {
 
   export type IntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -15051,8 +14956,8 @@ export namespace Prisma {
 
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -15060,14 +14965,13 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
     not?: NestedStringFilter<$PrismaModel> | string
   }
 
   export type StringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -15075,14 +14979,13 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
     not?: NestedStringNullableFilter<$PrismaModel> | string | null
   }
 
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -15153,8 +15056,8 @@ export namespace Prisma {
 
   export type IntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -15169,8 +15072,8 @@ export namespace Prisma {
 
   export type StringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -15178,7 +15081,6 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
     not?: NestedStringWithAggregatesFilter<$PrismaModel> | string
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedStringFilter<$PrismaModel>
@@ -15187,8 +15089,8 @@ export namespace Prisma {
 
   export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -15196,7 +15098,6 @@ export namespace Prisma {
     contains?: string | StringFieldRefInput<$PrismaModel>
     startsWith?: string | StringFieldRefInput<$PrismaModel>
     endsWith?: string | StringFieldRefInput<$PrismaModel>
-    mode?: QueryMode
     not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
     _count?: NestedIntNullableFilter<$PrismaModel>
     _min?: NestedStringNullableFilter<$PrismaModel>
@@ -15205,8 +15106,8 @@ export namespace Prisma {
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -15277,10 +15178,8 @@ export namespace Prisma {
   export type ProveedorCountOrderByAggregateInput = {
     id?: SortOrder
     nombre?: SortOrder
-    direccion?: SortOrder
     telefono?: SortOrder
-    email?: SortOrder
-    fechaRegistro?: SortOrder
+    direccion?: SortOrder
     estado?: SortOrder
   }
 
@@ -15291,20 +15190,16 @@ export namespace Prisma {
   export type ProveedorMaxOrderByAggregateInput = {
     id?: SortOrder
     nombre?: SortOrder
-    direccion?: SortOrder
     telefono?: SortOrder
-    email?: SortOrder
-    fechaRegistro?: SortOrder
+    direccion?: SortOrder
     estado?: SortOrder
   }
 
   export type ProveedorMinOrderByAggregateInput = {
     id?: SortOrder
     nombre?: SortOrder
-    direccion?: SortOrder
     telefono?: SortOrder
-    email?: SortOrder
-    fechaRegistro?: SortOrder
+    direccion?: SortOrder
     estado?: SortOrder
   }
 
@@ -15312,15 +15207,15 @@ export namespace Prisma {
     id?: SortOrder
   }
 
-  export type DecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  export type FloatFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatFilter<$PrismaModel> | number
   }
 
   export type CategoriaScalarRelationFilter = {
@@ -15357,6 +15252,7 @@ export namespace Prisma {
     precioVenta?: SortOrder
     stock?: SortOrder
     stockMinimo?: SortOrder
+    stockMaximo?: SortOrder
     categoriaId?: SortOrder
     fechaRegistro?: SortOrder
     estado?: SortOrder
@@ -15368,6 +15264,7 @@ export namespace Prisma {
     precioVenta?: SortOrder
     stock?: SortOrder
     stockMinimo?: SortOrder
+    stockMaximo?: SortOrder
     categoriaId?: SortOrder
   }
 
@@ -15380,6 +15277,7 @@ export namespace Prisma {
     precioVenta?: SortOrder
     stock?: SortOrder
     stockMinimo?: SortOrder
+    stockMaximo?: SortOrder
     categoriaId?: SortOrder
     fechaRegistro?: SortOrder
     estado?: SortOrder
@@ -15394,6 +15292,7 @@ export namespace Prisma {
     precioVenta?: SortOrder
     stock?: SortOrder
     stockMinimo?: SortOrder
+    stockMaximo?: SortOrder
     categoriaId?: SortOrder
     fechaRegistro?: SortOrder
     estado?: SortOrder
@@ -15405,29 +15304,30 @@ export namespace Prisma {
     precioVenta?: SortOrder
     stock?: SortOrder
     stockMinimo?: SortOrder
+    stockMaximo?: SortOrder
     categoriaId?: SortOrder
   }
 
-  export type DecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  export type FloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
     _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -15488,8 +15388,8 @@ export namespace Prisma {
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -15921,12 +15821,12 @@ export namespace Prisma {
     connect?: DetalleCompraWhereUniqueInput | DetalleCompraWhereUniqueInput[]
   }
 
-  export type DecimalFieldUpdateOperationsInput = {
-    set?: Decimal | DecimalJsLike | number | string
-    increment?: Decimal | DecimalJsLike | number | string
-    decrement?: Decimal | DecimalJsLike | number | string
-    multiply?: Decimal | DecimalJsLike | number | string
-    divide?: Decimal | DecimalJsLike | number | string
+  export type FloatFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
   }
 
   export type CategoriaUpdateOneRequiredWithoutProductosNestedInput = {
@@ -16343,8 +16243,8 @@ export namespace Prisma {
 
   export type NestedIntFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -16354,8 +16254,8 @@ export namespace Prisma {
 
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -16368,8 +16268,8 @@ export namespace Prisma {
 
   export type NestedStringNullableFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -16382,8 +16282,8 @@ export namespace Prisma {
 
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -16398,8 +16298,8 @@ export namespace Prisma {
 
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[] | ListIntFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -16414,8 +16314,8 @@ export namespace Prisma {
 
   export type NestedFloatFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel>
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel>
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -16425,8 +16325,8 @@ export namespace Prisma {
 
   export type NestedStringWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
-    in?: string[] | ListStringFieldRefInput<$PrismaModel>
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel>
+    in?: string[]
+    notIn?: string[]
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -16442,8 +16342,8 @@ export namespace Prisma {
 
   export type NestedStringNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | ListStringFieldRefInput<$PrismaModel> | null
-    notIn?: string[] | ListStringFieldRefInput<$PrismaModel> | null
+    in?: string[] | null
+    notIn?: string[] | null
     lt?: string | StringFieldRefInput<$PrismaModel>
     lte?: string | StringFieldRefInput<$PrismaModel>
     gt?: string | StringFieldRefInput<$PrismaModel>
@@ -16459,8 +16359,8 @@ export namespace Prisma {
 
   export type NestedIntNullableFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -16470,8 +16370,8 @@ export namespace Prisma {
 
   export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
-    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
     lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
@@ -16490,37 +16390,26 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
-  export type NestedDecimalFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
-  }
-
-  export type NestedDecimalWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    in?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    notIn?: Decimal[] | DecimalJsLike[] | number[] | string[] | ListDecimalFieldRefInput<$PrismaModel>
-    lt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    lte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gt?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    gte?: Decimal | DecimalJsLike | number | string | DecimalFieldRefInput<$PrismaModel>
-    not?: NestedDecimalWithAggregatesFilter<$PrismaModel> | Decimal | DecimalJsLike | number | string
+  export type NestedFloatWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatWithAggregatesFilter<$PrismaModel> | number
     _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedDecimalFilter<$PrismaModel>
-    _sum?: NestedDecimalFilter<$PrismaModel>
-    _min?: NestedDecimalFilter<$PrismaModel>
-    _max?: NestedDecimalFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedFloatFilter<$PrismaModel>
+    _min?: NestedFloatFilter<$PrismaModel>
+    _max?: NestedFloatFilter<$PrismaModel>
   }
 
   export type NestedIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListIntFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListIntFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
     lt?: number | IntFieldRefInput<$PrismaModel>
     lte?: number | IntFieldRefInput<$PrismaModel>
     gt?: number | IntFieldRefInput<$PrismaModel>
@@ -16535,8 +16424,8 @@ export namespace Prisma {
 
   export type NestedFloatNullableFilter<$PrismaModel = never> = {
     equals?: number | FloatFieldRefInput<$PrismaModel> | null
-    in?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
-    notIn?: number[] | ListFloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
     lt?: number | FloatFieldRefInput<$PrismaModel>
     lte?: number | FloatFieldRefInput<$PrismaModel>
     gt?: number | FloatFieldRefInput<$PrismaModel>
@@ -16546,7 +16435,7 @@ export namespace Prisma {
 
   export type VentaCreateWithoutClienteInput = {
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuario?: UsuarioCreateNestedOneWithoutVentasInput
     detalles?: DetalleVentaCreateNestedManyWithoutVentaInput
@@ -16555,7 +16444,7 @@ export namespace Prisma {
   export type VentaUncheckedCreateWithoutClienteInput = {
     id?: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuarioId?: number | null
     detalles?: DetalleVentaUncheckedCreateNestedManyWithoutVentaInput
@@ -16568,7 +16457,6 @@ export namespace Prisma {
 
   export type VentaCreateManyClienteInputEnvelope = {
     data: VentaCreateManyClienteInput | VentaCreateManyClienteInput[]
-    skipDuplicates?: boolean
   }
 
   export type VentaUpsertWithWhereUniqueWithoutClienteInput = {
@@ -16594,7 +16482,7 @@ export namespace Prisma {
     id?: IntFilter<"Venta"> | number
     clienteId?: IntFilter<"Venta"> | number
     fecha?: DateTimeFilter<"Venta"> | Date | string
-    total?: DecimalFilter<"Venta"> | Decimal | DecimalJsLike | number | string
+    total?: FloatFilter<"Venta"> | number
     estado?: StringFilter<"Venta"> | string
     usuarioId?: IntNullableFilter<"Venta"> | number | null
   }
@@ -16603,10 +16491,11 @@ export namespace Prisma {
     codigo: string
     nombre: string
     descripcion?: string | null
-    precioCompra: Decimal | DecimalJsLike | number | string
-    precioVenta: Decimal | DecimalJsLike | number | string
+    precioCompra: number
+    precioVenta: number
     stock?: number
     stockMinimo?: number
+    stockMaximo?: number
     fechaRegistro?: Date | string
     estado?: boolean
     detallesVenta?: DetalleVentaCreateNestedManyWithoutProductoInput
@@ -16618,10 +16507,11 @@ export namespace Prisma {
     codigo: string
     nombre: string
     descripcion?: string | null
-    precioCompra: Decimal | DecimalJsLike | number | string
-    precioVenta: Decimal | DecimalJsLike | number | string
+    precioCompra: number
+    precioVenta: number
     stock?: number
     stockMinimo?: number
+    stockMaximo?: number
     fechaRegistro?: Date | string
     estado?: boolean
     detallesVenta?: DetalleVentaUncheckedCreateNestedManyWithoutProductoInput
@@ -16635,7 +16525,6 @@ export namespace Prisma {
 
   export type ProductoCreateManyCategoriaInputEnvelope = {
     data: ProductoCreateManyCategoriaInput | ProductoCreateManyCategoriaInput[]
-    skipDuplicates?: boolean
   }
 
   export type ProductoUpsertWithWhereUniqueWithoutCategoriaInput = {
@@ -16662,10 +16551,11 @@ export namespace Prisma {
     codigo?: StringFilter<"Producto"> | string
     nombre?: StringFilter<"Producto"> | string
     descripcion?: StringNullableFilter<"Producto"> | string | null
-    precioCompra?: DecimalFilter<"Producto"> | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFilter<"Producto"> | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFilter<"Producto"> | number
+    precioVenta?: FloatFilter<"Producto"> | number
     stock?: IntFilter<"Producto"> | number
     stockMinimo?: IntFilter<"Producto"> | number
+    stockMaximo?: IntFilter<"Producto"> | number
     categoriaId?: IntFilter<"Producto"> | number
     fechaRegistro?: DateTimeFilter<"Producto"> | Date | string
     estado?: BoolFilter<"Producto"> | boolean
@@ -16673,7 +16563,7 @@ export namespace Prisma {
 
   export type CompraCreateWithoutProveedorInput = {
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuario?: UsuarioCreateNestedOneWithoutComprasInput
     detalles?: DetalleCompraCreateNestedManyWithoutCompraInput
@@ -16682,7 +16572,7 @@ export namespace Prisma {
   export type CompraUncheckedCreateWithoutProveedorInput = {
     id?: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuarioId?: number | null
     detalles?: DetalleCompraUncheckedCreateNestedManyWithoutCompraInput
@@ -16695,7 +16585,6 @@ export namespace Prisma {
 
   export type CompraCreateManyProveedorInputEnvelope = {
     data: CompraCreateManyProveedorInput | CompraCreateManyProveedorInput[]
-    skipDuplicates?: boolean
   }
 
   export type CompraUpsertWithWhereUniqueWithoutProveedorInput = {
@@ -16721,7 +16610,7 @@ export namespace Prisma {
     id?: IntFilter<"Compra"> | number
     proveedorId?: IntFilter<"Compra"> | number
     fecha?: DateTimeFilter<"Compra"> | Date | string
-    total?: DecimalFilter<"Compra"> | Decimal | DecimalJsLike | number | string
+    total?: FloatFilter<"Compra"> | number
     estado?: StringFilter<"Compra"> | string
     usuarioId?: IntNullableFilter<"Compra"> | number | null
   }
@@ -16746,8 +16635,8 @@ export namespace Prisma {
 
   export type DetalleVentaCreateWithoutProductoInput = {
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
     venta: VentaCreateNestedOneWithoutDetallesInput
   }
 
@@ -16755,8 +16644,8 @@ export namespace Prisma {
     id?: number
     ventaId: number
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
   }
 
   export type DetalleVentaCreateOrConnectWithoutProductoInput = {
@@ -16766,13 +16655,12 @@ export namespace Prisma {
 
   export type DetalleVentaCreateManyProductoInputEnvelope = {
     data: DetalleVentaCreateManyProductoInput | DetalleVentaCreateManyProductoInput[]
-    skipDuplicates?: boolean
   }
 
   export type DetalleCompraCreateWithoutProductoInput = {
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
     compra: CompraCreateNestedOneWithoutDetallesInput
   }
 
@@ -16780,8 +16668,8 @@ export namespace Prisma {
     id?: number
     compraId: number
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
   }
 
   export type DetalleCompraCreateOrConnectWithoutProductoInput = {
@@ -16791,7 +16679,6 @@ export namespace Prisma {
 
   export type DetalleCompraCreateManyProductoInputEnvelope = {
     data: DetalleCompraCreateManyProductoInput | DetalleCompraCreateManyProductoInput[]
-    skipDuplicates?: boolean
   }
 
   export type CategoriaUpsertWithoutProductosInput = {
@@ -16842,8 +16729,8 @@ export namespace Prisma {
     ventaId?: IntFilter<"DetalleVenta"> | number
     productoId?: IntFilter<"DetalleVenta"> | number
     cantidad?: IntFilter<"DetalleVenta"> | number
-    precioUnitario?: DecimalFilter<"DetalleVenta"> | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFilter<"DetalleVenta"> | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFilter<"DetalleVenta"> | number
+    subtotal?: FloatFilter<"DetalleVenta"> | number
   }
 
   export type DetalleCompraUpsertWithWhereUniqueWithoutProductoInput = {
@@ -16870,8 +16757,8 @@ export namespace Prisma {
     compraId?: IntFilter<"DetalleCompra"> | number
     productoId?: IntFilter<"DetalleCompra"> | number
     cantidad?: IntFilter<"DetalleCompra"> | number
-    precioUnitario?: DecimalFilter<"DetalleCompra"> | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFilter<"DetalleCompra"> | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFilter<"DetalleCompra"> | number
+    subtotal?: FloatFilter<"DetalleCompra"> | number
   }
 
   export type UsuarioCreateWithoutVentasInput = {
@@ -16930,8 +16817,8 @@ export namespace Prisma {
 
   export type DetalleVentaCreateWithoutVentaInput = {
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
     producto: ProductoCreateNestedOneWithoutDetallesVentaInput
   }
 
@@ -16939,8 +16826,8 @@ export namespace Prisma {
     id?: number
     productoId: number
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
   }
 
   export type DetalleVentaCreateOrConnectWithoutVentaInput = {
@@ -16950,7 +16837,6 @@ export namespace Prisma {
 
   export type DetalleVentaCreateManyVentaInputEnvelope = {
     data: DetalleVentaCreateManyVentaInput | DetalleVentaCreateManyVentaInput[]
-    skipDuplicates?: boolean
   }
 
   export type UsuarioUpsertWithoutVentasInput = {
@@ -17037,7 +16923,7 @@ export namespace Prisma {
 
   export type VentaCreateWithoutDetallesInput = {
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuario?: UsuarioCreateNestedOneWithoutVentasInput
     cliente: ClienteCreateNestedOneWithoutVentasInput
@@ -17047,7 +16933,7 @@ export namespace Prisma {
     id?: number
     clienteId: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuarioId?: number | null
   }
@@ -17061,10 +16947,11 @@ export namespace Prisma {
     codigo: string
     nombre: string
     descripcion?: string | null
-    precioCompra: Decimal | DecimalJsLike | number | string
-    precioVenta: Decimal | DecimalJsLike | number | string
+    precioCompra: number
+    precioVenta: number
     stock?: number
     stockMinimo?: number
+    stockMaximo?: number
     fechaRegistro?: Date | string
     estado?: boolean
     categoria: CategoriaCreateNestedOneWithoutProductosInput
@@ -17076,10 +16963,11 @@ export namespace Prisma {
     codigo: string
     nombre: string
     descripcion?: string | null
-    precioCompra: Decimal | DecimalJsLike | number | string
-    precioVenta: Decimal | DecimalJsLike | number | string
+    precioCompra: number
+    precioVenta: number
     stock?: number
     stockMinimo?: number
+    stockMaximo?: number
     categoriaId: number
     fechaRegistro?: Date | string
     estado?: boolean
@@ -17104,7 +16992,7 @@ export namespace Prisma {
 
   export type VentaUpdateWithoutDetallesInput = {
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuario?: UsuarioUpdateOneWithoutVentasNestedInput
     cliente?: ClienteUpdateOneRequiredWithoutVentasNestedInput
@@ -17114,7 +17002,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     clienteId?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
   }
@@ -17134,10 +17022,11 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: NullableStringFieldUpdateOperationsInput | string | null
-    precioCompra?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFieldUpdateOperationsInput | number
+    precioVenta?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     stockMinimo?: IntFieldUpdateOperationsInput | number
+    stockMaximo?: IntFieldUpdateOperationsInput | number
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     estado?: BoolFieldUpdateOperationsInput | boolean
     categoria?: CategoriaUpdateOneRequiredWithoutProductosNestedInput
@@ -17149,10 +17038,11 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: NullableStringFieldUpdateOperationsInput | string | null
-    precioCompra?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFieldUpdateOperationsInput | number
+    precioVenta?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     stockMinimo?: IntFieldUpdateOperationsInput | number
+    stockMaximo?: IntFieldUpdateOperationsInput | number
     categoriaId?: IntFieldUpdateOperationsInput | number
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     estado?: BoolFieldUpdateOperationsInput | boolean
@@ -17189,20 +17079,16 @@ export namespace Prisma {
 
   export type ProveedorCreateWithoutComprasInput = {
     nombre: string
-    direccion?: string | null
     telefono?: string | null
-    email?: string | null
-    fechaRegistro?: Date | string
+    direccion?: string | null
     estado?: boolean
   }
 
   export type ProveedorUncheckedCreateWithoutComprasInput = {
     id?: number
     nombre: string
-    direccion?: string | null
     telefono?: string | null
-    email?: string | null
-    fechaRegistro?: Date | string
+    direccion?: string | null
     estado?: boolean
   }
 
@@ -17213,8 +17099,8 @@ export namespace Prisma {
 
   export type DetalleCompraCreateWithoutCompraInput = {
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
     producto: ProductoCreateNestedOneWithoutDetallesCompraInput
   }
 
@@ -17222,8 +17108,8 @@ export namespace Prisma {
     id?: number
     productoId: number
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
   }
 
   export type DetalleCompraCreateOrConnectWithoutCompraInput = {
@@ -17233,7 +17119,6 @@ export namespace Prisma {
 
   export type DetalleCompraCreateManyCompraInputEnvelope = {
     data: DetalleCompraCreateManyCompraInput | DetalleCompraCreateManyCompraInput[]
-    skipDuplicates?: boolean
   }
 
   export type UsuarioUpsertWithoutComprasInput = {
@@ -17283,20 +17168,16 @@ export namespace Prisma {
 
   export type ProveedorUpdateWithoutComprasInput = {
     nombre?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: BoolFieldUpdateOperationsInput | boolean
   }
 
   export type ProveedorUncheckedUpdateWithoutComprasInput = {
     id?: IntFieldUpdateOperationsInput | number
     nombre?: StringFieldUpdateOperationsInput | string
-    direccion?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
-    email?: NullableStringFieldUpdateOperationsInput | string | null
-    fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
+    direccion?: NullableStringFieldUpdateOperationsInput | string | null
     estado?: BoolFieldUpdateOperationsInput | boolean
   }
 
@@ -17318,7 +17199,7 @@ export namespace Prisma {
 
   export type CompraCreateWithoutDetallesInput = {
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuario?: UsuarioCreateNestedOneWithoutComprasInput
     proveedor: ProveedorCreateNestedOneWithoutComprasInput
@@ -17328,7 +17209,7 @@ export namespace Prisma {
     id?: number
     proveedorId: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuarioId?: number | null
   }
@@ -17342,10 +17223,11 @@ export namespace Prisma {
     codigo: string
     nombre: string
     descripcion?: string | null
-    precioCompra: Decimal | DecimalJsLike | number | string
-    precioVenta: Decimal | DecimalJsLike | number | string
+    precioCompra: number
+    precioVenta: number
     stock?: number
     stockMinimo?: number
+    stockMaximo?: number
     fechaRegistro?: Date | string
     estado?: boolean
     categoria: CategoriaCreateNestedOneWithoutProductosInput
@@ -17357,10 +17239,11 @@ export namespace Prisma {
     codigo: string
     nombre: string
     descripcion?: string | null
-    precioCompra: Decimal | DecimalJsLike | number | string
-    precioVenta: Decimal | DecimalJsLike | number | string
+    precioCompra: number
+    precioVenta: number
     stock?: number
     stockMinimo?: number
+    stockMaximo?: number
     categoriaId: number
     fechaRegistro?: Date | string
     estado?: boolean
@@ -17385,7 +17268,7 @@ export namespace Prisma {
 
   export type CompraUpdateWithoutDetallesInput = {
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuario?: UsuarioUpdateOneWithoutComprasNestedInput
     proveedor?: ProveedorUpdateOneRequiredWithoutComprasNestedInput
@@ -17395,7 +17278,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     proveedorId?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
   }
@@ -17415,10 +17298,11 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: NullableStringFieldUpdateOperationsInput | string | null
-    precioCompra?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFieldUpdateOperationsInput | number
+    precioVenta?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     stockMinimo?: IntFieldUpdateOperationsInput | number
+    stockMaximo?: IntFieldUpdateOperationsInput | number
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     estado?: BoolFieldUpdateOperationsInput | boolean
     categoria?: CategoriaUpdateOneRequiredWithoutProductosNestedInput
@@ -17430,10 +17314,11 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: NullableStringFieldUpdateOperationsInput | string | null
-    precioCompra?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFieldUpdateOperationsInput | number
+    precioVenta?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     stockMinimo?: IntFieldUpdateOperationsInput | number
+    stockMaximo?: IntFieldUpdateOperationsInput | number
     categoriaId?: IntFieldUpdateOperationsInput | number
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     estado?: BoolFieldUpdateOperationsInput | boolean
@@ -17470,7 +17355,6 @@ export namespace Prisma {
 
   export type UsuarioCreateManyRolInputEnvelope = {
     data: UsuarioCreateManyRolInput | UsuarioCreateManyRolInput[]
-    skipDuplicates?: boolean
   }
 
   export type UsuarioUpsertWithWhereUniqueWithoutRolInput = {
@@ -17521,7 +17405,7 @@ export namespace Prisma {
 
   export type VentaCreateWithoutUsuarioInput = {
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     cliente: ClienteCreateNestedOneWithoutVentasInput
     detalles?: DetalleVentaCreateNestedManyWithoutVentaInput
@@ -17531,7 +17415,7 @@ export namespace Prisma {
     id?: number
     clienteId: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     detalles?: DetalleVentaUncheckedCreateNestedManyWithoutVentaInput
   }
@@ -17543,12 +17427,11 @@ export namespace Prisma {
 
   export type VentaCreateManyUsuarioInputEnvelope = {
     data: VentaCreateManyUsuarioInput | VentaCreateManyUsuarioInput[]
-    skipDuplicates?: boolean
   }
 
   export type CompraCreateWithoutUsuarioInput = {
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     proveedor: ProveedorCreateNestedOneWithoutComprasInput
     detalles?: DetalleCompraCreateNestedManyWithoutCompraInput
@@ -17558,7 +17441,7 @@ export namespace Prisma {
     id?: number
     proveedorId: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     detalles?: DetalleCompraUncheckedCreateNestedManyWithoutCompraInput
   }
@@ -17570,7 +17453,6 @@ export namespace Prisma {
 
   export type CompraCreateManyUsuarioInputEnvelope = {
     data: CompraCreateManyUsuarioInput | CompraCreateManyUsuarioInput[]
-    skipDuplicates?: boolean
   }
 
   export type RolUpsertWithoutUsuariosInput = {
@@ -17630,14 +17512,14 @@ export namespace Prisma {
   export type VentaCreateManyClienteInput = {
     id?: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuarioId?: number | null
   }
 
   export type VentaUpdateWithoutClienteInput = {
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuario?: UsuarioUpdateOneWithoutVentasNestedInput
     detalles?: DetalleVentaUpdateManyWithoutVentaNestedInput
@@ -17646,7 +17528,7 @@ export namespace Prisma {
   export type VentaUncheckedUpdateWithoutClienteInput = {
     id?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
     detalles?: DetalleVentaUncheckedUpdateManyWithoutVentaNestedInput
@@ -17655,7 +17537,7 @@ export namespace Prisma {
   export type VentaUncheckedUpdateManyWithoutClienteInput = {
     id?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
   }
@@ -17665,10 +17547,11 @@ export namespace Prisma {
     codigo: string
     nombre: string
     descripcion?: string | null
-    precioCompra: Decimal | DecimalJsLike | number | string
-    precioVenta: Decimal | DecimalJsLike | number | string
+    precioCompra: number
+    precioVenta: number
     stock?: number
     stockMinimo?: number
+    stockMaximo?: number
     fechaRegistro?: Date | string
     estado?: boolean
   }
@@ -17677,10 +17560,11 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: NullableStringFieldUpdateOperationsInput | string | null
-    precioCompra?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFieldUpdateOperationsInput | number
+    precioVenta?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     stockMinimo?: IntFieldUpdateOperationsInput | number
+    stockMaximo?: IntFieldUpdateOperationsInput | number
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     estado?: BoolFieldUpdateOperationsInput | boolean
     detallesVenta?: DetalleVentaUpdateManyWithoutProductoNestedInput
@@ -17692,10 +17576,11 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: NullableStringFieldUpdateOperationsInput | string | null
-    precioCompra?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFieldUpdateOperationsInput | number
+    precioVenta?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     stockMinimo?: IntFieldUpdateOperationsInput | number
+    stockMaximo?: IntFieldUpdateOperationsInput | number
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     estado?: BoolFieldUpdateOperationsInput | boolean
     detallesVenta?: DetalleVentaUncheckedUpdateManyWithoutProductoNestedInput
@@ -17707,10 +17592,11 @@ export namespace Prisma {
     codigo?: StringFieldUpdateOperationsInput | string
     nombre?: StringFieldUpdateOperationsInput | string
     descripcion?: NullableStringFieldUpdateOperationsInput | string | null
-    precioCompra?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    precioVenta?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioCompra?: FloatFieldUpdateOperationsInput | number
+    precioVenta?: FloatFieldUpdateOperationsInput | number
     stock?: IntFieldUpdateOperationsInput | number
     stockMinimo?: IntFieldUpdateOperationsInput | number
+    stockMaximo?: IntFieldUpdateOperationsInput | number
     fechaRegistro?: DateTimeFieldUpdateOperationsInput | Date | string
     estado?: BoolFieldUpdateOperationsInput | boolean
   }
@@ -17718,14 +17604,14 @@ export namespace Prisma {
   export type CompraCreateManyProveedorInput = {
     id?: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
     usuarioId?: number | null
   }
 
   export type CompraUpdateWithoutProveedorInput = {
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuario?: UsuarioUpdateOneWithoutComprasNestedInput
     detalles?: DetalleCompraUpdateManyWithoutCompraNestedInput
@@ -17734,7 +17620,7 @@ export namespace Prisma {
   export type CompraUncheckedUpdateWithoutProveedorInput = {
     id?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
     detalles?: DetalleCompraUncheckedUpdateManyWithoutCompraNestedInput
@@ -17743,7 +17629,7 @@ export namespace Prisma {
   export type CompraUncheckedUpdateManyWithoutProveedorInput = {
     id?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     usuarioId?: NullableIntFieldUpdateOperationsInput | number | null
   }
@@ -17752,22 +17638,22 @@ export namespace Prisma {
     id?: number
     ventaId: number
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
   }
 
   export type DetalleCompraCreateManyProductoInput = {
     id?: number
     compraId: number
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
   }
 
   export type DetalleVentaUpdateWithoutProductoInput = {
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
     venta?: VentaUpdateOneRequiredWithoutDetallesNestedInput
   }
 
@@ -17775,22 +17661,22 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     ventaId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type DetalleVentaUncheckedUpdateManyWithoutProductoInput = {
     id?: IntFieldUpdateOperationsInput | number
     ventaId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type DetalleCompraUpdateWithoutProductoInput = {
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
     compra?: CompraUpdateOneRequiredWithoutDetallesNestedInput
   }
 
@@ -17798,30 +17684,30 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     compraId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type DetalleCompraUncheckedUpdateManyWithoutProductoInput = {
     id?: IntFieldUpdateOperationsInput | number
     compraId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type DetalleVentaCreateManyVentaInput = {
     id?: number
     productoId: number
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
   }
 
   export type DetalleVentaUpdateWithoutVentaInput = {
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
     producto?: ProductoUpdateOneRequiredWithoutDetallesVentaNestedInput
   }
 
@@ -17829,30 +17715,30 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     productoId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type DetalleVentaUncheckedUpdateManyWithoutVentaInput = {
     id?: IntFieldUpdateOperationsInput | number
     productoId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type DetalleCompraCreateManyCompraInput = {
     id?: number
     productoId: number
     cantidad: number
-    precioUnitario: Decimal | DecimalJsLike | number | string
-    subtotal: Decimal | DecimalJsLike | number | string
+    precioUnitario: number
+    subtotal: number
   }
 
   export type DetalleCompraUpdateWithoutCompraInput = {
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
     producto?: ProductoUpdateOneRequiredWithoutDetallesCompraNestedInput
   }
 
@@ -17860,16 +17746,16 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     productoId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type DetalleCompraUncheckedUpdateManyWithoutCompraInput = {
     id?: IntFieldUpdateOperationsInput | number
     productoId?: IntFieldUpdateOperationsInput | number
     cantidad?: IntFieldUpdateOperationsInput | number
-    precioUnitario?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
-    subtotal?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    precioUnitario?: FloatFieldUpdateOperationsInput | number
+    subtotal?: FloatFieldUpdateOperationsInput | number
   }
 
   export type UsuarioCreateManyRolInput = {
@@ -17919,7 +17805,7 @@ export namespace Prisma {
     id?: number
     clienteId: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
   }
 
@@ -17927,13 +17813,13 @@ export namespace Prisma {
     id?: number
     proveedorId: number
     fecha?: Date | string
-    total: Decimal | DecimalJsLike | number | string
+    total: number
     estado?: string
   }
 
   export type VentaUpdateWithoutUsuarioInput = {
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     cliente?: ClienteUpdateOneRequiredWithoutVentasNestedInput
     detalles?: DetalleVentaUpdateManyWithoutVentaNestedInput
@@ -17943,7 +17829,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     clienteId?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     detalles?: DetalleVentaUncheckedUpdateManyWithoutVentaNestedInput
   }
@@ -17952,13 +17838,13 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     clienteId?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
   }
 
   export type CompraUpdateWithoutUsuarioInput = {
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     proveedor?: ProveedorUpdateOneRequiredWithoutComprasNestedInput
     detalles?: DetalleCompraUpdateManyWithoutCompraNestedInput
@@ -17968,7 +17854,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     proveedorId?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
     detalles?: DetalleCompraUncheckedUpdateManyWithoutCompraNestedInput
   }
@@ -17977,7 +17863,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     proveedorId?: IntFieldUpdateOperationsInput | number
     fecha?: DateTimeFieldUpdateOperationsInput | Date | string
-    total?: DecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string
+    total?: FloatFieldUpdateOperationsInput | number
     estado?: StringFieldUpdateOperationsInput | string
   }
 

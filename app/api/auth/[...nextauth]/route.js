@@ -1,10 +1,15 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../.././../generated/prisma";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcrypt";
 
-const prisma = new PrismaClient();
+// Usar un singleton para la instancia de PrismaClient para evitar múltiples conexiones en desarrollo
+const globalForPrisma = globalThis;
+
+const prisma = globalForPrisma.prisma || new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),

@@ -1,61 +1,50 @@
-import { PrismaClient } from "@prisma/client";
-import { NextResponse } from "next/server";
+import { NextResponse } from 'next/server';
+import { PrismaClient } from '../../generated/prisma';
+import { getServerSession } from 'next-auth';
 
-const prisma = new PrismaClient();
+// Usar un singleton para la instancia de PrismaClient
+const globalForPrisma = globalThis;
+const prisma = globalForPrisma.prisma || new PrismaClient();
+if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
 
-// GET - Obtener todos los clientes
 export async function GET(request) {
   try {
-    const { searchParams } = new URL(request.url);
-    const nombre = searchParams.get("nombre");
-    const email = searchParams.get("email");
-    
-    // Construir filtros
-    let where = { estado: true };
-    
-    if (nombre) {
-      where.OR = [
-        {
-          nombre: {
-            contains: nombre,
-            mode: 'insensitive'
-          }
-        },
-        {
-          apellido: {
-            contains: nombre,
-            mode: 'insensitive'
-          }
-        }
-      ];
+    const session = await getServerSession();
+    if (!session) {
+      return new NextResponse(
+        JSON.stringify({ error: 'No autenticado' }),
+        { status: 401 }
+      );
     }
     
-    if (email) {
-      where.email = {
-        contains: email,
-        mode: 'insensitive'
-      };
+    // Obtener parámetros de la URL
+    const { searchParams } = new URL(request.url);
+    const search = searchParams.get('search');
+    
+    let where = {
+      estado: true
+    };
+    
+    if (search) {
+      where.OR = [
+        { nombre: { contains: search } },
+        { apellido: { contains: search } },
+        { email: { contains: search } }
+      ];
     }
     
     const clientes = await prisma.cliente.findMany({
       where,
       orderBy: {
-        fechaRegistro: 'desc'
-      },
-      include: {
-        _count: {
-          select: {
-            ventas: true
-          }
-        }
+        nombre: 'asc'
       }
     });
     
     return NextResponse.json(clientes);
   } catch (error) {
-    console.error("Error al obtener clientes:", error);
-    return NextResponse.json(
-      { error: "Error al obtener clientes" },
+    console.error('Error al obtener clientes:', error);
+    return new NextResponse(
+      JSON.stringify({ error: 'Error al procesar la solicitud' }),
       { status: 500 }
     );
   }

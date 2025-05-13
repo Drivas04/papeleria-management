@@ -5,9 +5,7 @@ import { useRouter } from "next/navigation";
 import Header from "../../components/Header";
 import Link from "next/link";
 import { 
-  PencilIcon, 
-  TrashIcon, 
-  UserPlusIcon
+  EyeIcon
 } from "@heroicons/react/24/outline";
 
 export default function UsuariosPage() {
@@ -39,39 +37,15 @@ export default function UsuariosPage() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if (confirm("¿Está seguro que desea desactivar este usuario?")) {
-      try {
-        const response = await fetch(`/api/usuarios/${id}`, {
-          method: "DELETE",
-        });
-
-        if (!response.ok) {
-          throw new Error('Error al eliminar el usuario');
-        }
-
-        // Actualizar la lista de usuarios después de eliminar
-        fetchUsuarios();
-      } catch (error) {
-        console.error("Error:", error);
-        alert("Error al eliminar el usuario");
-      }
-    }
-  };
-
   return (
     <>
-      <Header pageTitle="Gestión de Usuarios" />
+      <Header pageTitle="Usuarios del Sistema" />
       <main className="flex-1 p-6 bg-gray-50">
         <div className="mb-6 flex justify-between items-center">
           <h2 className="text-xl font-semibold text-gray-800">Usuarios</h2>
-          <Link
-            href="/dashboard/usuarios/nuevo"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md flex items-center"
-          >
-            <UserPlusIcon className="w-5 h-5 mr-2" />
-            Nuevo Usuario
-          </Link>
+          <div className="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded">
+            <p>La aplicación cuenta con dos usuarios fijos predefinidos: Administrador y Vendedor.</p>
+          </div>
         </div>
 
         {loading ? (
@@ -146,14 +120,8 @@ export default function UsuariosPage() {
                             href={`/dashboard/usuarios/editar/${usuario.id}`}
                             className="text-indigo-600 hover:text-indigo-900"
                           >
-                            <PencilIcon className="w-5 h-5" />
+                            <EyeIcon className="w-5 h-5" title="Ver detalles" />
                           </Link>
-                          <button
-                            onClick={() => handleDelete(usuario.id)}
-                            className="text-red-600 hover:text-red-900"
-                          >
-                            <TrashIcon className="w-5 h-5" />
-                          </button>
                         </div>
                       </td>
                     </tr>
