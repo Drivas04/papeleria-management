@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../../generated/prisma";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -16,11 +16,11 @@ export async function GET(request, { params }) {
     }
 
     const producto = await prisma.producto.findUnique({
-      where: { id },
+      where: { id_producto: id },
       include: {
         categoria: {
           select: {
-            id: true,
+            id_categoria: true,
             nombre: true
           }
         }
@@ -60,7 +60,7 @@ export async function PUT(request, { params }) {
     
     // Verificar que el producto existe
     const productoExistente = await prisma.producto.findUnique({
-      where: { id }
+      where: { id_producto: id }
     });
 
     if (!productoExistente) {
@@ -70,24 +70,25 @@ export async function PUT(request, { params }) {
       );
     }
 
-    // Verificar que el código no está duplicado (si se está cambiando)
-    if (data.codigo && data.codigo !== productoExistente.codigo) {
-      const codigoExiste = await prisma.producto.findUnique({
-        where: { codigo: data.codigo }
+    // En el modelo actual no hay campo código único, pero podría verificarse otro campo único si existe
+    // Por ejemplo, verificar si el nombre_producto ya existe
+    if (data.nombre_producto && data.nombre_producto !== productoExistente.nombre_producto) {
+      const nombreExiste = await prisma.producto.findFirst({
+        where: { nombre_producto: data.nombre_producto }
       });
 
-      if (codigoExiste) {
+      if (nombreExiste) {
         return NextResponse.json(
-          { error: "Ya existe un producto con ese código" },
+          { error: "Ya existe un producto con ese nombre" },
           { status: 400 }
         );
       }
     }
 
     // Verificar la categoría (si está actualizando)
-    if (data.categoriaId) {
+    if (data.categoria_id_categoria) {
       const categoriaExiste = await prisma.categoria.findUnique({
-        where: { id: parseInt(data.categoriaId) }
+        where: { id_categoria: parseInt(data.categoria_id_categoria) }
       });
 
       if (!categoriaExiste) {
@@ -98,17 +99,13 @@ export async function PUT(request, { params }) {
       }
     }
 
-    // Preparar los datos de actualización
+    // Preparar los datos de actualización según el modelo actual
     const updateData = {
-      codigo: data.codigo,
-      nombre: data.nombre,
+      nombre_producto: data.nombre_producto,
       descripcion: data.descripcion,
-      precioCompra: data.precioCompra !== undefined ? parseFloat(data.precioCompra) : undefined,
-      precioVenta: data.precioVenta !== undefined ? parseFloat(data.precioVenta) : undefined,
-      stock: data.stock !== undefined ? parseInt(data.stock) : undefined,
-      stockMinimo: data.stockMinimo !== undefined ? parseInt(data.stockMinimo) : undefined,
-      categoriaId: data.categoriaId !== undefined ? parseInt(data.categoriaId) : undefined,
-      estado: data.estado !== undefined ? data.estado : undefined
+      stock: data.stock !== undefined ? parseFloat(data.stock) : undefined,
+      nivel_alerta: data.nivel_alerta,
+      categoria_id_categoria: data.categoria_id_categoria !== undefined ? parseInt(data.categoria_id_categoria) : undefined
     };
 
     // Eliminar campos indefinidos
@@ -118,7 +115,7 @@ export async function PUT(request, { params }) {
 
     // Actualizar producto
     const productoActualizado = await prisma.producto.update({
-      where: { id },
+      where: { id_producto: id },
       data: updateData,
       include: {
         categoria: true
@@ -152,7 +149,7 @@ export async function DELETE(request, { params }) {
 
     // Verificar que el producto existe
     const productoExistente = await prisma.producto.findUnique({
-      where: { id }
+      where: { id_producto: id }
     });
 
     if (!productoExistente) {
@@ -162,10 +159,9 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    // Soft delete - solo marcar como inactivo
-    await prisma.producto.update({
-      where: { id },
-      data: { estado: false }
+    // Borrar el producto directamente ya que no parece haber soft delete en el modelo actual
+    await prisma.producto.delete({
+      where: { id_producto: id }
     });
 
     return NextResponse.json({

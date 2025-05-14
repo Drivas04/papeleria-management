@@ -11,21 +11,22 @@ export default function SaleForm({ sale }) {
   
   // Estado para la venta
   const [formData, setFormData] = useState({
-    clienteId: sale?.clienteId || '',
-    detalles: sale?.detalles || [],
+    cliente_id_cliente: sale?.cliente_id_cliente || '',
+    cliente_cedula: '',
+    productos: sale?.venta_productos || [],
     estado: sale?.estado || 'COMPLETADA'
   });
   
   // Estado para un nuevo detalle
   const [nuevoDetalle, setNuevoDetalle] = useState({
-    productoId: '',
+    producto_id_producto: '',
     cantidad: 1,
-    precioUnitario: 0,
+    precio_unitario: 0,
     subtotal: 0
   });
   
   // Calcular total
-  const total = formData.detalles.reduce((sum, detalle) => sum + Number(detalle.subtotal), 0);
+  const total = formData.productos.reduce((sum, detalle) => sum + Number(detalle.subtotal), 0);
   
   // Cargar clientes y productos al iniciar
   useEffect(() => {
@@ -39,8 +40,8 @@ export default function SaleForm({ sale }) {
         const clientesData = await clientesRes.json();
         const productosData = await productosRes.json();
         
-        setClientes(clientesData.filter(c => c.estado));
-        setProductos(productosData.filter(p => p.estado && p.stock > 0));
+        setClientes(clientesData); // No filtramos por estado ya que no existe en MySQL
+        setProductos(productosData.filter(p => p.stock > 0));
       } catch (error) {
         console.error('Error al cargar datos:', error);
       }
@@ -51,29 +52,36 @@ export default function SaleForm({ sale }) {
   
   // Manejar cambio de cliente
   const handleClienteChange = (e) => {
+    const clienteId = parseInt(e.target.value);
+    const clienteSeleccionado = clientes.find(c => c.id_cliente === clienteId);
+    
     setFormData({
       ...formData,
-      clienteId: parseInt(e.target.value)
+      cliente_id_cliente: clienteId,
+      cliente_cedula: clienteSeleccionado ? clienteSeleccionado.cedula : ''
     });
   };
   
   // Manejar cambio de producto en el nuevo detalle
   const handleProductoChange = (e) => {
-    const productoId = parseInt(e.target.value);
-    const productoSeleccionado = productos.find(p => p.id === productoId);
+    const producto_id_producto = parseInt(e.target.value);
+    const productoSeleccionado = productos.find(p => p.id_producto === producto_id_producto);
+    
+    // Usamos un precio base predeterminado ya que no tenemos precioVenta en el modelo
+    const precioBase = 0; // Deberás establecer un precio base o obtenerlo de alguna configuración
     
     setNuevoDetalle({
       ...nuevoDetalle,
-      productoId,
-      precioUnitario: productoSeleccionado ? parseFloat(productoSeleccionado.precioVenta) : 0,
-      subtotal: productoSeleccionado ? parseFloat(productoSeleccionado.precioVenta) * nuevoDetalle.cantidad : 0
+      producto_id_producto,
+      precio_unitario: precioBase,
+      subtotal: precioBase * nuevoDetalle.cantidad
     });
   };
   
   // Manejar cambio de cantidad en el nuevo detalle
   const handleCantidadChange = (e) => {
-    const cantidad = parseInt(e.target.value) || 0;
-    const subtotal = nuevoDetalle.precioUnitario * cantidad;
+    const cantidad = parseFloat(e.target.value) || 0;
+    const subtotal = nuevoDetalle.precio_unitario * cantidad;
     
     setNuevoDetalle({
       ...nuevoDetalle,
@@ -82,41 +90,53 @@ export default function SaleForm({ sale }) {
     });
   };
   
+  // Manejar cambio de precio unitario
+  const handlePrecioUnitarioChange = (e) => {
+    const precio_unitario = parseFloat(e.target.value) || 0;
+    const subtotal = precio_unitario * nuevoDetalle.cantidad;
+    
+    setNuevoDetalle({
+      ...nuevoDetalle,
+      precio_unitario,
+      subtotal
+    });
+  };
+  
   // Agregar detalle a la venta
   const agregarDetalle = () => {
-    if (!nuevoDetalle.productoId || nuevoDetalle.cantidad <= 0) {
+    if (!nuevoDetalle.producto_id_producto || nuevoDetalle.cantidad <= 0) {
       alert('Seleccione un producto y una cantidad válida');
       return;
     }
     
     // Verificar stock disponible
-    const producto = productos.find(p => p.id === nuevoDetalle.productoId);
+    const producto = productos.find(p => p.id_producto === nuevoDetalle.producto_id_producto);
     if (producto && nuevoDetalle.cantidad > producto.stock) {
       alert(`Stock insuficiente. Disponible: ${producto.stock}`);
       return;
     }
     
     // Verificar si el producto ya está en la lista
-    const detalleExistente = formData.detalles.findIndex(d => d.productoId === nuevoDetalle.productoId);
+    const detalleExistente = formData.productos.findIndex(d => d.producto_id_producto === nuevoDetalle.producto_id_producto);
     
     if (detalleExistente !== -1) {
       // Actualizar detalle existente
-      const nuevosDetalles = [...formData.detalles];
+      const nuevosDetalles = [...formData.productos];
       nuevosDetalles[detalleExistente].cantidad += nuevoDetalle.cantidad;
       nuevosDetalles[detalleExistente].subtotal = 
-        nuevosDetalles[detalleExistente].cantidad * nuevosDetalles[detalleExistente].precioUnitario;
+        nuevosDetalles[detalleExistente].cantidad * nuevosDetalles[detalleExistente].precio_unitario;
       
       setFormData({
         ...formData,
-        detalles: nuevosDetalles
+        productos: nuevosDetalles
       });
     } else {
       // Agregar nuevo detalle
-      const productoInfo = productos.find(p => p.id === nuevoDetalle.productoId);
+      const productoInfo = productos.find(p => p.id_producto === nuevoDetalle.producto_id_producto);
       
       setFormData({
         ...formData,
-        detalles: [...formData.detalles, {
+        productos: [...formData.productos, {
           ...nuevoDetalle,
           producto: productoInfo
         }]
@@ -125,9 +145,9 @@ export default function SaleForm({ sale }) {
     
     // Reiniciar formulario de detalle
     setNuevoDetalle({
-      productoId: '',
+      producto_id_producto: '',
       cantidad: 1,
-      precioUnitario: 0,
+      precio_unitario: 0,
       subtotal: 0
     });
   };
@@ -136,7 +156,7 @@ export default function SaleForm({ sale }) {
   const eliminarDetalle = (index) => {
     setFormData({
       ...formData,
-      detalles: formData.detalles.filter((_, i) => i !== index)
+      productos: formData.productos.filter((_, i) => i !== index)
     });
   };
   
@@ -152,12 +172,12 @@ export default function SaleForm({ sale }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (formData.detalles.length === 0) {
+    if (formData.productos.length === 0) {
       alert('Debe agregar al menos un producto a la venta');
       return;
     }
     
-    if (!formData.clienteId) {
+    if (!formData.cliente_id_cliente) {
       alert('Debe seleccionar un cliente');
       return;
     }
@@ -167,7 +187,12 @@ export default function SaleForm({ sale }) {
     try {
       const payload = {
         ...formData,
-        total
+        factura: {
+          total,
+          fecha: new Date(),
+          subtotal: total, // Ajustar según necesites calcular impuestos
+          impuestos: 0
+        }
       };
       
       const url = sale ? `/api/ventas/${sale.id}` : '/api/ventas';
@@ -206,14 +231,14 @@ export default function SaleForm({ sale }) {
             Cliente
           </label>
           <select 
-            value={formData.clienteId} 
+            value={formData.cliente_id_cliente} 
             onChange={handleClienteChange}
             className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             required
           >
             <option value="">Seleccione un cliente</option>
             {clientes.map(cliente => (
-              <option key={cliente.id} value={cliente.id}>
+              <option key={cliente.id_cliente} value={cliente.id_cliente}>
                 {cliente.nombre} {cliente.apellido}
               </option>
             ))}
@@ -248,14 +273,14 @@ export default function SaleForm({ sale }) {
               Producto
             </label>
             <select 
-              value={nuevoDetalle.productoId} 
+              value={nuevoDetalle.producto_id_producto} 
               onChange={handleProductoChange}
               className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">Seleccione un producto</option>
               {productos.map(producto => (
-                <option key={producto.id} value={producto.id}>
-                  {producto.nombre} (Stock: {producto.stock})
+                <option key={producto.id_producto} value={producto.id_producto}>
+                  {producto.nombre_producto} (Stock: {producto.stock})
                 </option>
               ))}
             </select>
@@ -280,9 +305,11 @@ export default function SaleForm({ sale }) {
             </label>
             <input 
               type="number" 
-              value={nuevoDetalle.precioUnitario} 
-              readOnly
-              className="w-full border-gray-300 rounded-md shadow-sm bg-gray-100"
+              value={nuevoDetalle.precio_unitario} 
+              onChange={handlePrecioUnitarioChange}
+              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+              min="0"
+              step="0.01"
             />
           </div>
           
@@ -313,7 +340,7 @@ export default function SaleForm({ sale }) {
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Detalle de la Venta</h2>
         
-        {formData.detalles.length === 0 ? (
+        {formData.productos.length === 0 ? (
           <div className="text-center py-4 text-gray-500">
             No hay productos agregados a la venta
           </div>
@@ -330,13 +357,13 @@ export default function SaleForm({ sale }) {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {formData.detalles.map((detalle, index) => (
+                {formData.productos.map((detalle, index) => (
                   <tr key={index}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {detalle.producto?.nombre || `Producto ID: ${detalle.productoId}`}
+                      {detalle.producto?.nombre_producto || `Producto ID: ${detalle.producto_id_producto}`}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">{detalle.cantidad}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">${detalle.precioUnitario.toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">${detalle.precio_unitario.toFixed(2)}</td>
                     <td className="px-6 py-4 whitespace-nowrap">${detalle.subtotal.toFixed(2)}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button 

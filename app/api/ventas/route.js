@@ -1,20 +1,13 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '../../generated/prisma';
+import { prisma } from '../../lib/prisma';
 import { getServerSession } from 'next-auth';
-
-// Usar un singleton para la instancia de PrismaClient
-const globalForPrisma = globalThis;
-const prisma = globalForPrisma.prisma || new PrismaClient();
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+import { authOptions } from '../auth/[...nextauth]/route';
 
 export async function GET(request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session) {
-      return new NextResponse(
-        JSON.stringify({ error: 'No autenticado' }),
-        { status: 401 }
-      );
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
     }
     
     const { searchParams } = new URL(request.url);
@@ -34,29 +27,30 @@ export async function GET(request) {
     
     // Filtrar por cliente
     if (clienteId) {
-      where.clienteId = parseInt(clienteId);
+      where.cliente_id_cliente = parseInt(clienteId);
     }
     
     const ventas = await prisma.venta.findMany({
       where,
       orderBy: {
-        fecha: 'desc'
+        id_venta: 'desc'
       },
       include: {
         cliente: true,
-        detalles: {
+        venta_productos: {
           include: {
             producto: true
           }
-        }
+        },
+        factura_venta: true
       }
     });
     
     return NextResponse.json(ventas);
   } catch (error) {
     console.error('Error al obtener ventas:', error);
-    return new NextResponse(
-      JSON.stringify({ error: 'Error al procesar la solicitud' }),
+    return NextResponse.json(
+      { error: 'Error al procesar la solicitud' },
       { status: 500 }
     );
   }
@@ -65,7 +59,7 @@ export async function GET(request) {
 // POST - Crear una nueva venta
 export async function POST(request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     
     if (!session) {
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
@@ -74,11 +68,11 @@ export async function POST(request) {
     const data = await request.json();
     
     // Validaciones básicas
-    if (!data.clienteId) {
+    if (!data.cliente_id_cliente) {
       return NextResponse.json({ error: 'El cliente es requerido' }, { status: 400 });
     }
     
-    if (!data.detalles || !data.detalles.length) {
+    if (!data.productos || !data.productos.length) {
       return NextResponse.json({ error: 'La venta debe tener al menos un producto' }, { status: 400 });
     }
     
@@ -87,30 +81,39 @@ export async function POST(request) {
       // 1. Crear la venta
       const venta = await tx.venta.create({
         data: {
-          clienteId: parseInt(data.clienteId),
-          total: parseFloat(data.total),
-          usuarioId: parseInt(session.user.id)
+          tipo_venta: 'NORMAL',
+          estado: data.estado || 'COMPLETADA',
+          cliente_id_cliente: parseInt(data.cliente_id_cliente),
+          cliente_cedula: data.cliente_cedula,
+          usuario_id_usuario: parseInt(session.user.id || 1), // Usar un ID por defecto si no hay sesión
+          factura_venta: {
+            create: {
+              fecha: new Date(),
+              subtotal: parseFloat(data.factura.subtotal),
+              impuestos: parseFloat(data.factura.impuestos || 0),
+              total: parseFloat(data.factura.total)
+            }
+          }
         }
       });
       
-      // 2. Crear los detalles de la venta
-      for (const detalle of data.detalles) {
-        await tx.detalleVenta.create({
+      // 2. Crear los detalles de la venta (venta_productos)
+      for (const detalle of data.productos) {
+        await tx.ventaProducto.create({
           data: {
-            ventaId: venta.id,
-            productoId: parseInt(detalle.productoId),
-            cantidad: parseInt(detalle.cantidad),
-            precioUnitario: parseFloat(detalle.precioUnitario),
-            subtotal: parseFloat(detalle.subtotal)
+            venta_id_venta: venta.id_venta,
+            producto_id_producto: parseInt(detalle.producto_id_producto),
+            cantidad: parseFloat(detalle.cantidad),
+            precio_unitario: parseFloat(detalle.precio_unitario)
           }
         });
         
         // 3. Actualizar el stock de productos
         await tx.producto.update({
-          where: { id: parseInt(detalle.productoId) },
+          where: { id_producto: parseInt(detalle.producto_id_producto) },
           data: {
             stock: {
-              decrement: parseInt(detalle.cantidad)
+              decrement: parseFloat(detalle.cantidad)
             }
           }
         });
@@ -118,15 +121,16 @@ export async function POST(request) {
       
       // Retornar la venta creada
       return tx.venta.findUnique({
-        where: { id: venta.id },
+        where: { id_venta: venta.id_venta },
         include: {
           cliente: true,
           usuario: true,
-          detalles: {
+          venta_productos: {
             include: {
               producto: true
             }
-          }
+          },
+          factura_venta: true
         }
       });
     });

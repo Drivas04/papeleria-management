@@ -17,12 +17,12 @@ export default function ClientForm({ cliente = null }) {
     formState: { errors }
   } = useForm({
     defaultValues: {
+      cedula: cliente?.cedula || "",
       nombre: cliente?.nombre || "",
       apellido: cliente?.apellido || "",
-      direccion: cliente?.direccion || "",
       telefono: cliente?.telefono || "",
-      email: cliente?.email || "",
-      estado: cliente?.estado !== undefined ? cliente.estado : true
+      compras_semanales: cliente?.compras_semanales?.toString() || "0",
+      deuda_total: cliente?.deuda_total?.toString() || "0"
     }
   });
 
@@ -33,17 +33,24 @@ export default function ClientForm({ cliente = null }) {
       
       // Determinar si es creación o actualización
       const url = cliente 
-        ? `/api/clientes/${cliente.id}` 
+        ? `/api/clientes/${cliente.id_cliente}` 
         : "/api/clientes";
       
       const method = cliente ? "PUT" : "POST";
+      
+      // Convertir datos numéricos
+      const clienteData = {
+        ...data,
+        compras_semanales: parseFloat(data.compras_semanales || 0),
+        deuda_total: parseFloat(data.deuda_total || 0)
+      };
       
       const response = await fetch(url, {
         method,
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify(clienteData),
       });
 
       if (!response.ok) {
@@ -71,6 +78,27 @@ export default function ClientForm({ cliente = null }) {
       )}
       
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Cédula *
+          </label>
+          <input
+            type="text"
+            {...register("cedula", { 
+              required: "La cédula es requerida",
+              pattern: {
+                value: /^\d{10}$/,
+                message: "La cédula debe tener 10 dígitos numéricos"
+              }
+            })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            disabled={!!cliente} // Deshabilitar si es edición
+          />
+          {errors.cedula && (
+            <p className="mt-1 text-sm text-red-600">{errors.cedula.message}</p>
+          )}
+        </div>
+
         <div>
           <label className="block text-sm font-medium text-gray-700">
             Nombre *
@@ -105,25 +133,6 @@ export default function ClientForm({ cliente = null }) {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Email
-          </label>
-          <input
-            type="email"
-            {...register("email", {
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: "Email inválido"
-              }
-            })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
-          {errors.email && (
-            <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
-          )}
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
             Teléfono
           </label>
           <input
@@ -133,31 +142,41 @@ export default function ClientForm({ cliente = null }) {
           />
         </div>
 
-        <div className="md:col-span-2">
+        <div>
           <label className="block text-sm font-medium text-gray-700">
-            Dirección
+            Compras Semanales
           </label>
-          <textarea
-            rows={3}
-            {...register("direccion")}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
+          <div className="mt-1 relative rounded-md shadow-sm">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <span className="text-gray-500 sm:text-sm">$</span>
+            </div>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              {...register("compras_semanales")}
+              className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
+          </div>
         </div>
 
-        {cliente && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Estado
-            </label>
-            <select
-              {...register("estado")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            >
-              <option value="true">Activo</option>
-              <option value="false">Inactivo</option>
-            </select>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Deuda Total
+          </label>
+          <div className="mt-1 relative rounded-md shadow-sm">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <span className="text-gray-500 sm:text-sm">$</span>
+            </div>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              {...register("deuda_total")}
+              className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
           </div>
-        )}
+        </div>
       </div>
 
       <div className="flex justify-end space-x-3">

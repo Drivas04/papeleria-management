@@ -1,159 +1,187 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
   output   = "../app/generated/prisma"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "mysql"
   url      = env("DATABASE_URL")
+}
+
+// Modelo para la tabla de caja
+model Caja {
+  id_cierre_caja    Int       @id @default(autoincrement()) 
+  fecha_apertura    DateTime? @db.Date
+  fecha_cierre      DateTime? @db.Date
+  monto_inicial     Decimal?  @db.Decimal(10, 2)
+  monto_final       Decimal?  @db.Decimal(10, 2)
+  total_ventas      Decimal?  @db.Decimal(10, 2)
+  diferencia        Decimal?  @db.Decimal(10, 2)
+  usuario_id_usuario Int      
+  usuario           Usuario   @relation(fields: [usuario_id_usuario], references: [id_usuario])
+
+  @@map("caja")
+}
+
+// Modelo para la tabla de categorías
+model Categoria {
+  id_categoria    Int       @id @default(autoincrement())
+  nombre          String    @db.VarChar(30)
+  productos       Producto[]
+
+  @@map("categoria")
 }
 
 // Modelo para la tabla de clientes
 model Cliente {
-  id              Int      @id @default(autoincrement())
-  nombre          String
-  apellido        String
-  direccion       String?
-  telefono        String?
-  email           String?  @unique
-  fechaRegistro   DateTime @default(now())
-  estado          Boolean  @default(true)
-  ventas          Venta[]
+  id_cliente        Int       @id @default(autoincrement())
+  cedula            String    @unique @db.VarChar(10)
+  nombre            String?   @db.VarChar(30)
+  apellido          String?   @db.VarChar(30)
+  telefono          String?   @db.VarChar(15)
+  compras_semanales Decimal?  @db.Decimal(10, 2)
+  deuda_total       Decimal?  @db.Decimal(10, 2)
+  ventas            Venta[]
 
-  @@map("clientes")
+  @@map("cliente")
 }
 
-// Modelo para la tabla de categorías de productos
-model Categoria {
-  id              Int       @id @default(autoincrement())
-  nombre          String    @unique
-  descripcion     String?
-  estado          Boolean   @default(true)
-  productos       Producto[]
+// Modelo para la tabla de compras
+model Compra {
+  id_compra              Int             @id @default(autoincrement())
+  fecha_compra           DateTime?       @db.Date
+  estado                 String?         @db.VarChar(20)
+  total                  Decimal?        @db.Decimal(10, 2)
+  usuario_id_usuario     Int
+  proveedor_id_proveedor Int
+  usuario                Usuario         @relation(fields: [usuario_id_usuario], references: [id_usuario])
+  proveedor              Proveedor       @relation(fields: [proveedor_id_proveedor], references: [id_proveedor])
+  compra_productos       CompraProducto[]
+  factura_compra         FacturaCompra?
 
-  @@map("categorias")
+  @@map("compra")
 }
 
-// Modelo para la tabla de proveedores
-model Proveedor {
-  id              Int       @id @default(autoincrement()) // id_proveedor en el diagrama
-  nombre          String    
-  telefono        String?
-  direccion       String?
-  estado          Boolean   @default(true)
-  compras         Compra[]
+// Modelo para la tabla de detalles de compra
+model CompraProducto {
+  compra_id_compra     Int
+  producto_id_producto Int
+  precio_unitario      Decimal @db.Decimal(10, 2)
+  cantidad             Decimal @db.Decimal(10, 2)
+  subtotal             Decimal @db.Decimal(10, 2)
+  compra               Compra  @relation(fields: [compra_id_compra], references: [id_compra])
+  producto             Producto @relation(fields: [producto_id_producto], references: [id_producto])
 
-  @@map("proveedores")
+  @@id([compra_id_compra, producto_id_producto])
+  @@map("compra_producto")
+}
+
+// Modelo para la tabla de facturas de compra
+model FacturaCompra {
+  id_factura       Int      @id @default(autoincrement())
+  fecha            DateTime? @db.Date
+  subtotal         Decimal? @db.Decimal(10, 2)
+  impuestos        Decimal? @db.Decimal(10, 2)
+  total            Decimal? @db.Decimal(10, 2)
+  compra_id_compra Int      @unique
+  compra           Compra   @relation(fields: [compra_id_compra], references: [id_compra])
+
+  @@map("factura_compra")
+}
+
+// Modelo para la tabla de facturas de venta
+model FacturaVenta {
+  id_factura     Int      @id @default(autoincrement())
+  fecha          DateTime? @db.Date
+  subtotal       Decimal? @db.Decimal(10, 2)
+  impuestos      Decimal? @db.Decimal(10, 2)
+  total          Decimal? @db.Decimal(10, 2)
+  venta_id_venta Int      @unique
+  venta          Venta    @relation(fields: [venta_id_venta], references: [id_venta])
+
+  @@map("factura_venta")
+}
+
+// Modelo para la tabla de movimientos de inventario
+model MovimientoInventario {
+  id_movimiento        Int       @id @default(autoincrement())
+  tipo_movimiento      String?   @db.VarChar(15)
+  fecha_movimiento     DateTime? @db.Date
+  cantidad             Decimal?  @db.Decimal(10, 2)
+  producto_id_producto Int
+  producto             Producto  @relation(fields: [producto_id_producto], references: [id_producto])
+
+  @@map("movimiento_inventario")
 }
 
 // Modelo para la tabla de productos
 model Producto {
-  id              Int       @id @default(autoincrement())
-  codigo          String    @unique
-  nombre          String
-  descripcion     String?
-  precioCompra    Float
-  precioVenta     Float
-  stock           Int       @default(0)
-  stockMinimo     Int       @default(5)
-  stockMaximo     Int       @default(100)
-  categoriaId     Int
-  fechaRegistro   DateTime  @default(now())
-  estado          Boolean   @default(true)
-  categoria       Categoria @relation(fields: [categoriaId], references: [id])
-  detallesVenta   DetalleVenta[]
-  detallesCompra  DetalleCompra[]
+  id_producto            Int       @id @default(autoincrement())
+  nombre_producto        String?   @db.VarChar(50)
+  descripcion            String?   @db.VarChar(100)
+  stock                  Decimal?  @db.Decimal(10, 2)
+  nivel_alerta           String?   @db.VarChar(15)
+  categoria_id_categoria Int
+  categoria              Categoria @relation(fields: [categoria_id_categoria], references: [id_categoria])
+  compra_productos       CompraProducto[]
+  venta_productos        VentaProducto[]
+  movimientos            MovimientoInventario[]
 
-  @@map("productos")
+  @@map("producto")
 }
 
-// Modelo para la tabla de ventas
-model Venta {
-  id              Int           @id @default(autoincrement())
-  clienteId       Int
-  fecha           DateTime      @default(now())
-  total           Float
-  estado          String        @default("COMPLETADA") // COMPLETADA, ANULADA
-  usuario         Usuario?      @relation(fields: [usuarioId], references: [id])
-  usuarioId       Int?
-  cliente         Cliente       @relation(fields: [clienteId], references: [id])
-  detalles        DetalleVenta[]
+// Modelo para la tabla de proveedores
+model Proveedor {
+  id_proveedor    Int       @id @default(autoincrement())
+  nombre          String?   @db.VarChar(30)
+  telefono        String?   @db.VarChar(15)
+  direccion       String?   @db.VarChar(50)
+  compras         Compra[]
 
-  @@map("ventas")
-}
-
-// Modelo para la tabla de detalles de venta
-model DetalleVenta {
-  id              Int       @id @default(autoincrement())
-  ventaId         Int
-  productoId      Int
-  cantidad        Int
-  precioUnitario  Float
-  subtotal        Float
-  venta           Venta     @relation(fields: [ventaId], references: [id], onDelete: Cascade)
-  producto        Producto  @relation(fields: [productoId], references: [id])
-
-  @@map("detalle_ventas")
-}
-
-// Modelo para la tabla de compras a proveedores
-model Compra {
-  id              Int             @id @default(autoincrement())
-  proveedorId     Int
-  fecha           DateTime        @default(now())
-  total           Float
-  estado          String          @default("COMPLETADA") // COMPLETADA, ANULADA
-  usuario         Usuario?        @relation(fields: [usuarioId], references: [id])
-  usuarioId       Int?
-  proveedor       Proveedor       @relation(fields: [proveedorId], references: [id])
-  detalles        DetalleCompra[]
-
-  @@map("compras")
-}
-
-// Modelo para la tabla de detalles de compra
-model DetalleCompra {
-  id              Int       @id @default(autoincrement())
-  compraId        Int
-  productoId      Int
-  cantidad        Int
-  precioUnitario  Float
-  subtotal        Float
-  compra          Compra    @relation(fields: [compraId], references: [id], onDelete: Cascade)
-  producto        Producto  @relation(fields: [productoId], references: [id])
-
-  @@map("detalle_compras")
-}
-
-// Modelo para la tabla de roles de usuario
-model Rol {
-  id              Int       @id @default(autoincrement())
-  nombre          String    @unique
-  descripcion     String?
-  usuarios        Usuario[]
-
-  @@map("roles")
+  @@map("proveedor")
 }
 
 // Modelo para la tabla de usuarios
 model Usuario {
-  id              Int       @id @default(autoincrement())
-  nombre          String
-  apellido        String
-  email           String    @unique
-  password        String
-  rolId           Int
-  fechaRegistro   DateTime  @default(now())
-  estado          Boolean   @default(true)
-  rol             Rol       @relation(fields: [rolId], references: [id])
-  ventas          Venta[]
-  compras         Compra[]
+  id_usuario  Int       @id @default(autoincrement())
+  usuario     String?   @db.VarChar(20)
+  contraseña  String?   @db.VarChar(20)
+  rol         String?   @db.VarChar(10)
+  ventas      Venta[]
+  compras     Compra[]
+  cajas       Caja[]
 
-  @@map("usuarios")
+  @@map("usuario")
+}
+
+// Modelo para la tabla de ventas
+model Venta {
+  id_venta           Int             @id @default(autoincrement())
+  tipo_venta         String?         @db.VarChar(20)
+  estado             String?         @db.VarChar(20)
+  cliente_id_cliente Int
+  cliente_cedula     String          @db.VarChar(10)
+  usuario_id_usuario Int
+  cliente            Cliente         @relation(fields: [cliente_id_cliente], references: [id_cliente])
+  usuario            Usuario         @relation(fields: [usuario_id_usuario], references: [id_usuario])
+  venta_productos    VentaProducto[]
+  factura_venta      FacturaVenta?
+
+  @@map("venta")
+}
+
+// Modelo para la tabla de detalles de venta
+model VentaProducto {
+  venta_id_venta       Int
+  producto_id_producto Int
+  cantidad             Decimal @db.Decimal(10, 2)
+  precio_unitario      Decimal @db.Decimal(10, 2)
+  venta                Venta   @relation(fields: [venta_id_venta], references: [id_venta])
+  producto             Producto @relation(fields: [producto_id_producto], references: [id_producto])
+
+  @@id([venta_id_venta, producto_id_producto])
+  @@map("venta_producto")
 }

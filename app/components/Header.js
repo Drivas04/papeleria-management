@@ -25,7 +25,7 @@ export default function Header({ pageTitle }) {
             </span>
           </div>
           <div className="ml-3 h-8 w-8 rounded-full bg-indigo-600 flex items-center justify-center text-white font-medium">
-            {session?.user?.name?.charAt(0) || "U"}
+            {session?.user?.name?.charAt(0).toUpperCase() || "U"}
           </div>
         </div>
       </div>

@@ -346,14 +346,14 @@ export default function DashboardPage() {
                 </thead>
                 <tbody>
                   {stats.productosConBajoStock.slice(0, 4).map((producto) => (
-                    <tr key={producto.id} className="border-t">
-                      <td className="px-4 py-2">{producto.nombre}</td>
+                    <tr key={producto.id_producto} className="border-t">
+                      <td className="px-4 py-2">{producto.nombre_producto || producto.nombre}</td>
                       <td className="px-4 py-2">
                         <span className="px-2 py-1 bg-red-100 text-red-800 rounded-full text-xs">
                           {producto.stock}
                         </span>
                       </td>
-                      <td className="px-4 py-2">{producto.stockMinimo}</td>
+                      <td className="px-4 py-2">{producto.stock_minimo || producto.stockMinimo}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -398,8 +398,8 @@ export default function DashboardPage() {
                 </thead>
                 <tbody>
                   {stats.productosConAltoStock.slice(0, 4).map((producto) => (
-                    <tr key={producto.id} className="border-t">
-                      <td className="px-4 py-2">{producto.nombre}</td>
+                    <tr key={producto.id_producto} className="border-t">
+                      <td className="px-4 py-2">{producto.nombre_producto || producto.nombre}</td>
                       <td className="px-4 py-2">
                         <span className="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-xs">
                           {producto.stock}
@@ -442,7 +442,7 @@ export default function DashboardPage() {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {stats.ventasRecientes.map((venta) => (
-                      <tr key={venta.id} className="hover:bg-gray-50">
+                      <tr key={venta.id_venta} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap text-sm">{formatDate(venta.fecha)}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           {venta.cliente?.nombre} {venta.cliente?.apellido}
@@ -484,7 +484,7 @@ export default function DashboardPage() {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {stats.comprasRecientes.map((compra) => (
-                      <tr key={compra.id} className="hover:bg-gray-50">
+                      <tr key={compra.id_compra} className="hover:bg-gray-50">
                         <td className="px-6 py-4 whitespace-nowrap text-sm">{formatDate(compra.fecha)}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           {compra.proveedor?.nombre}

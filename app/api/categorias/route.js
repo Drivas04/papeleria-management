@@ -1,14 +1,17 @@
-import { PrismaClient } from "../../generated/prisma";
+import { prisma } from "../../lib/prisma";
 import { NextResponse } from "next/server";
-
-// Usar un singleton para la instancia de PrismaClient
-const globalForPrisma = globalThis;
-const prisma = globalForPrisma.prisma || new PrismaClient();
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 // GET - Obtener todas las categorías
 export async function GET(request) {
   try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+    
     const categorias = await prisma.categoria.findMany({
       orderBy: {
         nombre: 'asc'
@@ -35,6 +38,12 @@ export async function GET(request) {
 // POST - Crear una nueva categoría
 export async function POST(request) {
   try {
+    const session = await getServerSession(authOptions);
+    
+    if (!session) {
+      return NextResponse.json({ error: 'No autenticado' }, { status: 401 });
+    }
+    
     const data = await request.json();
     
     // Validaciones básicas
@@ -46,7 +55,7 @@ export async function POST(request) {
     }
 
     // Verificar si la categoría ya existe
-    const categoriaExistente = await prisma.categoria.findUnique({
+    const categoriaExistente = await prisma.categoria.findFirst({
       where: { nombre: data.nombre }
     });
 

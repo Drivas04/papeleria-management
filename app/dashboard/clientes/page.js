@@ -180,7 +180,7 @@ export default function ClientesPage() {
                   </tr>
                 ) : (
                   clientes.map((cliente) => (
-                    <tr key={cliente.id}>
+                    <tr key={cliente.id_cliente}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
                           {cliente.nombre} {cliente.apellido}
@@ -217,13 +217,13 @@ export default function ClientesPage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
                           <Link
-                            href={`/dashboard/clientes/editar/${cliente.id}`}
+                            href={`/dashboard/clientes/editar/${cliente.id_cliente}`}
                             className="text-indigo-600 hover:text-indigo-900"
                           >
                             <PencilIcon className="w-5 h-5" />
                           </Link>
                           <button
-                            onClick={() => handleDelete(cliente.id)}
+                            onClick={() => handleDelete(cliente.id_cliente)}
                             className="text-red-600 hover:text-red-900"
                           >
                             <TrashIcon className="w-5 h-5" />

@@ -21,15 +21,13 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search');
     
-    let where = {
-      estado: true
-    };
+    let where = {};
     
     if (search) {
       where.OR = [
         { nombre: { contains: search } },
         { apellido: { contains: search } },
-        { email: { contains: search } }
+        { cedula: { contains: search } }
       ];
     }
     
@@ -56,35 +54,34 @@ export async function POST(request) {
     const data = await request.json();
     
     // Validaciones básicas
-    if (!data.nombre || !data.apellido) {
+    if (!data.nombre || !data.apellido || !data.cedula) {
       return NextResponse.json(
-        { error: "El nombre y apellido son campos requeridos" }, 
+        { error: "El nombre, apellido y cédula son campos requeridos" }, 
         { status: 400 }
       );
     }
 
-    // Verificar si el email ya existe (si se proporciona)
-    if (data.email) {
-      const clienteExistente = await prisma.cliente.findUnique({
-        where: { email: data.email }
-      });
+    // Verificar si la cédula ya existe
+    const clienteExistente = await prisma.cliente.findUnique({
+      where: { cedula: data.cedula }
+    });
 
-      if (clienteExistente) {
-        return NextResponse.json(
-          { error: "Ya existe un cliente con ese email" }, 
-          { status: 400 }
-        );
-      }
+    if (clienteExistente) {
+      return NextResponse.json(
+        { error: "Ya existe un cliente con esa cédula" }, 
+        { status: 400 }
+      );
     }
 
     // Crear el cliente
     const cliente = await prisma.cliente.create({
       data: {
+        cedula: data.cedula,
         nombre: data.nombre,
         apellido: data.apellido,
-        direccion: data.direccion || null,
         telefono: data.telefono || null,
-        email: data.email || null
+        compras_semanales: data.compras_semanales || 0,
+        deuda_total: data.deuda_total || 0
       }
     });
 

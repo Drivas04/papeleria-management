@@ -1,75 +1,99 @@
-const { PrismaClient } = require('../app/generated/prisma')
-const bcrypt = require('bcrypt')
+const { PrismaClient } = require('@prisma/client');
 
-const prisma = new PrismaClient()
+const prisma = new PrismaClient();
 
 async function main() {
-  console.log('Iniciando seed de datos...')
+  try {
+    // Crear usuario administrador
+    const adminUser = await prisma.usuario.create({
+      data: {
+        usuario: 'admin',
+        contraseña: 'admin123',
+        rol: 'admin'
+      }
+    });
+    console.log('Usuario administrador creado:', adminUser);
 
-  // Crear roles si no existen
-  const adminRol = await prisma.rol.upsert({
-    where: { nombre: 'Administrador' },
-    update: {},
-    create: {
-      nombre: 'Administrador',
-      descripcion: 'Control total del sistema: inventario, compras, proveedores, categorías y reportes'
-    },
-  })
+    // Crear algunas categorías
+    const categorias = await Promise.all([
+      prisma.categoria.create({
+        data: { nombre: 'Útiles escolares' }
+      }),
+      prisma.categoria.create({
+        data: { nombre: 'Artículos de oficina' }
+      }),
+      prisma.categoria.create({
+        data: { nombre: 'Papelería general' }
+      })
+    ]);
+    console.log('Categorías creadas:', categorias);
 
-  const vendedorRol = await prisma.rol.upsert({
-    where: { nombre: 'Vendedor' },
-    update: {},
-    create: {
-      nombre: 'Vendedor',
-      descripcion: 'Gestión de ventas y clientes'
-    },
-  })
+    // Crear un proveedor de ejemplo
+    const proveedor = await prisma.proveedor.create({
+      data: {
+        nombre: 'Distribuidora Nacional',
+        telefono: '555-1234',
+        direccion: 'Calle Principal #123'
+      }
+    });
+    console.log('Proveedor creado:', proveedor);
 
-  console.log('Roles creados:', { adminRol, vendedorRol })
+    // Crear un cliente de ejemplo
+    const cliente = await prisma.cliente.create({
+      data: {
+        cedula: '1234567890',
+        nombre: 'Juan',
+        apellido: 'Pérez',
+        telefono: '555-6789',
+        compras_semanales: 0,
+        deuda_total: 0
+      }
+    });
+    console.log('Cliente creado:', cliente);
 
-  // Crear usuarios fijos
-  const adminPassword = await bcrypt.hash('admin123', 10)
-  const vendedorPassword = await bcrypt.hash('vendedor123', 10)
+    // Agregar algunos productos
+    const productos = await Promise.all([
+      prisma.producto.create({
+        data: {
+          nombre_producto: 'Cuaderno universitario',
+          descripcion: 'Cuaderno de 100 hojas, líneas',
+          stock: 50,
+          nivel_alerta: 'normal',
+          categoria_id_categoria: categorias[0].id_categoria
+        }
+      }),
+      prisma.producto.create({
+        data: {
+          nombre_producto: 'Lápiz grafito',
+          descripcion: 'Lápiz HB',
+          stock: 100,
+          nivel_alerta: 'normal',
+          categoria_id_categoria: categorias[0].id_categoria
+        }
+      }),
+      prisma.producto.create({
+        data: {
+          nombre_producto: 'Resma papel carta',
+          descripcion: 'Resma de 500 hojas',
+          stock: 30,
+          nivel_alerta: 'normal',
+          categoria_id_categoria: categorias[1].id_categoria
+        }
+      })
+    ]);
+    console.log('Productos creados:', productos);
 
-  const admin = await prisma.usuario.upsert({
-    where: { email: 'admin@papeleriarosita.com' },
-    update: {
-      password: adminPassword,
-      rolId: adminRol.id
-    },
-    create: {
-      nombre: 'Administrador',
-      apellido: 'Sistema',
-      email: 'admin@papeleriarosita.com',
-      password: adminPassword,
-      rolId: adminRol.id,
-    },
-  })
-
-  const vendedor = await prisma.usuario.upsert({
-    where: { email: 'vendedor@papeleriarosita.com' },
-    update: {
-      password: vendedorPassword,
-      rolId: vendedorRol.id
-    },
-    create: {
-      nombre: 'Vendedor',
-      apellido: 'Principal',
-      email: 'vendedor@papeleriarosita.com',
-      password: vendedorPassword,
-      rolId: vendedorRol.id,
-    },
-  })
-
-  console.log('Usuarios fijos creados:', { admin, vendedor })
+    console.log('¡Datos iniciales creados correctamente!');
+  } catch (error) {
+    console.error('Error al crear datos iniciales:', error);
+  }
 }
 
 main()
-  .then(async () => {
-    await prisma.$disconnect()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
   })
-  .catch(async (e) => {
-    console.error(e)
-    await prisma.$disconnect()
-    process.exit(1)
-  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

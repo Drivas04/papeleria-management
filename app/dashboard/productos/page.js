@@ -161,7 +161,7 @@ export default function ProductosPage() {
               >
                 <option value="">Todas</option>
                 {categorias.map((cat) => (
-                  <option key={cat.id} value={cat.id}>
+                  <option key={cat.id_categoria} value={cat.id_categoria}>
                     {cat.nombre}
                   </option>
                 ))}
@@ -244,15 +244,15 @@ export default function ProductosPage() {
                     </tr>
                   ) : (
                     productos.map((producto) => (
-                      <tr key={producto.id}>
+                      <tr key={producto.id_producto}>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900">
-                            {producto.codigo}
+                            {producto.id_producto || producto.codigo}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm font-medium text-gray-900">
-                            {producto.nombre}
+                            {producto.nombre_producto || producto.nombre}
                           </div>
                           <div className="text-xs text-gray-500">
                             {producto.descripcion?.substring(0, 30) || "Sin descripción"}
@@ -266,12 +266,13 @@ export default function ProductosPage() {
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">
-                            ${producto.precioVenta.toFixed(2)}
+                            {/* Precio de último venta aquí o mensaje si no hay */}
+                            {producto.ultimo_precio_venta ? `$${producto.ultimo_precio_venta.toFixed(2)}` : "N/A"}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className={`text-sm ${producto.stock <= producto.stockMinimo ? 'text-red-600 font-bold' : 'text-gray-900'}`}>
-                            {producto.stock} {producto.stock <= producto.stockMinimo && "⚠️"}
+                          <div className={`text-sm ${producto.stock <= 5 ? 'text-red-600 font-bold' : 'text-gray-900'}`}>
+                            {producto.stock} {producto.stock <= 5 && "⚠️"}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -286,13 +287,13 @@ export default function ProductosPage() {
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                           <div className="flex space-x-2">
                             <Link
-                              href={`/dashboard/productos/editar/${producto.id}`}
+                              href={`/dashboard/productos/editar/${producto.id_producto}`}
                               className="text-indigo-600 hover:text-indigo-900"
                             >
                               <PencilIcon className="w-5 h-5" />
                             </Link>
                             <button
-                              onClick={() => handleDelete(producto.id)}
+                              onClick={() => handleDelete(producto.id_producto)}
                               className="text-red-600 hover:text-red-900"
                             >
                               <TrashIcon className="w-5 h-5" />

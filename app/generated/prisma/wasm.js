@@ -114,101 +114,118 @@ Prisma.NullTypes = {
  */
 
 exports.Prisma.TransactionIsolationLevel = makeStrictEnum({
+  ReadUncommitted: 'ReadUncommitted',
+  ReadCommitted: 'ReadCommitted',
+  RepeatableRead: 'RepeatableRead',
   Serializable: 'Serializable'
 });
 
-exports.Prisma.ClienteScalarFieldEnum = {
-  id: 'id',
-  nombre: 'nombre',
-  apellido: 'apellido',
-  direccion: 'direccion',
-  telefono: 'telefono',
-  email: 'email',
-  fechaRegistro: 'fechaRegistro',
-  estado: 'estado'
+exports.Prisma.CajaScalarFieldEnum = {
+  id_cierre_caja: 'id_cierre_caja',
+  fecha_apertura: 'fecha_apertura',
+  fecha_cierre: 'fecha_cierre',
+  monto_inicial: 'monto_inicial',
+  monto_final: 'monto_final',
+  total_ventas: 'total_ventas',
+  diferencia: 'diferencia',
+  usuario_id_usuario: 'usuario_id_usuario'
 };
 
 exports.Prisma.CategoriaScalarFieldEnum = {
-  id: 'id',
-  nombre: 'nombre',
-  descripcion: 'descripcion',
-  estado: 'estado'
+  id_categoria: 'id_categoria',
+  nombre: 'nombre'
 };
 
-exports.Prisma.ProveedorScalarFieldEnum = {
-  id: 'id',
+exports.Prisma.ClienteScalarFieldEnum = {
+  id_cliente: 'id_cliente',
+  cedula: 'cedula',
   nombre: 'nombre',
+  apellido: 'apellido',
   telefono: 'telefono',
-  direccion: 'direccion',
-  estado: 'estado'
-};
-
-exports.Prisma.ProductoScalarFieldEnum = {
-  id: 'id',
-  codigo: 'codigo',
-  nombre: 'nombre',
-  descripcion: 'descripcion',
-  precioCompra: 'precioCompra',
-  precioVenta: 'precioVenta',
-  stock: 'stock',
-  stockMinimo: 'stockMinimo',
-  stockMaximo: 'stockMaximo',
-  categoriaId: 'categoriaId',
-  fechaRegistro: 'fechaRegistro',
-  estado: 'estado'
-};
-
-exports.Prisma.VentaScalarFieldEnum = {
-  id: 'id',
-  clienteId: 'clienteId',
-  fecha: 'fecha',
-  total: 'total',
-  estado: 'estado',
-  usuarioId: 'usuarioId'
-};
-
-exports.Prisma.DetalleVentaScalarFieldEnum = {
-  id: 'id',
-  ventaId: 'ventaId',
-  productoId: 'productoId',
-  cantidad: 'cantidad',
-  precioUnitario: 'precioUnitario',
-  subtotal: 'subtotal'
+  compras_semanales: 'compras_semanales',
+  deuda_total: 'deuda_total'
 };
 
 exports.Prisma.CompraScalarFieldEnum = {
-  id: 'id',
-  proveedorId: 'proveedorId',
-  fecha: 'fecha',
-  total: 'total',
+  id_compra: 'id_compra',
+  fecha_compra: 'fecha_compra',
   estado: 'estado',
-  usuarioId: 'usuarioId'
+  total: 'total',
+  usuario_id_usuario: 'usuario_id_usuario',
+  proveedor_id_proveedor: 'proveedor_id_proveedor'
 };
 
-exports.Prisma.DetalleCompraScalarFieldEnum = {
-  id: 'id',
-  compraId: 'compraId',
-  productoId: 'productoId',
+exports.Prisma.CompraProductoScalarFieldEnum = {
+  compra_id_compra: 'compra_id_compra',
+  producto_id_producto: 'producto_id_producto',
+  precio_unitario: 'precio_unitario',
   cantidad: 'cantidad',
-  precioUnitario: 'precioUnitario',
   subtotal: 'subtotal'
 };
 
-exports.Prisma.RolScalarFieldEnum = {
-  id: 'id',
+exports.Prisma.FacturaCompraScalarFieldEnum = {
+  id_factura: 'id_factura',
+  fecha: 'fecha',
+  subtotal: 'subtotal',
+  impuestos: 'impuestos',
+  total: 'total',
+  compra_id_compra: 'compra_id_compra'
+};
+
+exports.Prisma.FacturaVentaScalarFieldEnum = {
+  id_factura: 'id_factura',
+  fecha: 'fecha',
+  subtotal: 'subtotal',
+  impuestos: 'impuestos',
+  total: 'total',
+  venta_id_venta: 'venta_id_venta'
+};
+
+exports.Prisma.MovimientoInventarioScalarFieldEnum = {
+  id_movimiento: 'id_movimiento',
+  tipo_movimiento: 'tipo_movimiento',
+  fecha_movimiento: 'fecha_movimiento',
+  cantidad: 'cantidad',
+  producto_id_producto: 'producto_id_producto'
+};
+
+exports.Prisma.ProductoScalarFieldEnum = {
+  id_producto: 'id_producto',
+  nombre_producto: 'nombre_producto',
+  descripcion: 'descripcion',
+  stock: 'stock',
+  nivel_alerta: 'nivel_alerta',
+  categoria_id_categoria: 'categoria_id_categoria'
+};
+
+exports.Prisma.ProveedorScalarFieldEnum = {
+  id_proveedor: 'id_proveedor',
   nombre: 'nombre',
-  descripcion: 'descripcion'
+  telefono: 'telefono',
+  direccion: 'direccion'
 };
 
 exports.Prisma.UsuarioScalarFieldEnum = {
-  id: 'id',
-  nombre: 'nombre',
-  apellido: 'apellido',
-  email: 'email',
-  password: 'password',
-  rolId: 'rolId',
-  fechaRegistro: 'fechaRegistro',
-  estado: 'estado'
+  id_usuario: 'id_usuario',
+  usuario: 'usuario',
+  contraseña: 'contraseña',
+  rol: 'rol'
+};
+
+exports.Prisma.VentaScalarFieldEnum = {
+  id_venta: 'id_venta',
+  tipo_venta: 'tipo_venta',
+  estado: 'estado',
+  cliente_id_cliente: 'cliente_id_cliente',
+  cliente_cedula: 'cliente_cedula',
+  usuario_id_usuario: 'usuario_id_usuario'
+};
+
+exports.Prisma.VentaProductoScalarFieldEnum = {
+  venta_id_venta: 'venta_id_venta',
+  producto_id_producto: 'producto_id_producto',
+  cantidad: 'cantidad',
+  precio_unitario: 'precio_unitario'
 };
 
 exports.Prisma.SortOrder = {
@@ -221,18 +238,64 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
+exports.Prisma.CategoriaOrderByRelevanceFieldEnum = {
+  nombre: 'nombre'
+};
+
+exports.Prisma.ClienteOrderByRelevanceFieldEnum = {
+  cedula: 'cedula',
+  nombre: 'nombre',
+  apellido: 'apellido',
+  telefono: 'telefono'
+};
+
+exports.Prisma.CompraOrderByRelevanceFieldEnum = {
+  estado: 'estado'
+};
+
+exports.Prisma.MovimientoInventarioOrderByRelevanceFieldEnum = {
+  tipo_movimiento: 'tipo_movimiento'
+};
+
+exports.Prisma.ProductoOrderByRelevanceFieldEnum = {
+  nombre_producto: 'nombre_producto',
+  descripcion: 'descripcion',
+  nivel_alerta: 'nivel_alerta'
+};
+
+exports.Prisma.ProveedorOrderByRelevanceFieldEnum = {
+  nombre: 'nombre',
+  telefono: 'telefono',
+  direccion: 'direccion'
+};
+
+exports.Prisma.UsuarioOrderByRelevanceFieldEnum = {
+  usuario: 'usuario',
+  contraseña: 'contraseña',
+  rol: 'rol'
+};
+
+exports.Prisma.VentaOrderByRelevanceFieldEnum = {
+  tipo_venta: 'tipo_venta',
+  estado: 'estado',
+  cliente_cedula: 'cliente_cedula'
+};
+
 
 exports.Prisma.ModelName = {
-  Cliente: 'Cliente',
+  Caja: 'Caja',
   Categoria: 'Categoria',
-  Proveedor: 'Proveedor',
-  Producto: 'Producto',
-  Venta: 'Venta',
-  DetalleVenta: 'DetalleVenta',
+  Cliente: 'Cliente',
   Compra: 'Compra',
-  DetalleCompra: 'DetalleCompra',
-  Rol: 'Rol',
-  Usuario: 'Usuario'
+  CompraProducto: 'CompraProducto',
+  FacturaCompra: 'FacturaCompra',
+  FacturaVenta: 'FacturaVenta',
+  MovimientoInventario: 'MovimientoInventario',
+  Producto: 'Producto',
+  Proveedor: 'Proveedor',
+  Usuario: 'Usuario',
+  Venta: 'Venta',
+  VentaProducto: 'VentaProducto'
 };
 
 /**

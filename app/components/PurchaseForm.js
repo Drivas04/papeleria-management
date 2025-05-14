@@ -11,21 +11,24 @@ export default function PurchaseForm({ compra }) {
   
   // Estado para la compra
   const [formData, setFormData] = useState({
-    proveedorId: compra?.proveedorId || '',
-    detalles: compra?.detalles || [],
+    proveedor_id_proveedor: compra?.proveedor_id_proveedor || '',
+    detalles: compra?.compra_productos || [],
     estado: compra?.estado || 'COMPLETADA'
   });
   
   // Estado para un nuevo detalle
   const [nuevoDetalle, setNuevoDetalle] = useState({
-    productoId: '',
+    producto_id_producto: '',
     cantidad: 1,
-    precioUnitario: 0,
+    precio_unitario: 0,
     subtotal: 0
   });
   
   // Calcular total
-  const total = formData.detalles.reduce((sum, detalle) => sum + Number(detalle.subtotal), 0);
+  const total = formData.detalles.reduce((sum, detalle) => {
+    const subtotal = parseFloat(detalle.subtotal) || 0;
+    return sum + subtotal;
+  }, 0);
   
   // Cargar proveedores y productos al iniciar
   useEffect(() => {
@@ -39,8 +42,8 @@ export default function PurchaseForm({ compra }) {
         const proveedoresData = await proveedoresRes.json();
         const productosData = await productosRes.json();
         
-        setProveedores(proveedoresData.filter(p => p.estado));
-        setProductos(productosData.filter(p => p.estado));
+        setProveedores(proveedoresData); // No filtramos por estado ya que no existe en MySQL
+        setProductos(productosData);
       } catch (error) {
         console.error('Error al cargar datos:', error);
       }
@@ -53,38 +56,38 @@ export default function PurchaseForm({ compra }) {
   const handleProveedorChange = (e) => {
     setFormData({
       ...formData,
-      proveedorId: parseInt(e.target.value)
+      proveedor_id_proveedor: parseInt(e.target.value)
     });
   };
   
   // Manejar cambio de producto en el nuevo detalle
   const handleProductoChange = (e) => {
-    const productoId = parseInt(e.target.value) || '';
+    const producto_id_producto = parseInt(e.target.value) || '';
     
-    if (!productoId) {
+    if (!producto_id_producto) {
       // Si no hay producto seleccionado, reiniciar valores
       setNuevoDetalle({
         ...nuevoDetalle,
-        productoId: '',
-        precioUnitario: 0,
+        producto_id_producto: '',
+        precio_unitario: 0,
         subtotal: 0
       });
       return;
     }
     
     // Buscar el producto seleccionado
-    const productoSeleccionado = productos.find(p => p.id === productoId);
+    const productoSeleccionado = productos.find(p => p.id_producto === producto_id_producto);
     
     if (productoSeleccionado) {
       // Usar el precio de compra del producto como valor inicial para el precio unitario
-      const precioUnitario = parseFloat(productoSeleccionado.precioCompra);
+      const precio_unitario = parseFloat(productoSeleccionado.precio_compra || 0);
       const cantidad = parseInt(nuevoDetalle.cantidad) || 1;
-      const subtotal = precioUnitario * cantidad;
+      const subtotal = precio_unitario * cantidad;
       
       setNuevoDetalle({
         ...nuevoDetalle,
-        productoId,
-        precioUnitario,
+        producto_id_producto,
+        precio_unitario,
         cantidad,
         subtotal
       });
@@ -100,8 +103,9 @@ export default function PurchaseForm({ compra }) {
       cantidad = 1;
     }
     
-    const precioUnitario = parseFloat(nuevoDetalle.precioUnitario) || 0;
-    const subtotal = precioUnitario * cantidad;
+    const precio_unitario = parseFloat(nuevoDetalle.precio_unitario) || 0;
+    // Calcular subtotal con dos decimales para mayor precisión
+    const subtotal = parseFloat((precio_unitario * cantidad).toFixed(2));
     
     setNuevoDetalle({
       ...nuevoDetalle,
@@ -112,19 +116,34 @@ export default function PurchaseForm({ compra }) {
 
   // Manejar cambio de precio unitario
   const handlePrecioChange = (e) => {
-    let precioUnitario = parseFloat(e.target.value);
+    // Permitir que el campo esté vacío para facilitar la escritura
+    const valorInput = e.target.value;
     
-    // Asegurarse de que el precio sea un número válido mayor que cero
-    if (isNaN(precioUnitario) || precioUnitario <= 0) {
-      precioUnitario = 0.01; // Un precio mínimo válido
+    // Si el campo está vacío, establecemos un valor temporal
+    if (valorInput === '') {
+      setNuevoDetalle({
+        ...nuevoDetalle,
+        precio_unitario: '',
+        subtotal: 0
+      });
+      return;
+    }
+    
+    // Convertir a número
+    let precio_unitario = parseFloat(valorInput);
+    
+    // Solo validamos si el precio es NaN, permitimos cualquier valor válido
+    if (isNaN(precio_unitario)) {
+      precio_unitario = 0.01;
     }
     
     const cantidad = parseInt(nuevoDetalle.cantidad) || 1;
-    const subtotal = precioUnitario * cantidad;
+    // Calcular subtotal con dos decimales para mayor precisión
+    const subtotal = parseFloat((precio_unitario * cantidad).toFixed(2));
     
     setNuevoDetalle({
       ...nuevoDetalle,
-      precioUnitario,
+      precio_unitario,
       subtotal
     });
   };
@@ -132,7 +151,7 @@ export default function PurchaseForm({ compra }) {
   // Agregar detalle a la compra
   const agregarDetalle = () => {
     // Validar que se tenga un producto seleccionado
-    if (!nuevoDetalle.productoId) {
+    if (!nuevoDetalle.producto_id_producto) {
       alert('Debe seleccionar un producto');
       return;
     }
@@ -144,20 +163,20 @@ export default function PurchaseForm({ compra }) {
     }
     
     // Validar que el precio sea mayor a cero
-    if (nuevoDetalle.precioUnitario <= 0) {
+    if (!nuevoDetalle.precio_unitario || nuevoDetalle.precio_unitario <= 0) {
       alert('El precio unitario debe ser mayor a cero');
       return;
     }
     
     // Verificar si el producto ya está en la lista
-    const detalleExistente = formData.detalles.findIndex(d => d.productoId === nuevoDetalle.productoId);
+    const detalleExistente = formData.detalles.findIndex(d => d.producto_id_producto === nuevoDetalle.producto_id_producto);
     
     if (detalleExistente !== -1) {
       // Actualizar detalle existente
       const nuevosDetalles = [...formData.detalles];
       nuevosDetalles[detalleExistente].cantidad += nuevoDetalle.cantidad;
       nuevosDetalles[detalleExistente].subtotal = 
-        nuevosDetalles[detalleExistente].cantidad * nuevosDetalles[detalleExistente].precioUnitario;
+        nuevosDetalles[detalleExistente].cantidad * nuevosDetalles[detalleExistente].precio_unitario;
       
       setFormData({
         ...formData,
@@ -165,13 +184,13 @@ export default function PurchaseForm({ compra }) {
       });
     } else {
       // Agregar nuevo detalle
-      const productoInfo = productos.find(p => p.id === nuevoDetalle.productoId);
+      const productoInfo = productos.find(p => p.id_producto === nuevoDetalle.producto_id_producto);
       
       // Asegurarse de que todos los valores son del tipo correcto
       const detalleNuevo = {
-        productoId: parseInt(nuevoDetalle.productoId),
+        producto_id_producto: parseInt(nuevoDetalle.producto_id_producto),
         cantidad: parseInt(nuevoDetalle.cantidad),
-        precioUnitario: parseFloat(nuevoDetalle.precioUnitario),
+        precio_unitario: parseFloat(nuevoDetalle.precio_unitario),
         subtotal: parseFloat(nuevoDetalle.subtotal),
         producto: productoInfo
       };
@@ -184,9 +203,9 @@ export default function PurchaseForm({ compra }) {
     
     // Reiniciar formulario de detalle
     setNuevoDetalle({
-      productoId: '',
+      producto_id_producto: '',
       cantidad: 1,
-      precioUnitario: 0,
+      precio_unitario: 0,
       subtotal: 0
     });
   };
@@ -211,19 +230,19 @@ export default function PurchaseForm({ compra }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (formData.detalles.length === 0) {
+    if (!formData.detalles || formData.detalles.length === 0) {
       alert('Debe agregar al menos un producto a la compra');
       return;
     }
     
-    if (!formData.proveedorId) {
+    if (!formData.proveedor_id_proveedor) {
       alert('Debe seleccionar un proveedor');
       return;
     }
     
     // Verificar que todos los detalles tengan precios válidos
     const detalleInvalido = formData.detalles.find(
-      detalle => !detalle.precioUnitario || detalle.precioUnitario <= 0
+      detalle => !detalle.precio_unitario || detalle.precio_unitario <= 0
     );
     
     if (detalleInvalido) {
@@ -236,22 +255,31 @@ export default function PurchaseForm({ compra }) {
     try {
       // Preparar los detalles para enviarlos a la API - asegurarse de que todos son números
       const detallesFormateados = formData.detalles.map(detalle => ({
-        productoId: parseInt(detalle.productoId),
+        producto_id_producto: parseInt(detalle.producto_id_producto),
         cantidad: parseInt(detalle.cantidad),
-        precioUnitario: parseFloat(detalle.precioUnitario),
+        precio_unitario: parseFloat(detalle.precio_unitario),
         subtotal: parseFloat(detalle.subtotal)
       }));
       
+      // Agregamos una validación adicional
+      if (detallesFormateados.length === 0) {
+        alert('Debe agregar al menos un producto a la compra');
+        setIsSubmitting(false);
+        return;
+      }
+      
       const payload = {
-        proveedorId: parseInt(formData.proveedorId),
+        proveedor_id_proveedor: parseInt(formData.proveedor_id_proveedor),
         estado: formData.estado,
-        detalles: detallesFormateados,
+        productos: detallesFormateados, // Aseguramos que el nombre sea 'productos' aquí
         total: parseFloat(total)
       };
       
       console.log('Enviando datos:', JSON.stringify(payload, null, 2));
+      console.log('Productos en formData:', formData.detalles);
+      console.log('Productos formateados:', detallesFormateados);
       
-      const url = compra ? `/api/compras/${compra.id}` : '/api/compras';
+      const url = compra ? `/api/compras/${compra.id_compra}` : '/api/compras';
       const method = compra ? 'PUT' : 'POST';
       
       const response = await fetch(url, {
@@ -263,6 +291,7 @@ export default function PurchaseForm({ compra }) {
       });
       
       const responseData = await response.json();
+      console.log('Respuesta de API:', responseData);
       
       if (!response.ok) {
         throw new Error(responseData.error || 'Error al guardar la compra');
@@ -289,14 +318,14 @@ export default function PurchaseForm({ compra }) {
             Proveedor
           </label>
           <select 
-            value={formData.proveedorId} 
+            value={formData.proveedor_id_proveedor} 
             onChange={handleProveedorChange}
             className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             required
           >
             <option value="">Seleccione un proveedor</option>
             {proveedores.map(proveedor => (
-              <option key={proveedor.id} value={proveedor.id}>
+              <option key={proveedor.id_proveedor} value={proveedor.id_proveedor}>
                 {proveedor.nombre}
               </option>
             ))}
@@ -331,14 +360,14 @@ export default function PurchaseForm({ compra }) {
               Producto
             </label>
             <select 
-              value={nuevoDetalle.productoId} 
+              value={nuevoDetalle.producto_id_producto} 
               onChange={handleProductoChange}
               className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">Seleccione un producto</option>
               {productos.map(producto => (
-                <option key={producto.id} value={producto.id}>
-                  {producto.nombre}
+                <option key={producto.id_producto} value={producto.id_producto}>
+                  {producto.nombre_producto || producto.nombre}
                 </option>
               ))}
             </select>
@@ -365,7 +394,7 @@ export default function PurchaseForm({ compra }) {
               type="number" 
               step="0.01"
               min="0.01"
-              value={nuevoDetalle.precioUnitario} 
+              value={nuevoDetalle.precio_unitario} 
               onChange={handlePrecioChange}
               className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             />
@@ -418,10 +447,10 @@ export default function PurchaseForm({ compra }) {
                 {formData.detalles.map((detalle, index) => (
                   <tr key={index}>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      {detalle.producto?.nombre || `Producto ID: ${detalle.productoId}`}
+                      {detalle.producto?.nombre_producto || `Producto ID: ${detalle.producto_id_producto}`}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">{detalle.cantidad}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">${detalle.precioUnitario.toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">${detalle.precio_unitario.toFixed(2)}</td>
                     <td className="px-6 py-4 whitespace-nowrap">${detalle.subtotal.toFixed(2)}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button 

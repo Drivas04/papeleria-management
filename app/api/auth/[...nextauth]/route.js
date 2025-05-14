@@ -1,15 +1,7 @@
 import { PrismaAdapter } from "@auth/prisma-adapter";
-import { PrismaClient } from "../.././../generated/prisma";
+import { prisma } from "../../../lib/prisma";
 import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import bcrypt from "bcrypt";
-
-// Usar un singleton para la instancia de PrismaClient para evitar múltiples conexiones en desarrollo
-const globalForPrisma = globalThis;
-
-const prisma = globalForPrisma.prisma || new PrismaClient();
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export const authOptions = {
   adapter: PrismaAdapter(prisma),
@@ -17,40 +9,53 @@ export const authOptions = {
     CredentialsProvider({
       name: "Credenciales",
       credentials: {
-        email: { label: "Email", type: "email" },
+        username: { label: "Usuario", type: "text" },
         password: { label: "Contraseña", type: "password" }
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        console.log("Intentando autenticación con:", credentials.username);
+        
+        if (!credentials?.username || !credentials?.password) {
+          console.log("Faltan credenciales");
           return null;
         }
 
-        const user = await prisma.usuario.findUnique({
-          where: {
-            email: credentials.email,
-            estado: true
-          },
-          include: {
-            rol: true
+        try {
+          // Buscar usuario por nombre de usuario
+          const user = await prisma.usuario.findFirst({
+            where: {
+              usuario: credentials.username,
+            }
+          });
+
+          console.log("Usuario encontrado:", user ? "Sí" : "No");
+
+          if (!user) {
+            console.log("Usuario no encontrado");
+            return null;
           }
-        });
 
-        if (!user) {
+          // Verificar contraseña (texto plano en este caso)
+          const passwordMatch = credentials.password === user.contraseña;
+          console.log("Contraseña correcta:", passwordMatch ? "Sí" : "No");
+
+          if (!passwordMatch) {
+            console.log("Contraseña incorrecta");
+            return null;
+          }
+
+          console.log("Autenticación exitosa");
+          
+          // Devolver los datos del usuario para la sesión
+          return {
+            id: user.id_usuario.toString(),
+            name: user.usuario,
+            role: user.rol
+          };
+        } catch (error) {
+          console.error("Error durante la autenticación:", error);
           return null;
         }
-
-        const passwordMatch = await bcrypt.compare(credentials.password, user.password);
-
-        if (!passwordMatch) {
-          return null;
-        }
-
-        return {
-          id: user.id.toString(),
-          name: `${user.nombre} ${user.apellido}`,
-          email: user.email,
-          role: user.rol.nombre
-        };
       }
     })
   ],
@@ -78,6 +83,7 @@ export const authOptions = {
     signIn: "/auth/login",
     error: "/auth/error",
   },
+  debug: true, // Activar modo debug para ver mensajes detallados
   secret: process.env.NEXTAUTH_SECRET || "papeleria-rosita-secret-key",
 };
 

@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from "../../../generated/prisma";
 import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
@@ -16,7 +16,7 @@ export async function GET(request, { params }) {
     }
 
     const cliente = await prisma.cliente.findUnique({
-      where: { id },
+      where: { id_cliente: id },
       include: {
         _count: {
           select: {
@@ -26,12 +26,15 @@ export async function GET(request, { params }) {
         ventas: {
           take: 5,
           orderBy: {
-            fecha: 'desc'
+            id_venta: 'desc'
           },
-          select: {
-            id: true,
-            fecha: true,
-            total: true
+          include: {
+            factura_venta: {
+              select: {
+                total: true,
+                fecha: true
+              }
+            }
           }
         }
       }
@@ -70,7 +73,7 @@ export async function PUT(request, { params }) {
     
     // Verificar que el cliente existe
     const clienteExistente = await prisma.cliente.findUnique({
-      where: { id }
+      where: { id_cliente: id }
     });
 
     if (!clienteExistente) {
@@ -80,15 +83,15 @@ export async function PUT(request, { params }) {
       );
     }
 
-    // Verificar si el email ya está en uso (si se está cambiando)
-    if (data.email && data.email !== clienteExistente.email) {
-      const emailExiste = await prisma.cliente.findUnique({
-        where: { email: data.email }
+    // Verificar si la cédula ya está en uso (si se está cambiando)
+    if (data.cedula && data.cedula !== clienteExistente.cedula) {
+      const cedulaExiste = await prisma.cliente.findUnique({
+        where: { cedula: data.cedula }
       });
 
-      if (emailExiste) {
+      if (cedulaExiste) {
         return NextResponse.json(
-          { error: "El email ya está registrado por otro cliente" },
+          { error: "La cédula ya está registrada por otro cliente" },
           { status: 400 }
         );
       }
@@ -96,12 +99,12 @@ export async function PUT(request, { params }) {
 
     // Preparar los datos de actualización
     const updateData = {
+      cedula: data.cedula,
       nombre: data.nombre,
       apellido: data.apellido,
-      direccion: data.direccion,
       telefono: data.telefono,
-      email: data.email,
-      estado: data.estado !== undefined ? data.estado : clienteExistente.estado
+      compras_semanales: data.compras_semanales,
+      deuda_total: data.deuda_total
     };
 
     // Eliminar campos indefinidos
@@ -111,7 +114,7 @@ export async function PUT(request, { params }) {
 
     // Actualizar cliente
     const clienteActualizado = await prisma.cliente.update({
-      where: { id },
+      where: { id_cliente: id },
       data: updateData
     });
 
@@ -142,7 +145,7 @@ export async function DELETE(request, { params }) {
 
     // Verificar que el cliente existe
     const clienteExistente = await prisma.cliente.findUnique({
-      where: { id },
+      where: { id_cliente: id },
       include: {
         _count: {
           select: {
@@ -159,10 +162,10 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    // Soft delete - solo marcar como inactivo
-    await prisma.cliente.update({
-      where: { id },
-      data: { estado: false }
+    // Eliminar cliente (en tu esquema actual parece no tener campo estado)
+    // Si necesitas implementar un soft delete, deberías añadir un campo "estado" al modelo Cliente
+    await prisma.cliente.delete({
+      where: { id_cliente: id }
     });
 
     return NextResponse.json({

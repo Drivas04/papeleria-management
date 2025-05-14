@@ -20,11 +20,11 @@ export async function GET(request, { params }) {
     }
     
     const compra = await prisma.compra.findUnique({
-      where: { id },
+      where: { id_compra: id },
       include: {
         proveedor: true,
         usuario: true,
-        detalles: {
+        compra_productos: {
           include: {
             producto: true
           }

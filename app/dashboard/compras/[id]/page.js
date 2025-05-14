@@ -33,14 +33,27 @@ export default function DetalleCompraPage() {
   }, [id]);
   
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+    if (!dateString) return 'Fecha no disponible';
+    
+    try {
+      const date = new Date(dateString);
+      
+      // Verificar si la fecha es válida
+      if (isNaN(date.getTime())) {
+        return 'Fecha inválida';
+      }
+      
+      return date.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+      });
+    } catch (error) {
+      console.error('Error al formatear fecha:', error);
+      return 'Fecha inválida';
+    }
   };
   
   const formatCurrency = (amount) => {
@@ -154,7 +167,7 @@ export default function DetalleCompraPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Fecha</h3>
-                <p>{formatDate(compra.fecha)}</p>
+                <p>{formatDate(compra.fecha_compra)}</p>
               </div>
               
               <div>
@@ -199,20 +212,20 @@ export default function DetalleCompraPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {compra.detalles.map((detalle) => (
-                    <tr key={detalle.id}>
+                  {compra.compra_productos.map((detalle) => (
+                    <tr key={detalle.id_compra_producto}>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {detalle.producto?.nombre}
-                        <div className="text-xs text-gray-500">Código: {detalle.producto?.codigo}</div>
+                        {detalle.producto?.nombre_producto}
+                        <div className="text-xs text-gray-500">Código: {detalle.producto?.codigo || 'Sin código'}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">{detalle.cantidad}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(detalle.precioUnitario)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(detalle.precio_unitario)}</td>
                       <td className="px-6 py-4 whitespace-nowrap font-medium">{formatCurrency(detalle.subtotal)}</td>
                     </tr>
                   ))}
                   <tr className="bg-gray-50">
                     <td colSpan="3" className="px-6 py-4 text-right font-bold">TOTAL</td>
-                    <td className="px-6 py-4 whitespace-nowrap font-bold">{formatCurrency(compra.total)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap font-bold">{formatCurrency(parseFloat(compra.total) || 0)}</td>
                   </tr>
                 </tbody>
               </table>

@@ -27,12 +27,25 @@ export default function ComprasPage() {
   }, []);
   
   const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
+    if (!dateString) return 'Fecha no disponible';
+    
+    try {
+      const date = new Date(dateString);
+      
+      // Verificar si la fecha es válida
+      if (isNaN(date.getTime())) {
+        return 'Fecha inválida';
+      }
+      
+      return date.toLocaleDateString('es-ES', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+      });
+    } catch (error) {
+      console.error('Error al formatear fecha:', error);
+      return 'Fecha inválida';
+    }
   };
 
   return (
@@ -70,9 +83,9 @@ export default function ComprasPage() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {compras.map((compra) => (
-                    <tr key={compra.id} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">{compra.id}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{formatDate(compra.fecha)}</td>
+                    <tr key={compra.id_compra} className="hover:bg-gray-50">
+                      <td className="px-6 py-4 whitespace-nowrap">{compra.id_compra}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{formatDate(compra.fecha_compra)}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {compra.proveedor?.nombre}
                       </td>
@@ -90,13 +103,13 @@ export default function ComprasPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <button
-                          onClick={() => router.push(`/dashboard/compras/editar/${compra.id}`)}
+                          onClick={() => router.push(`/dashboard/compras/editar/${compra.id_compra}`)}
                           className="text-indigo-600 hover:text-indigo-900 mr-4"
                         >
                           Editar
                         </button>
                         <Link
-                          href={`/dashboard/compras/${compra.id}`}
+                          href={`/dashboard/compras/${compra.id_compra}`}
                           className="text-blue-600 hover:text-blue-900"
                         >
                           Ver

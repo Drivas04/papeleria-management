@@ -19,7 +19,7 @@ export default function LoginPage() {
 
     try {
       const result = await signIn("credentials", {
-        email: data.email,
+        username: data.username,
         password: data.password,
         redirect: false
       });
@@ -54,15 +54,15 @@ export default function LoginPage() {
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+            <label htmlFor="username" className="block text-sm font-medium text-gray-700">Usuario</label>
             <input
-              id="email"
-              type="email"
-              {...register("email", { required: "Email es requerido" })}
+              id="username"
+              type="text"
+              {...register("username", { required: "Usuario es requerido" })}
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
             />
-            {errors.email && (
-              <p className="text-red-500 text-xs mt-1">{errors.email.message}</p>
+            {errors.username && (
+              <p className="text-red-500 text-xs mt-1">{errors.username.message}</p>
             )}
           </div>
 

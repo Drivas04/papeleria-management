@@ -24,11 +24,11 @@ export async function GET(request, { params }) {
         productos: {
           take: 10, // Limitamos a 10 productos por rendimiento
           select: {
-            id: true,
-            nombre: true,
-            codigo: true,
-            precioVenta: true,
-            stock: true
+            id_producto: true,
+            nombre_producto: true,
+            descripcion: true,
+            stock: true,
+            nivel_alerta: true
           }
         },
         _count: {

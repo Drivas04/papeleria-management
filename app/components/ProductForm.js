@@ -21,29 +21,16 @@ export default function ProductForm({ producto = null }) {
     watch
   } = useForm({
     defaultValues: {
-      codigo: producto?.codigo || "",
-      nombre: producto?.nombre || "",
+      nombre_producto: producto?.nombre_producto || "",
       descripcion: producto?.descripcion || "",
-      precioCompra: producto?.precioCompra?.toString() || "",
-      precioVenta: producto?.precioVenta?.toString() || "",
       stock: producto?.stock?.toString() || "0",
-      stockMinimo: producto?.stockMinimo?.toString() || "5",
-      categoriaId: producto?.categoriaId?.toString() || "",
-      estado: producto?.estado !== undefined ? producto.estado : true
+      nivel_alerta: producto?.nivel_alerta || "normal",
+      categoria_id_categoria: producto?.categoria_id_categoria?.toString() || "",
     }
   });
 
   // Observar campos para cálculos y validaciones en tiempo real
-  const precioCompra = watch("precioCompra");
-  const precioVenta = watch("precioVenta");
-
-  // Calcular margen de ganancia
-  const margenGanancia = (() => {
-    if (!precioCompra || !precioVenta || isNaN(precioCompra) || isNaN(precioVenta) || parseFloat(precioCompra) <= 0) {
-      return 0;
-    }
-    return (((parseFloat(precioVenta) - parseFloat(precioCompra)) / parseFloat(precioCompra)) * 100).toFixed(2);
-  })();
+  const stock = watch("stock");
 
   // Cargar categorías
   useEffect(() => {
@@ -57,7 +44,7 @@ export default function ProductForm({ producto = null }) {
         }
         
         const data = await response.json();
-        setCategorias(data.filter(cat => cat.estado)); // Solo categorías activas
+        setCategorias(data); // En PostgreSQL no tenemos campo estado en categorias
       } catch (error) {
         console.error("Error al cargar categorías:", error);
         setError("Error al cargar las categorías. Por favor, intente de nuevo.");
@@ -69,20 +56,6 @@ export default function ProductForm({ producto = null }) {
     fetchCategorias();
   }, []);
 
-  const generateCodigo = async () => {
-    // Generar un código único usando timestamp e iniciales del producto
-    const timestamp = Date.now().toString().slice(-6);
-    const iniciales = watch("nombre") 
-      ? watch("nombre")
-          .split(" ")
-          .map(word => word.charAt(0))
-          .join("")
-          .toUpperCase()
-      : "PROD";
-    
-    setValue("codigo", `${iniciales}-${timestamp}`);
-  };
-
   const onSubmit = async (data) => {
     try {
       setLoading(true);
@@ -91,24 +64,20 @@ export default function ProductForm({ producto = null }) {
       // Convertir campos numéricos
       const productoData = {
         ...data,
-        precioCompra: parseFloat(data.precioCompra),
-        precioVenta: parseFloat(data.precioVenta),
-        stock: parseInt(data.stock),
-        stockMinimo: parseInt(data.stockMinimo),
-        categoriaId: parseInt(data.categoriaId),
-        estado: data.estado === "true" || data.estado === true
+        stock: parseFloat(data.stock),
+        categoria_id_categoria: parseInt(data.categoria_id_categoria),
       };
 
       // Validaciones adicionales
-      if (productoData.precioVenta <= productoData.precioCompra) {
-        setError("El precio de venta debe ser mayor que el precio de compra");
+      if (productoData.stock < 0) {
+        setError("El stock no puede ser negativo");
         setLoading(false);
         return;
       }
 
       // Determinar si es creación o actualización
       const url = producto 
-        ? `/api/productos/${producto.id}` 
+        ? `/api/productos/${producto.id_producto}` 
         : "/api/productos";
       
       const method = producto ? "PUT" : "POST";
@@ -148,42 +117,41 @@ export default function ProductForm({ producto = null }) {
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Código *
+            Nombre del Producto *
           </label>
-          <div className="mt-1 flex rounded-md shadow-sm">
-            <input
-              type="text"
-              {...register("codigo", { 
-                required: "El código es requerido" 
-              })}
-              className="flex-1 rounded-none rounded-l-md border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-            />
-            <button
-              type="button"
-              onClick={generateCodigo}
-              className="rounded-r-md border border-l-0 border-gray-300 bg-gray-50 px-3 text-gray-500 hover:bg-gray-100"
-            >
-              Generar
-            </button>
-          </div>
-          {errors.codigo && (
-            <p className="mt-1 text-sm text-red-600">{errors.codigo.message}</p>
+          <input
+            type="text"
+            {...register("nombre_producto", { 
+              required: "El nombre del producto es requerido" 
+            })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+          {errors.nombre_producto && (
+            <p className="mt-1 text-sm text-red-600">{errors.nombre_producto.message}</p>
           )}
         </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Nombre *
+            Categoría *
           </label>
-          <input
-            type="text"
-            {...register("nombre", { 
-              required: "El nombre es requerido" 
-            })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
-          {errors.nombre && (
-            <p className="mt-1 text-sm text-red-600">{errors.nombre.message}</p>
+          {loadingCategorias ? (
+            <p className="mt-1 text-sm text-gray-500">Cargando categorías...</p>
+          ) : (
+            <select
+              {...register("categoria_id_categoria", { 
+                required: "La categoría es requerida" 
+              })}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            >
+              <option value="">Seleccione una categoría</option>
+              {categorias.map(cat => (
+                <option key={cat.id_categoria} value={cat.id_categoria}>{cat.nombre}</option>
+              ))}
+            </select>
+          )}
+          {errors.categoria_id_categoria && (
+            <p className="mt-1 text-sm text-red-600">{errors.categoria_id_categoria.message}</p>
           )}
         </div>
 
@@ -200,143 +168,42 @@ export default function ProductForm({ producto = null }) {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
-            Categoría *
+            Stock *
           </label>
-          {loadingCategorias ? (
-            <p className="mt-1 text-sm text-gray-500">Cargando categorías...</p>
-          ) : (
-            <select
-              {...register("categoriaId", { 
-                required: "La categoría es requerida" 
-              })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            >
-              <option value="">Seleccione una categoría</option>
-              {categorias.map(cat => (
-                <option key={cat.id} value={cat.id}>{cat.nombre}</option>
-              ))}
-            </select>
-          )}
-          {errors.categoriaId && (
-            <p className="mt-1 text-sm text-red-600">{errors.categoriaId.message}</p>
+          <input
+            type="number"
+            step="0.01"
+            min="0"
+            {...register("stock", { 
+              required: "El stock es requerido",
+              min: {
+                value: 0,
+                message: "El stock no puede ser negativo"
+              }
+            })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+          {errors.stock && (
+            <p className="mt-1 text-sm text-red-600">{errors.stock.message}</p>
           )}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Precio de compra *
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <span className="text-gray-500 sm:text-sm">$</span>
-              </div>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                {...register("precioCompra", { 
-                  required: "El precio de compra es requerido",
-                  min: {
-                    value: 0.01,
-                    message: "El precio debe ser mayor a 0"
-                  }
-                })}
-                className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              />
-            </div>
-            {errors.precioCompra && (
-              <p className="mt-1 text-sm text-red-600">{errors.precioCompra.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Precio de venta *
-            </label>
-            <div className="mt-1 relative rounded-md shadow-sm">
-              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-                <span className="text-gray-500 sm:text-sm">$</span>
-              </div>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                {...register("precioVenta", { 
-                  required: "El precio de venta es requerido",
-                  min: {
-                    value: 0.01,
-                    message: "El precio debe ser mayor a 0"
-                  }
-                })}
-                className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-              />
-            </div>
-            {errors.precioVenta && (
-              <p className="mt-1 text-sm text-red-600">{errors.precioVenta.message}</p>
-            )}
-            {precioCompra && precioVenta && parseFloat(precioVenta) > 0 && parseFloat(precioCompra) > 0 && (
-              <p className={`mt-1 text-sm ${parseFloat(precioVenta) <= parseFloat(precioCompra) ? 'text-red-600' : 'text-green-600'}`}>
-                {parseFloat(precioVenta) <= parseFloat(precioCompra) 
-                  ? "¡Precio de venta menor o igual al costo!" 
-                  : `Margen: ${margenGanancia}%`}
-              </p>
-            )}
-          </div>
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Nivel de alerta
+          </label>
+          <select
+            {...register("nivel_alerta")}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          >
+            <option value="bajo">Bajo</option>
+            <option value="normal">Normal</option>
+            <option value="alto">Alto</option>
+          </select>
+          <p className="mt-1 text-xs text-gray-500">
+            Nivel para alertar cuando el stock está bajo
+          </p>
         </div>
-
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Stock inicial
-            </label>
-            <input
-              type="number"
-              min="0"
-              step="1"
-              {...register("stock", { 
-                valueAsNumber: true
-              })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
-            {errors.stock && (
-              <p className="mt-1 text-sm text-red-600">{errors.stock.message}</p>
-            )}
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Stock mínimo
-            </label>
-            <input
-              type="number"
-              min="0"
-              step="1"
-              {...register("stockMinimo", { 
-                valueAsNumber: true
-              })}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
-            <p className="mt-1 text-xs text-gray-500">
-              Nivel para alertar cuando el stock es bajo
-            </p>
-          </div>
-        </div>
-
-        {producto && (
-          <div>
-            <label className="block text-sm font-medium text-gray-700">
-              Estado
-            </label>
-            <select
-              {...register("estado")}
-              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            >
-              <option value="true">Activo</option>
-              <option value="false">Inactivo</option>
-            </select>
-          </div>
-        )}
       </div>
 
       <div className="flex justify-end space-x-3">

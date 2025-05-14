@@ -19,16 +19,13 @@ export async function GET(request) {
     
     if (nombre) {
       where.nombre = {
-        contains: nombre,
-        mode: 'insensitive'
+        contains: nombre
+        // MySQL no utiliza mode: 'insensitive'
       };
     }
     
-    if (estado === 'true') {
-      where.estado = true;
-    } else if (estado === 'false') {
-      where.estado = false;
-    }
+    // El campo estado no existe en el esquema actual, así que omitimos esta parte
+    // Si necesitas agregar un campo estado en el futuro, descomenta y actualiza esta parte
     
     const proveedores = await prisma.proveedor.findMany({
       where,
