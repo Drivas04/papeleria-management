@@ -8,12 +8,16 @@ export default function SaleForm({ sale }) {
   const [clientes, setClientes] = useState([]);
   const [productos, setProductos] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [ivaPorcentaje, setIvaPorcentaje] = useState(19); // Agregar estado para el porcentaje de IVA (19% por defecto)
   
   // Estado para la venta
   const [formData, setFormData] = useState({
     cliente_id_cliente: sale?.cliente_id_cliente || '',
-    cliente_cedula: '',
-    productos: sale?.venta_productos || [],
+    cliente_cedula: sale?.cliente_cedula || '',
+    productos: sale?.venta_productos?.map(vp => ({
+      ...vp,
+      subtotal: parseFloat(vp.cantidad) * parseFloat(vp.precio_unitario)
+    })) || [],
     estado: sale?.estado || 'COMPLETADA'
   });
   
@@ -26,7 +30,13 @@ export default function SaleForm({ sale }) {
   });
   
   // Calcular total
-  const total = formData.productos.reduce((sum, detalle) => sum + Number(detalle.subtotal), 0);
+  const total = formData.productos.reduce((sum, detalle) => sum + Number(detalle.subtotal || 0), 0);
+  
+  // Calcular el IVA
+  const iva = total * (ivaPorcentaje / 100);
+  
+  // Calcular el total con IVA
+  const totalConIva = total + iva;
   
   // Cargar clientes y productos al iniciar
   useEffect(() => {
@@ -40,8 +50,8 @@ export default function SaleForm({ sale }) {
         const clientesData = await clientesRes.json();
         const productosData = await productosRes.json();
         
-        setClientes(clientesData); // No filtramos por estado ya que no existe en MySQL
-        setProductos(productosData.filter(p => p.stock > 0));
+        setClientes(clientesData || []); 
+        setProductos(productosData?.filter(p => p.stock > 0) || []);
       } catch (error) {
         console.error('Error al cargar datos:', error);
       }
@@ -67,14 +77,14 @@ export default function SaleForm({ sale }) {
     const producto_id_producto = parseInt(e.target.value);
     const productoSeleccionado = productos.find(p => p.id_producto === producto_id_producto);
     
-    // Usamos un precio base predeterminado ya que no tenemos precioVenta en el modelo
-    const precioBase = 0; // Deberás establecer un precio base o obtenerlo de alguna configuración
+    // Usar el precio de venta del producto
+    const precioVenta = productoSeleccionado?.precio_venta || 0;
     
     setNuevoDetalle({
       ...nuevoDetalle,
       producto_id_producto,
-      precio_unitario: precioBase,
-      subtotal: precioBase * nuevoDetalle.cantidad
+      precio_unitario: precioVenta,
+      subtotal: precioVenta * nuevoDetalle.cantidad
     });
   };
   
@@ -168,6 +178,18 @@ export default function SaleForm({ sale }) {
     });
   };
   
+  // Manejar cambio de porcentaje de IVA
+  const handleIvaChange = (e) => {
+    const valor = parseFloat(e.target.value) || 0;
+    setIvaPorcentaje(valor);
+  };
+  
+  // Formatear valores monetarios
+  const formatMoney = (value) => {
+    const num = parseFloat(value);
+    return !isNaN(num) ? num.toFixed(2) : '0.00';
+  };
+  
   // Enviar formulario
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -188,14 +210,14 @@ export default function SaleForm({ sale }) {
       const payload = {
         ...formData,
         factura: {
-          total,
+          total: totalConIva,
           fecha: new Date(),
-          subtotal: total, // Ajustar según necesites calcular impuestos
-          impuestos: 0
+          subtotal: total,
+          impuestos: iva
         }
       };
       
-      const url = sale ? `/api/ventas/${sale.id}` : '/api/ventas';
+      const url = sale ? `/api/ventas/${sale.id_venta}` : '/api/ventas';
       const method = sale ? 'PUT' : 'POST';
       
       const response = await fetch(url, {
@@ -261,6 +283,22 @@ export default function SaleForm({ sale }) {
             </select>
           </div>
         )}
+
+        {/* Porcentaje de IVA */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Porcentaje de IVA
+          </label>
+          <input 
+            type="number" 
+            min="0"
+            max="100"
+            step="0.1"
+            value={ivaPorcentaje} 
+            onChange={handleIvaChange}
+            className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
       </div>
       
       {/* Agregar productos */}
@@ -320,7 +358,7 @@ export default function SaleForm({ sale }) {
             <div className="flex items-center space-x-2">
               <input 
                 type="number" 
-                value={nuevoDetalle.subtotal} 
+                value={formatMoney(nuevoDetalle.subtotal)} 
                 readOnly
                 className="w-full border-gray-300 rounded-md shadow-sm bg-gray-100"
               />
@@ -363,8 +401,8 @@ export default function SaleForm({ sale }) {
                       {detalle.producto?.nombre_producto || `Producto ID: ${detalle.producto_id_producto}`}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">{detalle.cantidad}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">${detalle.precio_unitario.toFixed(2)}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">${detalle.subtotal.toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">${formatMoney(detalle.precio_unitario)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">${formatMoney(detalle.subtotal)}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button 
                         type="button" 
@@ -378,7 +416,17 @@ export default function SaleForm({ sale }) {
                 ))}
                 <tr className="bg-gray-50 font-semibold">
                   <td className="px-6 py-4 whitespace-nowrap" colSpan="3">TOTAL</td>
-                  <td className="px-6 py-4 whitespace-nowrap">${total.toFixed(2)}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">${formatMoney(total)}</td>
+                  <td></td>
+                </tr>
+                <tr className="bg-gray-50 font-semibold">
+                  <td className="px-6 py-4 whitespace-nowrap" colSpan="3">IVA ({ivaPorcentaje}%)</td>
+                  <td className="px-6 py-4 whitespace-nowrap">${formatMoney(iva)}</td>
+                  <td></td>
+                </tr>
+                <tr className="bg-gray-50 font-semibold">
+                  <td className="px-6 py-4 whitespace-nowrap" colSpan="3">TOTAL CON IVA</td>
+                  <td className="px-6 py-4 whitespace-nowrap">${formatMoney(totalConIva)}</td>
                   <td></td>
                 </tr>
               </tbody>

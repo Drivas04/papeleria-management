@@ -3,10 +3,12 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 
 export default function Sidebar() {
   const pathname = usePathname();
+  const { data: session } = useSession();
+  const userRole = session?.user?.role || '';
   const [isOpen, setIsOpen] = useState(false);
   const [stats, setStats] = useState({
     productosConBajoStock: 0,
@@ -161,7 +163,8 @@ export default function Sidebar() {
   );
 
   function renderNavLinks() {
-    const navGroups = [
+    // Definimos todos los grupos de navegación posibles
+    const allNavGroups = [
       {
         title: 'General',
         links: [
@@ -172,7 +175,8 @@ export default function Sidebar() {
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
               </svg>
             ),
-            text: 'Dashboard'
+            text: 'Dashboard',
+            roles: ['admin', 'vendedor']
           }
         ]
       },
@@ -187,7 +191,8 @@ export default function Sidebar() {
               </svg>
             ),
             text: 'Ventas',
-            badge: null
+            badge: null,
+            roles: ['admin', 'vendedor']
           },
           {
             href: '/dashboard/ventas/nueva',
@@ -197,7 +202,8 @@ export default function Sidebar() {
               </svg>
             ),
             text: 'Nueva Venta',
-            badge: null
+            badge: null,
+            roles: ['admin', 'vendedor']
           }
         ]
       },
@@ -215,7 +221,8 @@ export default function Sidebar() {
             badge: stats.productosConBajoStock > 0 ? stats.productosConBajoStock.toString() : null,
             badgeColor: 'bg-red-100 text-red-800',
             secondBadge: stats.productosConAltoStock > 0 ? stats.productosConAltoStock.toString() : null,
-            secondBadgeColor: 'bg-orange-100 text-orange-800'
+            secondBadgeColor: 'bg-orange-100 text-orange-800',
+            roles: ['admin', 'vendedor']
           },
           {
             href: '/dashboard/categorias',
@@ -225,7 +232,8 @@ export default function Sidebar() {
               </svg>
             ),
             text: 'Categorías',
-            badge: null
+            badge: null,
+            roles: ['admin', 'vendedor']
           }
         ]
       },
@@ -240,7 +248,8 @@ export default function Sidebar() {
               </svg>
             ),
             text: 'Compras',
-            badge: null
+            badge: null,
+            roles: ['admin']
           },
           {
             href: '/dashboard/compras/nueva',
@@ -250,7 +259,35 @@ export default function Sidebar() {
               </svg>
             ),
             text: 'Nueva Compra',
-            badge: null
+            badge: null,
+            roles: ['admin']
+          }
+        ]
+      },
+      {
+        title: 'Facturas',
+        links: [
+          {
+            href: '/dashboard/facturas/venta',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            ),
+            text: 'Facturas de Venta',
+            badge: null,
+            roles: ['admin', 'vendedor']
+          },
+          {
+            href: '/dashboard/facturas/compra',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+              </svg>
+            ),
+            text: 'Facturas de Compra',
+            badge: null,
+            roles: ['admin']
           }
         ]
       },
@@ -265,7 +302,8 @@ export default function Sidebar() {
               </svg>
             ),
             text: 'Clientes',
-            badge: null
+            badge: null,
+            roles: ['admin', 'vendedor']
           },
           {
             href: '/dashboard/proveedores',
@@ -275,7 +313,8 @@ export default function Sidebar() {
               </svg>
             ),
             text: 'Proveedores',
-            badge: null
+            badge: null,
+            roles: ['admin']
           }
         ]
       },
@@ -290,11 +329,79 @@ export default function Sidebar() {
               </svg>
             ),
             text: 'Usuarios',
-            badge: null
+            badge: null,
+            roles: ['admin']
+          },
+          {
+            href: '/dashboard/caja',
+            icon: (
+              <svg className="mr-3 h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            ),
+            text: 'Cierre de Caja',
+            badge: null,
+            roles: ['admin', 'vendedor']
           }
         ]
       }
     ];
+    
+    // Filtramos los grupos y enlaces según el rol del usuario
+    const filteredNavGroups = allNavGroups.map(group => {
+      // Filtrar los enlaces según el rol
+      const filteredLinks = group.links.filter(link => 
+        link.roles && link.roles.includes(userRole.toLowerCase())
+      );
+      
+      // Solo devolver grupos que tengan enlaces después de filtrar
+      return {
+        ...group,
+        links: filteredLinks
+      };
+    }).filter(group => group.links.length > 0);
+    
+    return (
+      <>
+        {filteredNavGroups.map((group, groupIndex) => (
+          <div key={groupIndex} className="space-y-2">
+            <h3 className="px-3 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+              {group.title}
+            </h3>
+            {group.links.map((link, linkIndex) => (
+              <Link 
+                key={linkIndex}
+                href={link.href}
+                className={`flex items-center px-2 py-2 text-sm rounded-md ${
+                  isActive(link.href)
+                    ? 'bg-gray-100 text-blue-600 font-medium'
+                    : 'text-gray-700 hover:bg-gray-50'
+                }`}
+              >
+                <div className="flex items-center flex-grow">
+                  {link.icon}
+                  <span>{link.text}</span>
+                </div>
+                
+                <div className="flex space-x-1">
+                  {link.badge && (
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${link.badgeColor || 'bg-blue-100 text-blue-800'}`}>
+                      {link.badge}
+                    </span>
+                  )}
+                  {link.secondBadge && (
+                    <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium ${link.secondBadgeColor || 'bg-blue-100 text-blue-800'}`}>
+                      {link.secondBadge}
+                    </span>
+                  )}
+                </div>
+              </Link>
+            ))}
+          </div>
+        ))}
+      </>
+    );
+    
 
     return (
       <>

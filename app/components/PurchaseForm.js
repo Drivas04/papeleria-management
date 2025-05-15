@@ -8,6 +8,7 @@ export default function PurchaseForm({ compra }) {
   const [proveedores, setProveedores] = useState([]);
   const [productos, setProductos] = useState([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [ivaPorcentaje, setIvaPorcentaje] = useState(19); // Agregar estado para el porcentaje de IVA (19% por defecto)
   
   // Estado para la compra
   const [formData, setFormData] = useState({
@@ -21,6 +22,7 @@ export default function PurchaseForm({ compra }) {
     producto_id_producto: '',
     cantidad: 1,
     precio_unitario: 0,
+    precio_venta: 0,
     subtotal: 0
   });
   
@@ -29,6 +31,12 @@ export default function PurchaseForm({ compra }) {
     const subtotal = parseFloat(detalle.subtotal) || 0;
     return sum + subtotal;
   }, 0);
+  
+  // Calcular el IVA
+  const iva = total * (ivaPorcentaje / 100);
+  
+  // Calcular el total con IVA
+  const totalConIva = total + iva;
   
   // Cargar proveedores y productos al iniciar
   useEffect(() => {
@@ -70,6 +78,7 @@ export default function PurchaseForm({ compra }) {
         ...nuevoDetalle,
         producto_id_producto: '',
         precio_unitario: 0,
+        precio_venta: 0,
         subtotal: 0
       });
       return;
@@ -81,13 +90,18 @@ export default function PurchaseForm({ compra }) {
     if (productoSeleccionado) {
       // Usar el precio de compra del producto como valor inicial para el precio unitario
       const precio_unitario = parseFloat(productoSeleccionado.precio_compra || 0);
+      const precio_venta = parseFloat(productoSeleccionado.precio_venta || 0);
       const cantidad = parseInt(nuevoDetalle.cantidad) || 1;
       const subtotal = precio_unitario * cantidad;
+      
+      // Sugerir precio de venta con un 30% de margen si no existe un precio de venta
+      const precio_venta_sugerido = precio_venta > 0 ? precio_venta : parseFloat((precio_unitario * 1.3).toFixed(2));
       
       setNuevoDetalle({
         ...nuevoDetalle,
         producto_id_producto,
         precio_unitario,
+        precio_venta: precio_venta_sugerido,
         cantidad,
         subtotal
       });
@@ -147,6 +161,34 @@ export default function PurchaseForm({ compra }) {
       subtotal
     });
   };
+
+  // Manejar cambio de precio de venta
+  const handlePrecioVentaChange = (e) => {
+    // Permitir que el campo esté vacío para facilitar la escritura
+    const valorInput = e.target.value;
+    
+    // Si el campo está vacío, establecemos un valor temporal
+    if (valorInput === '') {
+      setNuevoDetalle({
+        ...nuevoDetalle,
+        precio_venta: '',
+      });
+      return;
+    }
+    
+    // Convertir a número
+    let precio_venta = parseFloat(valorInput);
+    
+    // Solo validamos si el precio es NaN, permitimos cualquier valor válido
+    if (isNaN(precio_venta)) {
+      precio_venta = 0.01;
+    }
+    
+    setNuevoDetalle({
+      ...nuevoDetalle,
+      precio_venta
+    });
+  };
   
   // Agregar detalle a la compra
   const agregarDetalle = () => {
@@ -162,9 +204,15 @@ export default function PurchaseForm({ compra }) {
       return;
     }
     
-    // Validar que el precio sea mayor a cero
+    // Validar que el precio de compra sea mayor a cero
     if (!nuevoDetalle.precio_unitario || nuevoDetalle.precio_unitario <= 0) {
-      alert('El precio unitario debe ser mayor a cero');
+      alert('El precio de compra debe ser mayor a cero');
+      return;
+    }
+    
+    // Validar que el precio de venta sea mayor a cero
+    if (!nuevoDetalle.precio_venta || nuevoDetalle.precio_venta <= 0) {
+      alert('El precio de venta debe ser mayor a cero');
       return;
     }
     
@@ -191,6 +239,7 @@ export default function PurchaseForm({ compra }) {
         producto_id_producto: parseInt(nuevoDetalle.producto_id_producto),
         cantidad: parseInt(nuevoDetalle.cantidad),
         precio_unitario: parseFloat(nuevoDetalle.precio_unitario),
+        precio_venta: parseFloat(nuevoDetalle.precio_venta),
         subtotal: parseFloat(nuevoDetalle.subtotal),
         producto: productoInfo
       };
@@ -205,7 +254,8 @@ export default function PurchaseForm({ compra }) {
     setNuevoDetalle({
       producto_id_producto: '',
       cantidad: 1,
-      precio_unitario: 0,
+      precio_unitario: 1,
+      precio_venta: 1,
       subtotal: 0
     });
   };
@@ -240,13 +290,23 @@ export default function PurchaseForm({ compra }) {
       return;
     }
     
-    // Verificar que todos los detalles tengan precios válidos
-    const detalleInvalido = formData.detalles.find(
+    // Verificar que todos los detalles tengan precios de compra válidos
+    const detalleInvalidoCompra = formData.detalles.find(
       detalle => !detalle.precio_unitario || detalle.precio_unitario <= 0
     );
     
-    if (detalleInvalido) {
-      alert('Todos los productos deben tener un precio válido mayor a 0');
+    if (detalleInvalidoCompra) {
+      alert('Todos los productos deben tener un precio de compra válido mayor a 0');
+      return;
+    }
+    
+    // Verificar que todos los detalles tengan precios de venta válidos
+    const detalleInvalidoVenta = formData.detalles.find(
+      detalle => !detalle.precio_venta || detalle.precio_venta <= 0
+    );
+    
+    if (detalleInvalidoVenta) {
+      alert('Todos los productos deben tener un precio de venta válido mayor a 0');
       return;
     }
     
@@ -258,6 +318,7 @@ export default function PurchaseForm({ compra }) {
         producto_id_producto: parseInt(detalle.producto_id_producto),
         cantidad: parseInt(detalle.cantidad),
         precio_unitario: parseFloat(detalle.precio_unitario),
+        precio_venta: parseFloat(detalle.precio_venta),
         subtotal: parseFloat(detalle.subtotal)
       }));
       
@@ -272,7 +333,13 @@ export default function PurchaseForm({ compra }) {
         proveedor_id_proveedor: parseInt(formData.proveedor_id_proveedor),
         estado: formData.estado,
         productos: detallesFormateados, // Aseguramos que el nombre sea 'productos' aquí
-        total: parseFloat(total)
+        total: parseFloat(totalConIva), // Ahora utilizamos el total con IVA
+        // Agregar información de factura automáticamente
+        factura: {
+          subtotal: parseFloat(total),
+          impuestos: parseFloat(iva), // Ahora agregamos el valor del IVA calculado
+          total: parseFloat(totalConIva) // Total con IVA incluido
+        }
       };
       
       console.log('Enviando datos:', JSON.stringify(payload, null, 2));
@@ -332,6 +399,23 @@ export default function PurchaseForm({ compra }) {
           </select>
         </div>
         
+        {/* Control para el IVA */}
+        <div className="mb-4">
+          <label className="block text-sm font-medium text-gray-700 mb-1">
+            Porcentaje de IVA (%)
+          </label>
+          <input 
+            type="number" 
+            min="0"
+            max="100"
+            step="0.1"
+            readOnly
+            value={ivaPorcentaje} 
+            onChange={(e) => setIvaPorcentaje(parseFloat(e.target.value) || 0)}
+            className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+          />
+        </div>
+        
         {/* Estado de la compra */}
         {compra && (
           <div className="mb-4">
@@ -354,7 +438,7 @@ export default function PurchaseForm({ compra }) {
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Agregar Productos</h2>
         
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-4">
+        <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Producto
@@ -388,7 +472,7 @@ export default function PurchaseForm({ compra }) {
           
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
-              Precio Unitario
+              Precio Compra
             </label>
             <input 
               type="number" 
@@ -396,6 +480,20 @@ export default function PurchaseForm({ compra }) {
               min="0.01"
               value={nuevoDetalle.precio_unitario} 
               onChange={handlePrecioChange}
+              className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+            />
+          </div>
+          
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Precio Venta
+            </label>
+            <input 
+              type="number" 
+              step="0.01"
+              min="0.01"
+              value={nuevoDetalle.precio_venta} 
+              onChange={handlePrecioVentaChange}
               className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -438,7 +536,8 @@ export default function PurchaseForm({ compra }) {
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio Unit.</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio Compra</th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Precio Venta</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                 </tr>
@@ -451,6 +550,7 @@ export default function PurchaseForm({ compra }) {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">{detalle.cantidad}</td>
                     <td className="px-6 py-4 whitespace-nowrap">${detalle.precio_unitario.toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">${detalle.precio_venta.toFixed(2)}</td>
                     <td className="px-6 py-4 whitespace-nowrap">${detalle.subtotal.toFixed(2)}</td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <button 
@@ -463,9 +563,19 @@ export default function PurchaseForm({ compra }) {
                     </td>
                   </tr>
                 ))}
-                <tr className="bg-gray-50 font-semibold">
-                  <td className="px-6 py-4 whitespace-nowrap" colSpan="3">TOTAL</td>
+                <tr className="bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap" colSpan="4">SUBTOTAL</td>
                   <td className="px-6 py-4 whitespace-nowrap">${total.toFixed(2)}</td>
+                  <td></td>
+                </tr>
+                <tr className="bg-gray-50">
+                  <td className="px-6 py-4 whitespace-nowrap" colSpan="4">IVA ({ivaPorcentaje}%)</td>
+                  <td className="px-6 py-4 whitespace-nowrap">${iva.toFixed(2)}</td>
+                  <td></td>
+                </tr>
+                <tr className="bg-gray-50 font-semibold">
+                  <td className="px-6 py-4 whitespace-nowrap" colSpan="4">TOTAL</td>
+                  <td className="px-6 py-4 whitespace-nowrap">${totalConIva.toFixed(2)}</td>
                   <td></td>
                 </tr>
               </tbody>

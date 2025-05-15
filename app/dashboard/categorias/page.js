@@ -119,7 +119,7 @@ export default function CategoriasPage() {
                   </tr>
                 ) : (
                   categorias.map((categoria) => (
-                    <tr key={categoria.id}>
+                    <tr key={categoria.id_categoria}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm font-medium text-gray-900">
                           {categoria.nombre}
@@ -137,23 +137,23 @@ export default function CategoriasPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          categoria.estado 
+                          !categoria.estado 
                             ? "bg-green-100 text-green-800" 
                             : "bg-red-100 text-red-800"
                         }`}>
-                          {categoria.estado ? "Activa" : "Inactiva"}
+                          {!categoria.estado ? "Activa" : "Inactiva"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                         <div className="flex space-x-2">
                           <Link
-                            href={`/dashboard/categorias/editar/${categoria.id}`}
+                            href={`/dashboard/categorias/editar/${categoria.id_categoria}`}
                             className="text-indigo-600 hover:text-indigo-900"
                           >
                             <PencilIcon className="w-5 h-5" />
                           </Link>
                           <button
-                            onClick={() => handleDelete(categoria.id, categoria._count?.productos || 0)}
+                            onClick={() => handleDelete(categoria.id_categoria, categoria._count?.productos || 0)}
                             className="text-red-600 hover:text-red-900"
                             disabled={categoria._count?.productos > 0}
                           >

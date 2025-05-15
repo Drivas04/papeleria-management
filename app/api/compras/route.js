@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '../../lib/prisma';
+import { prisma } from '@/app/lib/prisma';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/app/lib/auth';
+import { getCurrentDateNormalized, normalizeDate } from '@/app/lib/date-utils';
+import { formatDate } from '@/app/lib/utils';
+import { format } from 'date-fns';
+
 
 export async function GET(request) {
   try {
@@ -19,9 +23,10 @@ export async function GET(request) {
     
     // Filtrar por rango de fechas
     if (fechaInicio && fechaFin) {
+      // Normalizar las fechas para evitar problemas de zona horaria
       where.fecha_compra = {
-        gte: new Date(fechaInicio),
-        lte: new Date(fechaFin)
+        gte: normalizeDate(fechaInicio),
+        lte: normalizeDate(fechaFin)
       };
     }
     
@@ -88,10 +93,16 @@ export async function POST(request) {
       }, 0);
       
       // 1. Crear la compra
+      // Crear una nueva fecha y ajustarla para la zona horaria local
+      const fechaActual = new Date();
+      // Restar un día para compensar el ajuste posterior en formatDate
+      const fechaAjustada = new Date(fechaActual.getTime() - 24 * 60 * 60 * 1000);
+      console.log("Fecha original:", fechaActual, "Fecha ajustada:", fechaAjustada);
+      
       const compra = await tx.compra.create({
         data: {
           proveedor_id_proveedor: parseInt(data.proveedor_id_proveedor),
-          fecha_compra: new Date(),
+          fecha_compra: fechaAjustada, // Usar la fecha ajustada
           estado: 'COMPLETADA',
           total: parseFloat(totalCompra.toFixed(2)),  // Asegurar dos decimales
           usuario_id_usuario: parseInt(session.user.id)
@@ -114,22 +125,38 @@ export async function POST(request) {
           }
         });
         
-        // 3. Actualizar el stock de productos
-        await tx.producto.update({
-          where: { id_producto: parseInt(producto.producto_id_producto) },
-          data: {
-            stock: {
-              increment: parseFloat(producto.cantidad)
-            }
-          }
+        // 3. Actualizar el stock y precio de venta de productos
+        // Primero obtenemos el producto para sus valores actuales
+        const productoInfo = await tx.producto.findUnique({
+          where: { id_producto: parseInt(producto.producto_id_producto) }
         });
+        
+        if (productoInfo) {
+          // Calcular el nuevo stock
+          const nuevoStock = parseFloat(productoInfo.stock) + parseFloat(producto.cantidad);
+          const stockMinimo = parseFloat(productoInfo.stock_minimo || 5);
+          
+          // Determinar el nivel de alerta basado en el nuevo stock
+          const nivel_alerta = nuevoStock < stockMinimo ? 'bajo' : 'normal';
+          
+          // Actualizar el producto con el nuevo stock y nivel de alerta
+          await tx.producto.update({
+            where: { id_producto: parseInt(producto.producto_id_producto) },
+            data: {
+              stock: nuevoStock,
+              nivel_alerta,
+              precio_compra: parseFloat(producto.precio_unitario || 0),
+              precio_venta: parseFloat(producto.precio_venta || 0)
+            }
+          });
+        }
       }
       
       // 4. Crear la factura de compra si se proporcionan los datos
       if (data.factura) {
         await tx.facturaCompra.create({
           data: {
-            fecha: new Date(),
+            fecha: fechaAjustada, // Usar la misma fecha ajustada que la compra
             subtotal: parseFloat(data.factura.subtotal || 0),
             impuestos: parseFloat(data.factura.impuestos || 0),
             total: parseFloat(data.factura.total || 0),

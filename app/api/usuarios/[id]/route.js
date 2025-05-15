@@ -1,8 +1,6 @@
-import { PrismaClient } from "../../../generated/prisma";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
-
-const prisma = new PrismaClient();
+import { prisma } from '@/app/lib/prisma';
 
 // GET - Obtener un usuario por ID
 export async function GET(request, { params }) {

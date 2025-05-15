@@ -24,6 +24,9 @@ export default function ProductForm({ producto = null }) {
       nombre_producto: producto?.nombre_producto || "",
       descripcion: producto?.descripcion || "",
       stock: producto?.stock?.toString() || "0",
+      precio_compra: producto?.precio_compra?.toString() || "0",
+      precio_venta: producto?.precio_venta?.toString() || "0",
+      stock_minimo: producto?.stock_minimo?.toString() || "5",
       nivel_alerta: producto?.nivel_alerta || "normal",
       categoria_id_categoria: producto?.categoria_id_categoria?.toString() || "",
     }
@@ -31,6 +34,29 @@ export default function ProductForm({ producto = null }) {
 
   // Observar campos para cálculos y validaciones en tiempo real
   const stock = watch("stock");
+  const precioCompra = watch("precio_compra");
+  const stockMinimo = watch("stock_minimo");
+
+  // Sugerir precio de venta con un 30% de margen cuando cambia el precio de compra
+  useEffect(() => {
+    if (precioCompra) {
+      const precioCompraNum = parseFloat(precioCompra);
+      const sugeridoPrecioVenta = (precioCompraNum * 1.3).toFixed(2);
+      // Solo establecer si el usuario no ha ingresado un precio de venta o si es 0
+      const currentPrecioVenta = parseFloat(watch("precio_venta") || 0);
+      if (currentPrecioVenta === 0) {
+        setValue("precio_venta", sugeridoPrecioVenta);
+      }
+    }
+  }, [precioCompra, setValue, watch]);
+  
+  // Actualizar nivel_alerta automáticamente cuando cambia el stock o stock_minimo
+  useEffect(() => {
+    const stockNum = parseFloat(stock || 0);
+    const stockMinimoNum = parseFloat(stockMinimo || 5);
+    const nivelAlerta = stockNum < stockMinimoNum ? 'bajo' : 'normal';
+    setValue("nivel_alerta", nivelAlerta);
+  }, [stock, stockMinimo, setValue]);
 
   // Cargar categorías
   useEffect(() => {
@@ -65,6 +91,9 @@ export default function ProductForm({ producto = null }) {
       const productoData = {
         ...data,
         stock: parseFloat(data.stock),
+        precio_compra: parseFloat(data.precio_compra),
+        precio_venta: parseFloat(data.precio_venta),
+        stock_minimo: parseFloat(data.stock_minimo),
         categoria_id_categoria: parseInt(data.categoria_id_categoria),
       };
 
@@ -172,7 +201,7 @@ export default function ProductForm({ producto = null }) {
           </label>
           <input
             type="number"
-            step="0.01"
+            step="1"
             min="0"
             {...register("stock", { 
               required: "El stock es requerido",
@@ -190,18 +219,91 @@ export default function ProductForm({ producto = null }) {
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
+            Stock Mínimo
+          </label>
+          <input
+            type="number"
+            step="1"
+            min="0"
+            {...register("stock_minimo")}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+          <p className="mt-1 text-xs text-gray-500">
+            Cantidad mínima antes de generar alertas
+          </p>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Precio de Compra *
+          </label>
+          <div className="mt-1 relative rounded-md shadow-sm">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <span className="text-gray-500 sm:text-sm">$</span>
+            </div>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              {...register("precio_compra", {
+                required: "El precio de compra es requerido",
+                min: {
+                  value: 0,
+                  message: "El precio de compra no puede ser negativo"
+                }
+              })}
+              className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
+          </div>
+          {errors.precio_compra && (
+            <p className="mt-1 text-sm text-red-600">{errors.precio_compra.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Precio de Venta *
+          </label>
+          <div className="mt-1 relative rounded-md shadow-sm">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+              <span className="text-gray-500 sm:text-sm">$</span>
+            </div>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              {...register("precio_venta", {
+                required: "El precio de venta es requerido",
+                min: {
+                  value: 0,
+                  message: "El precio de venta no puede ser negativo"
+                }
+              })}
+              className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+            />
+          </div>
+          {errors.precio_venta && (
+            <p className="mt-1 text-sm text-red-600">{errors.precio_venta.message}</p>
+          )}
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
             Nivel de alerta
           </label>
-          <select
+          <input
+            type="text"
+            disabled
+            value={parseFloat(stock || 0) < parseFloat(watch("stock_minimo") || 5) ? "bajo" : "normal"}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 text-gray-700 cursor-not-allowed"
+          />
+          <input
+            type="hidden"
             {...register("nivel_alerta")}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          >
-            <option value="bajo">Bajo</option>
-            <option value="normal">Normal</option>
-            <option value="alto">Alto</option>
-          </select>
+            value={parseFloat(stock || 0) < parseFloat(watch("stock_minimo") || 5) ? "bajo" : "normal"}
+          />
           <p className="mt-1 text-xs text-gray-500">
-            Nivel para alertar cuando el stock está bajo
+            El nivel de alerta se calcula automáticamente en base al stock y stock mínimo
           </p>
         </div>
       </div>

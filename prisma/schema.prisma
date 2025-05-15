@@ -13,16 +13,18 @@ datasource db {
 
 // Modelo para la tabla de caja
 model Caja {
-  id_cierre_caja    Int       @id @default(autoincrement()) 
-  fecha_apertura    DateTime? @db.Date
-  fecha_cierre      DateTime? @db.Date
-  monto_inicial     Decimal?  @db.Decimal(10, 2)
-  monto_final       Decimal?  @db.Decimal(10, 2)
-  total_ventas      Decimal?  @db.Decimal(10, 2)
-  diferencia        Decimal?  @db.Decimal(10, 2)
+  id_cierre_caja     Int       @id @default(autoincrement()) 
+  fecha_apertura     DateTime? @db.DateTime
+  fecha_cierre       DateTime? @db.DateTime
+  monto_inicial      Decimal?  @db.Decimal(10, 2)
+  monto_final        Decimal?  @db.Decimal(10, 2)
+  total_ventas       Decimal?  @db.Decimal(10, 2)
+  diferencia         Decimal?  @db.Decimal(10, 2)
+  estado             String?   @db.VarChar(15) @default("abierta") // abierta, cerrada
   usuario_id_usuario Int      
-  usuario           Usuario   @relation(fields: [usuario_id_usuario], references: [id_usuario])
-
+  usuario            Usuario   @relation(fields: [usuario_id_usuario], references: [id_usuario])
+  notas              String?   @db.VarChar(255)
+  
   @@map("caja")
 }
 
@@ -37,14 +39,18 @@ model Categoria {
 
 // Modelo para la tabla de clientes
 model Cliente {
-  id_cliente        Int       @id @default(autoincrement())
-  cedula            String    @unique @db.VarChar(10)
-  nombre            String?   @db.VarChar(30)
-  apellido          String?   @db.VarChar(30)
-  telefono          String?   @db.VarChar(15)
-  compras_semanales Decimal?  @db.Decimal(10, 2)
-  deuda_total       Decimal?  @db.Decimal(10, 2)
-  ventas            Venta[]
+  id_cliente         Int       @id @default(autoincrement())
+  cedula             String    @unique @db.VarChar(10)
+  nombre             String?   @db.VarChar(30)
+  apellido           String?   @db.VarChar(30)
+  direccion          String?   @db.VarChar(100)
+  email              String?   @db.VarChar(50)
+  telefono           String?   @db.VarChar(15)
+  compras_semanales  Decimal?  @db.Decimal(10, 2)
+  deuda_total        Decimal?  @db.Decimal(10, 2)
+  total_compras      Int?      @default(0)
+  ultima_compra      DateTime? @db.Date
+  ventas             Venta[]
 
   @@map("cliente")
 }
@@ -123,6 +129,9 @@ model Producto {
   nombre_producto        String?   @db.VarChar(50)
   descripcion            String?   @db.VarChar(100)
   stock                  Decimal?  @db.Decimal(10, 2)
+  precio_compra          Decimal?  @db.Decimal(10, 2) @default(0)
+  precio_venta           Decimal?  @db.Decimal(10, 2) @default(0)
+  stock_minimo           Decimal?  @db.Decimal(10, 2) @default(5)
   nivel_alerta           String?   @db.VarChar(15)
   categoria_id_categoria Int
   categoria              Categoria @relation(fields: [categoria_id_categoria], references: [id_categoria])

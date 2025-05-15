@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { formatDate } from '@/app/lib/utils';
 
 export default function DetalleCompraPage() {
   const { id } = useParams();
@@ -32,29 +33,6 @@ export default function DetalleCompraPage() {
     }
   }, [id]);
   
-  const formatDate = (dateString) => {
-    if (!dateString) return 'Fecha no disponible';
-    
-    try {
-      const date = new Date(dateString);
-      
-      // Verificar si la fecha es válida
-      if (isNaN(date.getTime())) {
-        return 'Fecha inválida';
-      }
-      
-      return date.toLocaleDateString('es-ES', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-      });
-    } catch (error) {
-      console.error('Error al formatear fecha:', error);
-      return 'Fecha inválida';
-    }
-  };
   
   const formatCurrency = (amount) => {
     return new Intl.NumberFormat('es-ES', {
@@ -182,7 +160,7 @@ export default function DetalleCompraPage() {
               
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Registrado por</h3>
-                <p>{compra.usuario?.nombre} {compra.usuario?.apellido}</p>
+                <p>{compra.usuario.rol === 'admin' && "Rosita"}</p>
               </div>
               
               <div>
@@ -191,11 +169,50 @@ export default function DetalleCompraPage() {
               </div>
               
               <div>
-                <h3 className="text-sm font-medium text-gray-500">Email Proveedor</h3>
-                <p>{compra.proveedor?.email || 'No disponible'}</p>
+                <h3 className="text-sm font-medium text-gray-500">Dirección Proveedor</h3>
+                <p>{compra.proveedor?.direccion || 'No disponible'}</p>
               </div>
             </div>
           </div>
+          
+          {/* Información de Factura si existe */}
+          {compra.factura_compra && (
+            <div className="bg-white p-6 rounded-lg shadow-md">
+              <h2 className="text-xl font-semibold mb-4">Datos de Factura</h2>
+              
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Nº Factura</h3>
+                  <p>{compra.factura_compra.id_factura}</p>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Fecha de Factura</h3>
+                  <p>{formatDate(compra.factura_compra.fecha)}</p>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Subtotal</h3>
+                  <p>{formatCurrency(compra.factura_compra.subtotal)}</p>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">IVA</h3>
+                  <p>{formatCurrency(compra.factura_compra.impuestos)}</p>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">Total con IVA</h3>
+                  <p className="font-semibold">{formatCurrency(compra.factura_compra.total)}</p>
+                </div>
+                
+                <div>
+                  <h3 className="text-sm font-medium text-gray-500">% IVA</h3>
+                  <p>{compra.factura_compra.subtotal > 0 ? ((compra.factura_compra.impuestos / compra.factura_compra.subtotal) * 100).toFixed(2) : 0}%</p>
+                </div>
+              </div>
+            </div>
+          )}
           
           {/* Detalle de productos */}
           <div className="bg-white p-6 rounded-lg shadow-md">
@@ -213,7 +230,7 @@ export default function DetalleCompraPage() {
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
                   {compra.compra_productos.map((detalle) => (
-                    <tr key={detalle.id_compra_producto}>
+                    <tr key={detalle.compra_id_compra+detalle.producto_id_producto} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         {detalle.producto?.nombre_producto}
                         <div className="text-xs text-gray-500">Código: {detalle.producto?.codigo || 'Sin código'}</div>
@@ -223,6 +240,18 @@ export default function DetalleCompraPage() {
                       <td className="px-6 py-4 whitespace-nowrap font-medium">{formatCurrency(detalle.subtotal)}</td>
                     </tr>
                   ))}
+                  {compra.factura_compra && (
+                    <>
+                      <tr className="bg-gray-50">
+                        <td colSpan="3" className="px-6 py-4 text-right">SUBTOTAL</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(parseFloat(compra.factura_compra.subtotal) || 0)}</td>
+                      </tr>
+                      <tr className="bg-gray-50">
+                        <td colSpan="3" className="px-6 py-4 text-right">IVA</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(parseFloat(compra.factura_compra.impuestos) || 0)}</td>
+                      </tr>
+                    </>
+                  )}
                   <tr className="bg-gray-50">
                     <td colSpan="3" className="px-6 py-4 text-right font-bold">TOTAL</td>
                     <td className="px-6 py-4 whitespace-nowrap font-bold">{formatCurrency(parseFloat(compra.total) || 0)}</td>

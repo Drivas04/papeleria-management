@@ -28,7 +28,6 @@ export default function ClientesPage() {
     try {
       setLoading(true);
       
-      // Construir la URL con los filtros
       let url = "/api/clientes";
       
       if (busqueda) {

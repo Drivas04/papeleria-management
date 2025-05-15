@@ -2,21 +2,23 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { formatDate, formatMoney } from '../../lib/utils';
+import { formatDate } from '@/app/lib/utils';
 
-export default function VentasPage() {
-  const [ventas, setVentas] = useState([]);
+
+export default function FacturasVentaPage() {
+  const [facturas, setFacturas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
   
   useEffect(() => {
     const fetchVentas = async () => {
       try {
         const res = await fetch('/api/ventas');
         if (!res.ok) throw new Error('Error al cargar ventas');
-        const data = await res.json();
-        setVentas(data);
+        
+        const ventas = await res.json();
+        // Filtrar solo las ventas que tienen factura
+        const ventasConFactura = ventas.filter(venta => venta.factura_venta);
+        setFacturas(ventasConFactura);
       } catch (error) {
         console.error('Error:', error);
       } finally {
@@ -26,15 +28,18 @@ export default function VentasPage() {
     
     fetchVentas();
   }, []);
+  
+  
+
+  const formatCurrency = (value) => {
+    const num = parseFloat(value);
+    return !isNaN(num) ? `$${num.toFixed(2)}` : '$0.00';
+  };
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Gestión de Ventas</h1>
-        <Link href="/dashboard/ventas/nueva" 
-              className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow">
-          Nueva Venta
-        </Link>
+        <h1 className="text-2xl font-bold">Facturas de Venta</h1>
       </div>
       
       {isLoading ? (
@@ -43,61 +48,41 @@ export default function VentasPage() {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          {ventas.length === 0 ? (
+          {facturas.length === 0 ? (
             <div className="p-6 text-center text-gray-500">
-              No hay ventas registradas. Haga clic en "Nueva Venta" para crear una.
+              No hay facturas de venta registradas.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Factura</th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Cliente</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Impuestos</th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {ventas.map((venta) => (
+                  {facturas.map((venta) => (
                     <tr key={venta.id_venta} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">{venta.id_venta}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {venta.factura_venta?.fecha ? 
-                          formatDate(venta.factura_venta.fecha) : 
-                          'Sin fecha'}
-                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">{venta.factura_venta?.id_factura}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{formatDate(venta.factura_venta?.fecha)}</td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         {venta.cliente?.nombre} {venta.cliente?.apellido}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {formatMoney(venta.factura_venta?.total || 0)}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span 
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            venta.estado === 'COMPLETADA' 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-red-100 text-red-800'
-                          }`}
-                        >
-                          {venta.estado === 'COMPLETADA' ? 'Completada' : 'Anulada'}
-                        </span>
-                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(venta.factura_venta?.subtotal)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(venta.factura_venta?.impuestos)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(venta.factura_venta?.total)}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() => router.push(`/dashboard/ventas/editar/${venta.id_venta}`)}
-                          className="text-indigo-600 hover:text-indigo-900 mr-4"
-                        >
-                          Editar
-                        </button>
                         <Link
                           href={`/dashboard/ventas/${venta.id_venta}`}
                           className="text-blue-600 hover:text-blue-900"
                         >
-                          Ver
+                          Ver Detalles
                         </Link>
                       </td>
                     </tr>

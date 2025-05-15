@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Header from "../../../../components/Header";
 import ClientForm from "../../../../components/ClientForm";
+import { formatDate, formatMoney } from "../../../../lib/utils";
 
 export default function EditarClientePage() {
   const params = useParams();
@@ -97,15 +98,15 @@ export default function EditarClientePage() {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {cliente.ventas.map(venta => (
-                      <tr key={venta.id}>
+                      <tr key={venta.id_venta}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          #{venta.id}
+                          #{venta.id_venta}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(venta.fecha).toLocaleDateString()}
+                          {formatDate(venta.factura_venta?.fecha)}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          ${venta.total.toFixed(2)}
+                          {formatMoney(venta.factura_venta?.total)}
                         </td>
                       </tr>
                     ))}

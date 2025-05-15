@@ -1,7 +1,8 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '../../lib/prisma';
+import { prisma } from '@/app/lib/prisma';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/app/lib/auth';
+import { getCurrentDateNormalized, normalizeDate } from '@/app/lib/date-utils';
 
 export async function GET(request) {
   try {
@@ -19,9 +20,12 @@ export async function GET(request) {
     
     // Filtrar por rango de fechas
     if (fechaInicio && fechaFin) {
-      where.fecha = {
-        gte: new Date(fechaInicio),
-        lte: new Date(fechaFin)
+      // Normalizar las fechas para evitar problemas de zona horaria
+      where.factura_venta = {
+        fecha: {
+          gte: normalizeDate(fechaInicio),
+          lte: normalizeDate(fechaFin)
+        }
       };
     }
     
@@ -88,7 +92,8 @@ export async function POST(request) {
           usuario_id_usuario: parseInt(session.user.id || 1), // Usar un ID por defecto si no hay sesión
           factura_venta: {
             create: {
-              fecha: new Date(),
+              // Crear la fecha actual ajustada para compensar el desplazamiento de +24h en formatDate
+              fecha: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
               subtotal: parseFloat(data.factura.subtotal),
               impuestos: parseFloat(data.factura.impuestos || 0),
               total: parseFloat(data.factura.total)
@@ -109,15 +114,38 @@ export async function POST(request) {
         });
         
         // 3. Actualizar el stock de productos
-        await tx.producto.update({
-          where: { id_producto: parseInt(detalle.producto_id_producto) },
-          data: {
-            stock: {
-              decrement: parseFloat(detalle.cantidad)
-            }
-          }
+        const producto = await tx.producto.findUnique({
+          where: { id_producto: parseInt(detalle.producto_id_producto) }
         });
+        
+        if (producto) {
+          // Calcular el nuevo stock
+          const nuevoStock = parseFloat(producto.stock) - parseFloat(detalle.cantidad);
+          const stockMinimo = parseFloat(producto.stock_minimo || 5);
+          // Determinar el nivel de alerta basado en el nuevo stock
+          const nivel_alerta = nuevoStock < stockMinimo ? 'bajo' : 'normal';
+          
+          // Actualizar el producto con el nuevo stock y nivel de alerta
+          await tx.producto.update({
+            where: { id_producto: parseInt(detalle.producto_id_producto) },
+            data: {
+              stock: nuevoStock,
+              nivel_alerta
+            }
+          });
+        }
       }
+      
+      // 4. Actualizar contador de compras del cliente y fecha última compra
+      await tx.cliente.update({
+        where: { id_cliente: parseInt(data.cliente_id_cliente) },
+        data: {
+          total_compras: {
+            increment: 1
+          },
+          ultima_compra: new Date()
+        }
+      });
       
       // Retornar la venta creada
       return tx.venta.findUnique({

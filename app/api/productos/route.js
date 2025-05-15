@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '../../lib/prisma';
+import { prisma } from '@/app/lib/prisma';
 import { getServerSession } from 'next-auth';
-import { authOptions } from '../auth/[...nextauth]/route';
+import { authOptions } from '@/app/lib/auth';
 
 export async function GET(request) {
   try {
@@ -15,8 +15,8 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const categoriaId = searchParams.get('categoria');
     const search = searchParams.get('nombre');
-    const stockBajo = searchParams.get('stockBajo') === 'true';
-    const stockAlto = searchParams.get('altoStock') === 'true';
+    const stockBajo = searchParams.get('stockBajo') === 'true' || searchParams.get('bajoStock') === 'true'; // Aceptar ambos parámetros
+    const stockAlto = searchParams.get('altoStock') === 'true' || searchParams.get('stockAlto') === 'true'; // Aceptar ambos parámetros
     
     // Construir la consulta
     let where = {};
@@ -35,15 +35,10 @@ export async function GET(request) {
       ];
     }
     
-    if (stockBajo) {
-      // Para nivel de alerta bajo
-      where.nivel_alerta = 'bajo';
-    }
+    // No usar filters inicialmente
+    let filters = {};
     
-    if (stockAlto) {
-      // Para nivel de alerta alto
-      where.nivel_alerta = 'alto';
-    }
+    // Después de la consulta, filtraremos los resultados para stock bajo y alto
     
     // Ejecutar la consulta
     const productos = await prisma.producto.findMany({
@@ -55,6 +50,46 @@ export async function GET(request) {
         nombre_producto: 'asc'
       }
     });
+    
+    // Filtrar por stock bajo o alto después de obtener los resultados
+    if (stockBajo) {
+      console.log(`Filtrando productos con stock bajo de ${productos.length} productos totales`);
+      const productosConBajoStock = productos.filter(p => {
+        const stock = parseFloat(p.stock || 0);
+        const stock_minimo = parseFloat(p.stock_minimo || 5);
+        // Cambiar condición: un producto tiene stock bajo solo si su stock es MENOR que el stock_minimo
+        const esBajoStock = stock < stock_minimo;
+        
+        if (esBajoStock) {
+          console.log(`Producto con stock bajo: ${p.nombre_producto}, Stock: ${stock}, Stock mínimo: ${stock_minimo}`);
+        }
+        
+        return esBajoStock;
+      });
+      
+      console.log(`Se encontraron ${productosConBajoStock.length} productos con stock bajo`);
+      return NextResponse.json(productosConBajoStock);
+    }
+    
+    if (stockAlto) {
+      console.log(`Filtrando productos con stock alto de ${productos.length} productos totales`);
+      const productosConAltoStock = productos.filter(p => {
+        const stock = parseFloat(p.stock || 0);
+        const stock_minimo = parseFloat(p.stock_minimo || 5);
+        const umbralAltoStock = stock_minimo * 3; // Stock alto: 3 veces el mínimo
+        // Condición claramente definida para stock alto
+        const esAltoStock = stock > umbralAltoStock;
+        
+        if (esAltoStock) {
+          console.log(`Producto con stock alto: ${p.nombre_producto}, Stock: ${stock}, Stock mínimo: ${stock_minimo}, Umbral alto stock: ${umbralAltoStock}`);
+        }
+        
+        return esAltoStock;
+      });
+      
+      console.log(`Se encontraron ${productosConAltoStock.length} productos con stock alto`);
+      return NextResponse.json(productosConAltoStock);
+    }
     
     return NextResponse.json(productos);
   } catch (error) {
@@ -92,12 +127,16 @@ export async function POST(request) {
     }
     
     // Crear el producto
+    const stock = parseFloat(data.stock || 0);
+    const stock_minimo = parseFloat(data.stock_minimo || 10);
+    
     const producto = await prisma.producto.create({
       data: {
         nombre_producto: data.nombre_producto,
         descripcion: data.descripcion || null,
-        stock: data.stock || 0,
-        nivel_alerta: data.stock < (data.stock_minimo || 10) ? 'bajo' : 'normal',
+        stock: stock,
+        stock_minimo: stock_minimo,
+        nivel_alerta: stock < stock_minimo ? 'bajo' : 'normal',
         categoria_id_categoria: parseInt(data.categoria_id_categoria)
       }
     });

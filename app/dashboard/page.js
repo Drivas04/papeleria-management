@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
+import { isSameDay, isSameMonth } from '@/app/lib/date-utils';
 
 export default function DashboardPage() {
   const { data: session } = useSession();
@@ -20,6 +21,44 @@ export default function DashboardPage() {
   });
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  
+  // Función para formatear moneda
+  const formatCurrency = (amount) => {
+    // Asegurar que amount sea un número
+    const numericAmount = parseFloat(amount || 0);
+    return new Intl.NumberFormat('es-ES', {
+      style: 'currency',
+      currency: 'COP'
+    }).format(numericAmount);
+  };
+
+  // Función para mostrar el tipo de usuario
+  const getUserRoleText = (role) => {
+    switch (role?.toLowerCase()) {
+      case 'admin':
+        return 'Administrador';
+      case 'vendedor':
+        return 'Vendedor';
+      default:
+        return 'Usuario';
+    }
+  };
+  
+  // Función para formatear fechas
+  const formatDate = (dateString) => {
+    // Crear una fecha desde la cadena
+    const date = new Date(dateString);
+    
+    // Ajustar la fecha añadiéndole un día para compensar la diferencia de zona horaria
+    const adjustedDate = new Date(date.getTime() + 24 * 60 * 60 * 1000);
+    
+    // Aplicar formato español
+    return adjustedDate.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    });
+  };
   
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -39,7 +78,7 @@ export default function DashboardPage() {
             // Si hay error con clientes, al menos mostramos productos
             setStats(prevState => ({
               ...prevState,
-              totalProductos: Array.isArray(productos) ? productos.filter(p => p.estado).length : 0
+              totalProductos: Array.isArray(productos) ? productos.length : 0
             }));
             throw new Error(`Error al cargar clientes: ${clientesRes.status}`);
           }
@@ -48,36 +87,75 @@ export default function DashboardPage() {
           // Actualizar con lo que tenemos hasta ahora
           setStats(prevState => ({
             ...prevState,
-            totalProductos: Array.isArray(productos) ? productos.filter(p => p.estado).length : 0,
-            totalClientes: Array.isArray(clientes) ? clientes.filter(c => c.estado).length : 0
+            totalProductos: Array.isArray(productos) ? productos.length : 0,
+            totalClientes: Array.isArray(clientes) ? clientes.length : 0
           }));
           
           // Intentar cargar datos de ventas
           try {
             const ventasRes = await fetch('/api/ventas');
-            if (ventasRes.ok) {
-              const ventas = await ventasRes.json();
+            if (ventasRes.ok) {                const ventas = await ventasRes.json();
               if (Array.isArray(ventas)) {
                 const fechaHoy = new Date();
+                // Ordenar las ventas por fecha más reciente y tomar las últimas 5
                 const ventasRecientes = ventas
-                  .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                  .filter(v => v.factura_venta?.fecha) // Solo ventas con fecha
+                  .sort((a, b) => {
+                    // Ordenar por la fecha de la factura_venta
+                    const fechaA = new Date(a.factura_venta.fecha);
+                    const fechaB = new Date(b.factura_venta.fecha);
+                    return fechaB - fechaA;
+                  })
                   .slice(0, 5);
                   
-                // Ventas de hoy
+                // Ventas de hoy - usando comparación flexible que incluye el día anterior
                 const ventasHoy = ventas.filter(v => {
-                  const fechaVenta = new Date(v.fecha);
-                  return fechaVenta.toDateString() === fechaHoy.toDateString() && v.estado === 'COMPLETADA';
+                  // La fecha está en la factura_venta, no en la venta directamente
+                  if (!v.factura_venta || !v.factura_venta.fecha) return false;
+                  if (v.estado !== 'COMPLETADA') return false;
+                  
+                  const fechaVenta = new Date(v.factura_venta.fecha);
+                  const fechaHoy = new Date();
+                  
+                  // Verificar si la venta es de hoy o del día anterior (para compensar problemas de zona horaria)
+                  const esDeFechaActual = fechaVenta.getDate() === fechaHoy.getDate() && 
+                                      fechaVenta.getMonth() === fechaHoy.getMonth() && 
+                                      fechaVenta.getFullYear() === fechaHoy.getFullYear();
+                                      
+                  // Esta condición es para incluir las ventas que aparecen como del día anterior debido a problemas de zona horaria
+                  const fechaAyer = new Date(fechaHoy);
+                  fechaAyer.setDate(fechaHoy.getDate() - 1);
+                  const esDeFechaAnterior = fechaVenta.getDate() === fechaAyer.getDate() &&
+                                        fechaVenta.getMonth() === fechaAyer.getMonth() &&
+                                        fechaVenta.getFullYear() === fechaAyer.getFullYear();
+                  
+                  return esDeFechaActual || esDeFechaAnterior;
                 });
-                const totalVentasHoy = ventasHoy.reduce((sum, venta) => sum + parseFloat(venta.total || 0), 0);
+                
+              
+                
+                
+                // Sumar los totales de las facturas de ventas completadas de hoy
+                const totalVentasHoy = ventasHoy.reduce((sum, venta) => {
+                  const total = venta.factura_venta?.total ? parseFloat(venta.factura_venta.total) : 0;
+                  return sum + total;
+                }, 0);
                 
                 // Ventas del mes
                 const ventasDelMes = ventas.filter(v => {
-                  const fechaVenta = new Date(v.fecha);
-                  return fechaVenta.getMonth() === fechaHoy.getMonth() && 
-                         fechaVenta.getFullYear() === fechaHoy.getFullYear() &&
-                         v.estado === 'COMPLETADA';
+                  // La fecha está en la factura_venta, no en la venta directamente
+                  if (!v.factura_venta || !v.factura_venta.fecha) return false;
+                  if (v.estado !== 'COMPLETADA') return false;
+                  
+                  // Usar la utilidad isSameMonth para comparar fechas
+                  return isSameMonth(v.factura_venta.fecha, new Date());
                 });
-                const totalVentasMes = ventasDelMes.reduce((sum, venta) => sum + parseFloat(venta.total || 0), 0);
+                
+                // Sumar los totales de las facturas de ventas completadas del mes
+                const totalVentasMes = ventasDelMes.reduce((sum, venta) => {
+                  const total = venta.factura_venta?.total ? parseFloat(venta.factura_venta.total) : 0;
+                  return sum + total;
+                }, 0);
                 
                 setStats(prevState => ({
                   ...prevState,
@@ -97,29 +175,33 @@ export default function DashboardPage() {
             if (comprasRes.ok) {
               const compras = await comprasRes.json();
               if (Array.isArray(compras)) {
-                const fechaHoy = new Date();
                 const comprasRecientes = compras
-                  .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+                  .sort((a, b) => new Date(b.fecha_compra || 0) - new Date(a.fecha_compra || 0))
                   .slice(0, 5);
                   
                 // Compras del mes
                 const comprasDelMes = compras.filter(c => {
-                  const fechaCompra = new Date(c.fecha);
-                  return fechaCompra.getMonth() === fechaHoy.getMonth() && 
-                         fechaCompra.getFullYear() === fechaHoy.getFullYear() &&
-                         c.estado === 'COMPLETADA';
+                  if (!c.fecha_compra) return false;
+                  if (c.estado !== 'COMPLETADA') return false;
+                  
+                  // Usar la utilidad isSameMonth para comparar fechas
+                  return isSameMonth(c.fecha_compra, new Date());
                 });
                 const totalComprasMes = comprasDelMes.reduce((sum, compra) => sum + parseFloat(compra.total || 0), 0);
                 
-                // Calcular ganancia estimada
-                const gananciaEstimada = stats.totalVentasMes - totalComprasMes;
-                
-                setStats(prevState => ({
-                  ...prevState,
-                  totalComprasMes,
-                  gananciaEstimada,
-                  comprasRecientes
-                }));
+                // Calcular ganancia estimada usando el último valor conocido de totalVentasMes
+                setStats(prevState => {
+                  // Usamos el prevState.totalVentasMes actualizado que ya debería contener el valor correcto
+                  const ventasMesActual = prevState.totalVentasMes || 0;
+                  const gananciaEstimada = ventasMesActual - totalComprasMes;
+                  
+                  return {
+                    ...prevState,
+                    totalComprasMes,
+                    gananciaEstimada,
+                    comprasRecientes
+                  };
+                });
               }
             }
           } catch (comprasError) {
@@ -128,22 +210,28 @@ export default function DashboardPage() {
           
           // Intentar cargar productos con stock bajo y alto
           try {
-            const bajoStockRes = await fetch('/api/productos?bajoStock=true');
+            // Cargar productos con stock bajo
+            const bajoStockRes = await fetch('/api/productos?stockBajo=true');
             if (bajoStockRes.ok) {
               const productosConBajoStock = await bajoStockRes.json();
               setStats(prevState => ({
                 ...prevState,
                 productosConBajoStock: Array.isArray(productosConBajoStock) ? productosConBajoStock : []
               }));
+            } else {
+              console.error('Error al cargar productos con stock bajo:', bajoStockRes.status);
             }
             
-            const altoStockRes = await fetch('/api/productos?altoStock=true');
+            // Cargar productos con stock alto
+            const altoStockRes = await fetch('/api/productos?stockAlto=true');
             if (altoStockRes.ok) {
               const productosConAltoStock = await altoStockRes.json();
               setStats(prevState => ({
                 ...prevState,
                 productosConAltoStock: Array.isArray(productosConAltoStock) ? productosConAltoStock : []
               }));
+            } else {
+              console.error('Error al cargar productos con stock alto:', altoStockRes.status);
             }
           } catch (stockError) {
             console.error("Error cargando datos de stock:", stockError);
@@ -163,23 +251,6 @@ export default function DashboardPage() {
     
     fetchDashboardData();
   }, []);
-  
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric'
-    });
-  };
-  
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'COP',
-      minimumFractionDigits: 2
-    }).format(amount);
-  };
   
   if (isLoading) {
     return (
@@ -204,7 +275,12 @@ export default function DashboardPage() {
     <div className="p-6">
       <div className="mb-6">
         <h1 className="text-2xl font-bold">Dashboard</h1>
-        <p className="text-gray-600">Bienvenido {session?.user?.name || 'Usuario'}, aquí tienes un resumen de tu negocio</p>
+        <p className="text-gray-600">Bienvenido {session?.user?.name || 'Usuario'}, accediste como <span className="font-semibold">{getUserRoleText(session?.user?.role)}</span></p>
+        <p className="text-sm text-gray-500 mt-1">
+          {session?.user?.role?.toLowerCase() === 'admin' 
+            ? 'Tienes acceso a todas las funciones del sistema.'
+            : 'Tienes acceso a las funciones de venta, productos, categorías, clientes, facturas de venta y cierre de caja.'}
+        </p>
       </div>
       
       {/* Tarjetas de resumen */}
@@ -397,17 +473,21 @@ export default function DashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {stats.productosConAltoStock.slice(0, 4).map((producto) => (
-                    <tr key={producto.id_producto} className="border-t">
-                      <td className="px-4 py-2">{producto.nombre_producto || producto.nombre}</td>
-                      <td className="px-4 py-2">
-                        <span className="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-xs">
-                          {producto.stock}
-                        </span>
-                      </td>
-                      <td className="px-4 py-2">{producto.stockMaximo}</td>
-                    </tr>
-                  ))}
+                  {stats.productosConAltoStock.slice(0, 4).map((producto) => {
+                    const stockMinimo = parseFloat(producto.stock_minimo || 5);
+                    const umbralAlto = stockMinimo * 3;
+                    return (
+                      <tr key={producto.id_producto} className="border-t">
+                        <td className="px-4 py-2">{producto.nombre_producto || producto.nombre}</td>
+                        <td className="px-4 py-2">
+                          <span className="px-2 py-1 bg-orange-100 text-orange-800 rounded-full text-xs">
+                            {producto.stock}
+                          </span>
+                        </td>
+                        <td className="px-4 py-2">{umbralAlto} <span className="text-xs text-gray-500">(3x min)</span></td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -443,12 +523,14 @@ export default function DashboardPage() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {stats.ventasRecientes.map((venta) => (
                       <tr key={venta.id_venta} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">{formatDate(venta.fecha)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">{venta.factura_venta?.fecha ? 
+                                                  formatDate(venta.factura_venta.fecha) : 
+                                                  'Sin fecha'}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
                           {venta.cliente?.nombre} {venta.cliente?.apellido}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          {formatCurrency(parseFloat(venta.total))}
+                          {formatCurrency(parseFloat(venta.factura_venta?.total || 0))}
                         </td>
                       </tr>
                     ))}
@@ -485,12 +567,14 @@ export default function DashboardPage() {
                   <tbody className="bg-white divide-y divide-gray-200">
                     {stats.comprasRecientes.map((compra) => (
                       <tr key={compra.id_compra} className="hover:bg-gray-50">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">{formatDate(compra.fecha)}</td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          {compra.proveedor?.nombre}
+                          {compra.fecha_compra ? formatDate(compra.fecha_compra) : 'Sin fecha'}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          {formatCurrency(parseFloat(compra.total))}
+                          {compra.proveedor?.nombre || 'Sin proveedor'}
+                        </td>
+                        <td className="px-6 py-4 whitespace-nowrap text-sm">
+                          {formatCurrency(parseFloat(compra.total || 0))}
                         </td>
                       </tr>
                     ))}

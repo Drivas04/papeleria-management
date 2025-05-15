@@ -2,21 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { formatDate, formatMoney } from '../../lib/utils';
 
-export default function ComprasPage() {
-  const [compras, setCompras] = useState([]);
+export default function FacturasCompraPage() {
+  const [facturas, setFacturas] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const router = useRouter();
   
   useEffect(() => {
     const fetchCompras = async () => {
       try {
         const res = await fetch('/api/compras');
         if (!res.ok) throw new Error('Error al cargar compras');
-        const data = await res.json();
-        setCompras(data);
+        
+        const compras = await res.json();
+        // Filtrar solo las compras que tienen factura
+        const comprasConFactura = compras.filter(compra => compra.factura_compra);
+        setFacturas(comprasConFactura);
       } catch (error) {
         console.error('Error:', error);
       } finally {
@@ -27,16 +27,27 @@ export default function ComprasPage() {
     fetchCompras();
   }, []);
   
-  
+  const formatDate = (dateString) => {
+    if (!dateString) return 'N/A';
+    const date = new Date(dateString);
+    return isNaN(date.getTime()) 
+      ? 'Fecha inválida'
+      : date.toLocaleDateString('es-ES', {
+          day: '2-digit',
+          month: '2-digit',
+          year: 'numeric'
+        });
+  };
+
+  const formatCurrency = (value) => {
+    const num = parseFloat(value);
+    return !isNaN(num) ? `$${num.toFixed(2)}` : '$0.00';
+  };
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Gestión de Compras</h1>
-        <Link href="/dashboard/compras/nueva" 
-              className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow">
-          Nueva Compra
-        </Link>
+        <h1 className="text-2xl font-bold">Facturas de Compra</h1>
       </div>
       
       {isLoading ? (
@@ -45,55 +56,39 @@ export default function ComprasPage() {
         </div>
       ) : (
         <div className="bg-white rounded-lg shadow overflow-hidden">
-          {compras.length === 0 ? (
+          {facturas.length === 0 ? (
             <div className="p-6 text-center text-gray-500">
-              No hay compras registradas. Haga clic en "Nueva Compra" para crear una.
+              No hay facturas de compra registradas.
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="min-w-full divide-y divide-gray-200">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID Factura</th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Fecha</th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Proveedor</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Impuestos</th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                    <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Estado</th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {compras.map((compra) => (
+                  {facturas.map((compra) => (
                     <tr key={compra.id_compra} className="hover:bg-gray-50">
-                      <td className="px-6 py-4 whitespace-nowrap">{compra.id_compra}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{formatDate(compra.fecha_compra)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        {compra.proveedor?.nombre}
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">${parseFloat(compra.total).toFixed(2)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <span 
-                          className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            compra.estado === 'COMPLETADA' 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-red-100 text-red-800'
-                          }`}
-                        >
-                          {compra.estado === 'COMPLETADA' ? 'Completada' : 'Anulada'}
-                        </span>
-                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">{compra.factura_compra?.id_factura}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{formatDate(compra.factura_compra?.fecha)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{compra.proveedor?.nombre || 'N/A'}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(compra.factura_compra?.subtotal)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(compra.factura_compra?.impuestos)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(compra.factura_compra?.total)}</td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() => router.push(`/dashboard/compras/editar/${compra.id_compra}`)}
-                          className="text-indigo-600 hover:text-indigo-900 mr-4"
-                        >
-                          Editar
-                        </button>
                         <Link
                           href={`/dashboard/compras/${compra.id_compra}`}
                           className="text-blue-600 hover:text-blue-900"
                         >
-                          Ver
+                          Ver Detalles
                         </Link>
                       </td>
                     </tr>

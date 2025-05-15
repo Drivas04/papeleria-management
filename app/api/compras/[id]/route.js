@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '@/app/generated/prisma';
-import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-
-const prisma = new PrismaClient();
+import { prisma } from '@/app/lib/prisma';
+import { getServerSession } from 'next-auth';
+import { authOptions } from '@/app/lib/auth';
 
 // GET - Obtener una compra por ID
 export async function GET(request, { params }) {
@@ -28,7 +26,8 @@ export async function GET(request, { params }) {
           include: {
             producto: true
           }
-        }
+        },
+        factura_compra: true
       }
     });
     
@@ -184,11 +183,17 @@ export async function DELETE(request, { params }) {
       return NextResponse.json({ error: 'ID inválido' }, { status: 400 });
     }
     
+    console.log(`Iniciando anulación de compra ID: ${id}`);
+    
     // Obtener la compra actual
     const compraActual = await prisma.compra.findUnique({
-      where: { id },
+      where: { id_compra: id },
       include: {
-        detalles: true
+        compra_productos: {
+          include: {
+            producto: true
+          }
+        }
       }
     });
     
@@ -200,7 +205,7 @@ export async function DELETE(request, { params }) {
     await prisma.$transaction(async (tx) => {
       // 1. Actualizar la compra a estado ANULADA
       await tx.compra.update({
-        where: { id },
+        where: { id_compra: id },
         data: {
           estado: 'ANULADA'
         }
@@ -208,12 +213,12 @@ export async function DELETE(request, { params }) {
       
       // 2. Ajustar el stock de productos si la compra estaba completada
       if (compraActual.estado === 'COMPLETADA') {
-        for (const detalle of compraActual.detalles) {
+        for (const detalle of compraActual.compra_productos) {
           await tx.producto.update({
-            where: { id: detalle.productoId },
+            where: { id_producto: detalle.producto_id_producto },
             data: {
               stock: {
-                decrement: detalle.cantidad
+                decrement: parseFloat(detalle.cantidad)
               }
             }
           });

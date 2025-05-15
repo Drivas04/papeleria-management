@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { useSession, SessionProvider } from "next-auth/react";
 import Sidebar from "../components/Sidebar";
 
@@ -9,6 +9,7 @@ import Sidebar from "../components/Sidebar";
 function DashboardContent({ children }) {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const pathname = usePathname();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,10 +19,41 @@ function DashboardContent({ children }) {
     
     if (!session) {
       router.push('/auth/login');
-    } else {
+      return;
+    }
+
+    // Comprueba si tiene acceso a la ruta actual según su rol
+    const checkRouteAccess = () => {
+      const path = pathname;
+      const userRole = session.user.role?.toLowerCase() || '';
+
+      // Rutas exclusivas para administradores
+      const adminOnlyRoutes = [
+        '/dashboard/compras',
+        '/dashboard/compras/',
+        '/dashboard/facturas/compra',
+        '/dashboard/proveedores',
+        '/dashboard/usuarios',
+      ];
+      
+      // Si es una ruta administrativa y el usuario no es administrador, redireccionar
+      if (userRole !== 'admin' && 
+          (adminOnlyRoutes.includes(path) || 
+           adminOnlyRoutes.some(route => 
+             path.startsWith(route + '/')
+           ))) {
+        alert("No tienes permiso para acceder a esta sección");
+        router.push('/dashboard');
+        return false;
+      }
+      
+      return true;
+    };
+
+    if (checkRouteAccess()) {
       setLoading(false);
     }
-  }, [session, status, router]);
+  }, [session, status, router, pathname]);
 
   if (loading) {
     return (

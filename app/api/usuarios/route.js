@@ -1,17 +1,13 @@
-import { PrismaClient } from "../../generated/prisma";
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { getServerSession } from 'next-auth';
-
-// Usar un singleton para la instancia de PrismaClient
-const globalForPrisma = globalThis;
-const prisma = globalForPrisma.prisma || new PrismaClient();
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+import { prisma } from '@/app/lib/prisma';
+import { authOptions } from '@/app/lib/auth';
 
 // GET - Obtener todos los usuarios
 export async function GET(request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     
     if (!session) {
       return new NextResponse(

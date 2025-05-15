@@ -20,9 +20,13 @@ export default function ClientForm({ cliente = null }) {
       cedula: cliente?.cedula || "",
       nombre: cliente?.nombre || "",
       apellido: cliente?.apellido || "",
+      direccion: cliente?.direccion || "",
+      email: cliente?.email || "",
       telefono: cliente?.telefono || "",
       compras_semanales: cliente?.compras_semanales?.toString() || "0",
-      deuda_total: cliente?.deuda_total?.toString() || "0"
+      deuda_total: cliente?.deuda_total?.toString() || "0",
+      total_compras: cliente?.total_compras?.toString() || "0",
+      ultima_compra: cliente?.ultima_compra ? new Date(cliente.ultima_compra).toISOString().split('T')[0] : ""
     }
   });
 
@@ -42,7 +46,8 @@ export default function ClientForm({ cliente = null }) {
       const clienteData = {
         ...data,
         compras_semanales: parseFloat(data.compras_semanales || 0),
-        deuda_total: parseFloat(data.deuda_total || 0)
+        deuda_total: parseFloat(data.deuda_total || 0),
+        total_compras: parseInt(data.total_compras || 0)
       };
       
       const response = await fetch(url, {
@@ -141,6 +146,36 @@ export default function ClientForm({ cliente = null }) {
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
           />
         </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Email
+          </label>
+          <input
+            type="email"
+            {...register("email", {
+              pattern: {
+                value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                message: "Email inválido"
+              }
+            })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+          {errors.email && (
+            <p className="mt-1 text-sm text-red-600">{errors.email.message}</p>
+          )}
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Dirección
+          </label>
+          <input
+            type="text"
+            {...register("direccion")}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+        </div>
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -176,6 +211,30 @@ export default function ClientForm({ cliente = null }) {
               className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
             />
           </div>
+        </div>
+
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Total Compras
+          </label>
+          <input
+            type="number"
+            step="1"
+            min="0"
+            {...register("total_compras")}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
+        </div>
+        
+        <div>
+          <label className="block text-sm font-medium text-gray-700">
+            Última Compra
+          </label>
+          <input
+            type="date"
+            {...register("ultima_compra")}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          />
         </div>
       </div>
 

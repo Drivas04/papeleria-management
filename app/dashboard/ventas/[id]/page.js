@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { formatDate, formatMoney } from '@/app/lib/utils';
 
 export default function DetalleVentaPage() {
   const { id } = useParams();
@@ -11,6 +12,44 @@ export default function DetalleVentaPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
+  // Función para calcular el subtotal de la venta
+  const calcularSubtotal = (detalles) => {
+    if (!detalles || detalles.length === 0) return 0;
+    try {
+      return detalles.reduce((total, detalle) => {
+        const cantidad = parseFloat(detalle.cantidad) || 0;
+        const precio = parseFloat(detalle.precio_unitario) || 0;
+        return total + (cantidad * precio);
+      }, 0);
+    } catch (error) {
+      console.error("Error al calcular subtotal:", error);
+      return 0;
+    }
+  };
+  
+  // Función para calcular el IVA (19%)
+  const calcularIva = (subtotal) => {
+    try {
+      const iva = parseFloat(subtotal) * 0.19;
+      return isNaN(iva) ? 0 : iva;
+    } catch (error) {
+      console.error("Error al calcular IVA:", error);
+      return 0;
+    }
+  };
+  
+  // Función para calcular el total con IVA
+  const calcularTotal = (detalles) => {
+    try {
+      const subtotal = calcularSubtotal(detalles);
+      const iva = calcularIva(subtotal);
+      return subtotal + iva;
+    } catch (error) {
+      console.error("Error al calcular total:", error);
+      return 0;
+    }
+  };
+  
   useEffect(() => {
     const fetchVenta = async () => {
       try {
@@ -18,6 +57,14 @@ export default function DetalleVentaPage() {
         if (!res.ok) throw new Error('No se pudo cargar la información de la venta');
         
         const data = await res.json();
+        
+        // Añadir logs para depuración
+        console.log('Datos completos de la venta:', data);
+        console.log('¿Tiene factura_venta?', !!data.factura_venta);
+        if (data.factura_venta) {
+          console.log('Fecha en factura_venta:', data.factura_venta.fecha);
+        }
+        
         setVenta(data);
       } catch (error) {
         console.error('Error:', error);
@@ -32,23 +79,8 @@ export default function DetalleVentaPage() {
     }
   }, [id]);
   
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
   
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('es-ES', {
-      style: 'currency',
-      currency: 'COP'
-    }).format(parseFloat(amount));
-  };
+  
   
   const handleAnularVenta = async () => {
     if (!confirm('¿Está seguro de anular esta venta? Esta acción devolverá el stock de los productos.')) {
@@ -154,7 +186,11 @@ export default function DetalleVentaPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Fecha</h3>
-                <p>{formatDate(venta.fecha)}</p>
+                {venta.factura_venta?.fecha ? (
+                  <p className="font-medium text-gray-900">{formatDate(venta.factura_venta.fecha)}</p>
+                ) : (
+                  <p className="text-gray-500 italic">Sin fecha registrada</p>
+                )}
               </div>
               
               <div>
@@ -163,13 +199,23 @@ export default function DetalleVentaPage() {
               </div>
               
               <div>
+                <h3 className="text-sm font-medium text-gray-500">Subtotal</h3>
+                <p>{formatMoney(calcularSubtotal(venta?.venta_productos))}</p>
+              </div>
+              
+              <div>
+                <h3 className="text-sm font-medium text-gray-500">IVA (19%)</h3>
+                <p>{formatMoney(calcularIva(calcularSubtotal(venta?.venta_productos)))}</p>
+              </div>
+              
+              <div>
                 <h3 className="text-sm font-medium text-gray-500">Total</h3>
-                <p className="text-lg font-semibold">{formatCurrency(venta.total)}</p>
+                <p className="text-lg font-semibold">{formatMoney(calcularTotal(venta?.venta_productos))}</p>
               </div>
               
               <div>
                 <h3 className="text-sm font-medium text-gray-500">Atendido por</h3>
-                <p>{venta.usuario?.nombre} {venta.usuario?.apellido}</p>
+                <p>{venta.usuario.rol === 'vendedor' ? "Gladys" : "Rosita"}</p>
               </div>
               
               <div>
@@ -199,20 +245,34 @@ export default function DetalleVentaPage() {
                   </tr>
                 </thead>
                 <tbody className="bg-white divide-y divide-gray-200">
-                  {venta.detalles.map((detalle) => (
-                    <tr key={detalle.id}>
+                  {venta?.venta_productos?.map((detalle) => (
+                    <tr key={`${detalle?.venta_id_venta}-${detalle?.producto_id_producto}`}>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        {detalle.producto?.nombre}
-                        <div className="text-xs text-gray-500">Código: {detalle.producto?.codigo}</div>
+                        {detalle?.producto?.nombre_producto}
+                        <div className="text-xs text-gray-500">ID: {detalle?.producto?.id_producto}</div>
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap">{detalle.cantidad}</td>
-                      <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(detalle.precioUnitario)}</td>
-                      <td className="px-6 py-4 whitespace-nowrap font-medium">{formatCurrency(detalle.subtotal)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{detalle?.cantidad}</td>
+                      <td className="px-6 py-4 whitespace-nowrap">{formatMoney(detalle?.precio_unitario)}</td>
+                      <td className="px-6 py-4 whitespace-nowrap font-medium">{formatMoney(detalle?.cantidad * detalle?.precio_unitario)}</td>
                     </tr>
                   ))}
                   <tr className="bg-gray-50">
+                    <td colSpan="3" className="px-6 py-4 text-right font-medium">SUBTOTAL</td>
+                    <td className="px-6 py-4 whitespace-nowrap font-medium">
+                      {formatMoney(calcularSubtotal(venta?.venta_productos))}
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-50">
+                    <td colSpan="3" className="px-6 py-4 text-right font-medium">IVA (19%)</td>
+                    <td className="px-6 py-4 whitespace-nowrap font-medium">
+                      {formatMoney(calcularIva(calcularSubtotal(venta?.venta_productos)))}
+                    </td>
+                  </tr>
+                  <tr className="bg-gray-50">
                     <td colSpan="3" className="px-6 py-4 text-right font-bold">TOTAL</td>
-                    <td className="px-6 py-4 whitespace-nowrap font-bold">{formatCurrency(venta.total)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap font-bold">
+                      {formatMoney(calcularTotal(venta?.venta_productos))}
+                    </td>
                   </tr>
                 </tbody>
               </table>

@@ -15,7 +15,7 @@ const robotoMono = Roboto_Mono({
 
 export const metadata = {
   title: "Papelería Rosita - Sistema de Gestión",
-  description: "Sistema de gestión para inventario, ventas y clientes de Papelería Rosita",
+  description: "Sistema de gestión para inventario, ventas y clientes de Papelería Rosita"
 };
 
 export default function RootLayout({ children }) {

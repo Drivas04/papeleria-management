@@ -22,6 +22,7 @@ export default function ProductosPage() {
   const [busqueda, setBusqueda] = useState("");
   const [categoriaFiltro, setCategoriaFiltro] = useState("");
   const [stockBajo, setStockBajo] = useState(false);
+  const [stockAlto, setStockAlto] = useState(false);
 
   useEffect(() => {
     // Cargar categorías para el filtro
@@ -61,6 +62,10 @@ export default function ProductosPage() {
       
       if (stockBajo) {
         url += "stockBajo=true&";
+      }
+      
+      if (stockAlto) {
+        url += "stockAlto=true&";
       }
       
       const response = await fetch(url);
@@ -109,6 +114,7 @@ export default function ProductosPage() {
     setBusqueda("");
     setCategoriaFiltro("");
     setStockBajo(false);
+    setStockAlto(false);
     
     // Recargar productos sin filtros
     setTimeout(fetchProductos, 0);
@@ -168,15 +174,35 @@ export default function ProductosPage() {
               </select>
             </div>
             
-            <div className="flex items-end">
+            <div className="flex items-end flex-col space-y-2">
               <label className="inline-flex items-center">
                 <input 
                   type="checkbox" 
                   checked={stockBajo} 
-                  onChange={(e) => setStockBajo(e.target.checked)}
+                  onChange={(e) => {
+                    setStockBajo(e.target.checked);
+                    if (e.target.checked) {
+                      setStockAlto(false);
+                    }
+                  }}
                   className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
                 />
                 <span className="ml-2">Solo productos con stock bajo</span>
+              </label>
+              
+              <label className="inline-flex items-center">
+                <input 
+                  type="checkbox" 
+                  checked={stockAlto} 
+                  onChange={(e) => {
+                    setStockAlto(e.target.checked);
+                    if (e.target.checked) {
+                      setStockBajo(false);
+                    }
+                  }}
+                  className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                />
+                <span className="ml-2">Solo productos con stock alto</span>
               </label>
             </div>
             
@@ -267,21 +293,33 @@ export default function ProductosPage() {
                         <td className="px-6 py-4 whitespace-nowrap">
                           <div className="text-sm text-gray-900">
                             {/* Precio de último venta aquí o mensaje si no hay */}
-                            {producto.ultimo_precio_venta ? `$${producto.ultimo_precio_venta.toFixed(2)}` : "N/A"}
+                            {producto.precio_venta ? `$${producto.precio_venta}` : "N/A"}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
-                          <div className={`text-sm ${producto.stock <= 5 ? 'text-red-600 font-bold' : 'text-gray-900'}`}>
-                            {producto.stock} {producto.stock <= 5 && "⚠️"}
+                          <div className="flex items-center">
+                            <span className={`text-sm mr-2 ${
+                              producto.nivel_alerta === 'bajo' ? 'text-red-600 font-bold' : 'text-gray-900'
+                            }`}>
+                              {producto.stock}
+                            </span>
+                            {producto.nivel_alerta === 'bajo' && (
+                              <span className="text-red-600 bg-red-100 text-xs px-2 py-1 rounded-full" title="Stock por debajo del mínimo">
+                                Bajo ⚠️
+                              </span>
+                            )}
+                          </div>
+                          <div className="text-xs text-gray-500">
+                            Mín: {producto.stock_minimo || 5}
                           </div>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                            producto.estado 
+                            !producto.estado 
                               ? "bg-green-100 text-green-800" 
                               : "bg-red-100 text-red-800"
                           }`}>
-                            {producto.estado ? "Activo" : "Inactivo"}
+                            {!producto.estado ? "Activo" : "Inactivo"}
                           </span>
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

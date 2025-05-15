@@ -1,7 +1,5 @@
-import { PrismaClient } from "../../../generated/prisma";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+import { prisma } from '@/app/lib/prisma';
 
 // GET - Obtener un cliente por ID
 export async function GET(request, { params }) {

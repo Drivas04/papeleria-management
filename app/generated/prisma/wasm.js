@@ -128,7 +128,9 @@ exports.Prisma.CajaScalarFieldEnum = {
   monto_final: 'monto_final',
   total_ventas: 'total_ventas',
   diferencia: 'diferencia',
-  usuario_id_usuario: 'usuario_id_usuario'
+  estado: 'estado',
+  usuario_id_usuario: 'usuario_id_usuario',
+  notas: 'notas'
 };
 
 exports.Prisma.CategoriaScalarFieldEnum = {
@@ -141,9 +143,13 @@ exports.Prisma.ClienteScalarFieldEnum = {
   cedula: 'cedula',
   nombre: 'nombre',
   apellido: 'apellido',
+  direccion: 'direccion',
+  email: 'email',
   telefono: 'telefono',
   compras_semanales: 'compras_semanales',
-  deuda_total: 'deuda_total'
+  deuda_total: 'deuda_total',
+  total_compras: 'total_compras',
+  ultima_compra: 'ultima_compra'
 };
 
 exports.Prisma.CompraScalarFieldEnum = {
@@ -194,6 +200,9 @@ exports.Prisma.ProductoScalarFieldEnum = {
   nombre_producto: 'nombre_producto',
   descripcion: 'descripcion',
   stock: 'stock',
+  precio_compra: 'precio_compra',
+  precio_venta: 'precio_venta',
+  stock_minimo: 'stock_minimo',
   nivel_alerta: 'nivel_alerta',
   categoria_id_categoria: 'categoria_id_categoria'
 };
@@ -238,6 +247,11 @@ exports.Prisma.NullsOrder = {
   last: 'last'
 };
 
+exports.Prisma.CajaOrderByRelevanceFieldEnum = {
+  estado: 'estado',
+  notas: 'notas'
+};
+
 exports.Prisma.CategoriaOrderByRelevanceFieldEnum = {
   nombre: 'nombre'
 };
@@ -246,6 +260,8 @@ exports.Prisma.ClienteOrderByRelevanceFieldEnum = {
   cedula: 'cedula',
   nombre: 'nombre',
   apellido: 'apellido',
+  direccion: 'direccion',
+  email: 'email',
   telefono: 'telefono'
 };
 

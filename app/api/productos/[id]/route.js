@@ -1,7 +1,5 @@
-import { PrismaClient } from "../../../generated/prisma";
 import { NextResponse } from "next/server";
-
-const prisma = new PrismaClient();
+import { prisma } from '@/app/lib/prisma';
 
 // GET - Obtener un producto por ID
 export async function GET(request, { params }) {
@@ -100,11 +98,22 @@ export async function PUT(request, { params }) {
     }
 
     // Preparar los datos de actualización según el modelo actual
+    // Calcular nivel_alerta basado en el stock actual y stock_minimo
+    let nivel_alerta = data.nivel_alerta;
+    const stock = data.stock !== undefined ? parseFloat(data.stock) : parseFloat(productoExistente.stock || 0);
+    const stock_minimo = data.stock_minimo !== undefined ? parseFloat(data.stock_minimo) : parseFloat(productoExistente.stock_minimo || 5);
+    
+    // Si se está actualizando el stock o el stock_minimo, recalcular el nivel_alerta
+    if (data.stock !== undefined || data.stock_minimo !== undefined) {
+      nivel_alerta = stock < stock_minimo ? 'bajo' : 'normal';
+    }
+    
     const updateData = {
       nombre_producto: data.nombre_producto,
       descripcion: data.descripcion,
-      stock: data.stock !== undefined ? parseFloat(data.stock) : undefined,
-      nivel_alerta: data.nivel_alerta,
+      stock: stock !== undefined ? stock : undefined,
+      stock_minimo: stock_minimo !== undefined ? stock_minimo : undefined,
+      nivel_alerta: nivel_alerta,
       categoria_id_categoria: data.categoria_id_categoria !== undefined ? parseInt(data.categoria_id_categoria) : undefined
     };
 

@@ -1,15 +1,11 @@
 import { NextResponse } from 'next/server';
-import { PrismaClient } from '../../generated/prisma';
+import { prisma } from '@/app/lib/prisma';
 import { getServerSession } from 'next-auth';
-
-// Usar un singleton para la instancia de PrismaClient
-const globalForPrisma = globalThis;
-const prisma = globalForPrisma.prisma || new PrismaClient();
-if (process.env.NODE_ENV !== 'production') globalForPrisma.prisma = prisma;
+import { authOptions } from '@/app/lib/auth';
 
 export async function GET(request) {
   try {
-    const session = await getServerSession();
+    const session = await getServerSession(authOptions);
     if (!session) {
       return new NextResponse(
         JSON.stringify({ error: 'No autenticado' }),
@@ -80,8 +76,11 @@ export async function POST(request) {
         nombre: data.nombre,
         apellido: data.apellido,
         telefono: data.telefono || null,
+        direccion: data.direccion || null,
+        email: data.email || null,
         compras_semanales: data.compras_semanales || 0,
-        deuda_total: data.deuda_total || 0
+        deuda_total: data.deuda_total || 0,
+        total_compras: data.total_compras || 0
       }
     });
 
