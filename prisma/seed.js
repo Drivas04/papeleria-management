@@ -4,7 +4,6 @@ const prisma = new PrismaClient();
 
 async function main() {
   try {
-    // Crear usuario administrador
     const adminUser = await prisma.usuario.create({
       data: {
         usuario: 'admin',
@@ -12,7 +11,19 @@ async function main() {
         rol: 'admin'
       }
     });
+    
     console.log('Usuario administrador creado:', adminUser);
+    
+    // Crear usuario vendedor
+    const vendedorUser = await prisma.usuario.create({
+      data: {
+        usuario: 'vendedor',
+        contraseña: 'vend123',
+        rol: 'vendedor'
+      }
+    });
+    
+    console.log('Usuario vendedor creado:', vendedorUser);
 
     // Crear algunas categorías
     const categorias = await Promise.all([

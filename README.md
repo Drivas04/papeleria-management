@@ -1,36 +1,39 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Papelería Rosita - Sistema de Gestión
 
-## Getting Started
+Sistema de gestión para inventario, ventas y clientes de Papelería Rosita.
 
-First, run the development server:
+## Requisitos previos
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+1. **Node.js**: Node.js (recomendado v18 o superior)
+2. **npm**: Para gestionar los paquetes
+3. **Base de datos**: MySQL V7+
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Pasos para la instalación
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+1. **Clonar el repositorio**:
+   ```bash
+   git clone [URL-DEL-REPOSITORIO]
+   cd papeleria-management
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. **Instalar dependencias**:
+    ```bash
+    npm install
 
-## Learn More
+3. **Configuración de la base de datos**
+    ```bash
+    # Ejecutar migraciones de Prisma
+    npx prisma migrate dev
 
-To learn more about Next.js, take a look at the following resources:
+    # Opcional: Generar cliente Prisma
+    npx prisma generate
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **Iniciar la aplicación**
+    ```bash
+    npm run dev
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Tecnologías utilizadas
+1. Frontend: Next.js, React, TailwindCSS
+2. Backend: Node.js, API Routes de Next.js
+3. Base de datos: MySQL con Prisma ORM
+4. Autenticación: NextAuth.js
