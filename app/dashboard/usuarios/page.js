@@ -3,10 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Header from "../../components/Header";
-import Link from "next/link";
-import { 
-  EyeIcon
-} from "@heroicons/react/24/outline";
+
 
 export default function UsuariosPage() {
   const router = useRouter();
