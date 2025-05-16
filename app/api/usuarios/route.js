@@ -16,18 +16,11 @@ export async function GET(request) {
       );
     }
     
-    const usuarios = await prisma.usuario.findMany({
-      include: {
-        rol: true
-      },
-      orderBy: {
-        fechaRegistro: 'desc'
-      }
-    });
+    const usuarios = await prisma.usuario.findMany();
 
     // No retornamos las contraseñas en la respuesta
     const usuariosSinPassword = usuarios.map(usuario => {
-      const { password, ...usuarioSinPassword } = usuario;
+      const { contraseña, ...usuarioSinPassword } = usuario;
       return usuarioSinPassword;
     });
 

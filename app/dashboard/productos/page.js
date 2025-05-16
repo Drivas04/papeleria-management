@@ -140,7 +140,7 @@ export default function ProductosPage() {
           <form onSubmit={handleFilter} className="grid grid-cols-1 md:grid-cols-4 gap-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Buscar por nombre o código
+                Buscar por nombre
               </label>
               <div className="relative">
                 <input

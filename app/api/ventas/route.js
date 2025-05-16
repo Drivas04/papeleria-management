@@ -16,15 +16,29 @@ export async function GET(request) {
     const fechaFin = searchParams.get('fechaFin');
     const clienteId = searchParams.get('clienteId');
     
+    console.log('API Ventas - Parámetros recibidos:');
+    console.log('- fechaInicio:', fechaInicio);
+    console.log('- fechaFin:', fechaFin);
+    console.log('- clienteId:', clienteId);
+    
     let where = {};
     
     // Filtrar por rango de fechas
     if (fechaInicio && fechaFin) {
+      console.log('API Ventas - Buscando ventas entre:', fechaInicio, 'y', fechaFin);
+      
       // Normalizar las fechas para evitar problemas de zona horaria
+      const fechaInicioNormalizada = normalizeDate(fechaInicio);
+      const fechaFinNormalizada = normalizeDate(fechaFin);
+      
+      console.log('API Ventas - Fechas normalizadas:', 
+                  fechaInicioNormalizada.toISOString(), 'y', 
+                  fechaFinNormalizada.toISOString());
+      
       where.factura_venta = {
         fecha: {
-          gte: normalizeDate(fechaInicio),
-          lte: normalizeDate(fechaFin)
+          gte: fechaInicioNormalizada,
+          lte: fechaFinNormalizada
         }
       };
     }
@@ -49,6 +63,18 @@ export async function GET(request) {
         factura_venta: true
       }
     });
+    
+    console.log(`API Ventas - Encontradas ${ventas.length} ventas`);
+    
+    // Mostrar información de depuración sobre la primera venta
+    if (ventas.length > 0) {
+      console.log('API Ventas - Primera venta encontrada:', {
+        id: ventas[0].id_venta,
+        estado: ventas[0].estado,
+        fecha: ventas[0].factura_venta?.fecha,
+        total: ventas[0].factura_venta?.total,
+      });
+    }
     
     return NextResponse.json(ventas);
   } catch (error) {

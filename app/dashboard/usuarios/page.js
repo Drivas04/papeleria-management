@@ -65,16 +65,10 @@ export default function UsuariosPage() {
                     Nombre
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Email
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Rol
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Estado
-                  </th>
-                  <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Acciones
                   </th>
                 </tr>
               </thead>
@@ -87,42 +81,29 @@ export default function UsuariosPage() {
                   </tr>
                 ) : (
                   usuarios.map((usuario) => (
-                    <tr key={usuario.id}>
+                    <tr key={usuario.usuario}>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="ml-4">
                             <div className="text-sm font-medium text-gray-900">
-                              {usuario.nombre} {usuario.apellido}
+                              {usuario.usuario}
                             </div>
                           </div>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-500">{usuario.email}</div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
                         <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                          {usuario.rol?.nombre || "Sin rol"}
+                          {usuario.rol || "Sin rol"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          usuario.estado 
+                          !usuario.estado 
                             ? "bg-green-100 text-green-800" 
                             : "bg-red-100 text-red-800"
                         }`}>
-                          {usuario.estado ? "Activo" : "Inactivo"}
+                          {!usuario.estado ? "Activo" : "Inactivo"}
                         </span>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <div className="flex space-x-2">
-                          <Link
-                            href={`/dashboard/usuarios/editar/${usuario.id}`}
-                            className="text-indigo-600 hover:text-indigo-900"
-                          >
-                            <EyeIcon className="w-5 h-5" title="Ver detalles" />
-                          </Link>
-                        </div>
                       </td>
                     </tr>
                   ))
