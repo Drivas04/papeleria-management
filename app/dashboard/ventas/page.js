@@ -87,12 +87,7 @@ export default function VentasPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() => router.push(`/dashboard/ventas/editar/${venta.id_venta}`)}
-                          className="text-indigo-600 hover:text-indigo-900 mr-4"
-                        >
-                          Editar
-                        </button>
+                        
                         <Link
                           href={`/dashboard/ventas/${venta.id_venta}`}
                           className="text-blue-600 hover:text-blue-900"

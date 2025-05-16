@@ -233,7 +233,7 @@ export default function DetalleCompraPage() {
                     <tr key={detalle.compra_id_compra+detalle.producto_id_producto} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         {detalle.producto?.nombre_producto}
-                        <div className="text-xs text-gray-500">Código: {detalle.producto?.codigo || 'Sin código'}</div>
+                        <div className="text-xs text-gray-500">Código: {detalle.producto?.id_producto || 'Sin código'}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">{detalle.cantidad}</td>
                       <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(detalle.precio_unitario)}</td>

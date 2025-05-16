@@ -12,7 +12,7 @@ Sistema de gestión para inventario, ventas y clientes de Papelería Rosita.
 
 1. **Clonar el repositorio**:
    ```bash
-   git clone [URL-DEL-REPOSITORIO]
+   git clone https://github.com/Drivas04/papeleria-management.git
    cd papeleria-management
 
 2. **Instalar dependencias**:

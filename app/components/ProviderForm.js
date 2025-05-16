@@ -16,7 +16,7 @@ export default function ProviderForm({ proveedor }) {
     email: proveedor?.email || "",
     direccion: proveedor?.direccion || "",
     notas: proveedor?.notas || "",
-    estado: proveedor?.estado !== undefined ? proveedor.estado : true
+    estado: proveedor?.estado !== undefined ? proveedor.estado : "activo"
   });
 
   const handleChange = (e) => {
@@ -177,21 +177,21 @@ export default function ProviderForm({ proveedor }) {
           ></textarea>
         </div>
 
-        {proveedor && (
-          <div className="flex items-center">
-            <input
-              type="checkbox"
-              name="estado"
-              id="estado"
-              checked={formData.estado}
-              onChange={handleChange}
-              className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-            />
-            <label htmlFor="estado" className="ml-2 block text-sm text-gray-700">
-              Proveedor activo
-            </label>
-          </div>
-        )}
+        <div>
+          <label htmlFor="estado" className="block text-sm font-medium text-gray-700">
+            Estado
+          </label>
+          <select
+            name="estado"
+            id="estado"
+            value={formData.estado}
+            onChange={handleChange}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+          >
+            <option value="activo">Activo</option>
+            <option value="inactivo">Inactivo</option>
+          </select>
+        </div>
 
         <div className="flex justify-end space-x-3">
           <button

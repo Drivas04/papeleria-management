@@ -123,17 +123,38 @@ export default function ProductosPage() {
   return (
     <>
       <Header pageTitle="Gestión de Productos" />
-      <main className="flex-1 p-6 bg-gray-50">
-        <div className="mb-6 flex justify-between items-center">
+      <main className="flex-1 p-6 bg-gray-50">      <div className="mb-6">
+        <div className="flex justify-between items-center">
           <h2 className="text-xl font-semibold text-gray-800">Inventario de Productos</h2>
-          <Link
-            href="/dashboard/productos/nuevo"
-            className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md flex items-center"
-          >
-            <PlusCircleIcon className="w-5 h-5 mr-2" />
-            Nuevo Producto
-          </Link>
+          <div className="flex space-x-2">
+            <Link
+              href="/dashboard/compras/nueva"
+              className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-md flex items-center"
+            >
+              <PlusCircleIcon className="w-5 h-5 mr-2" />
+              Registrar Compra
+            </Link>
+            <Link
+              href="/dashboard/productos/nuevo"
+              className="bg-indigo-600 hover:bg-indigo-700 text-white py-2 px-4 rounded-md flex items-center"
+            >
+              <PlusCircleIcon className="w-5 h-5 mr-2" />
+              Nuevo Producto
+            </Link>
+          </div>
         </div>
+        
+        <div className="mt-4 bg-blue-50 border-l-4 border-blue-500 p-4">
+          <p className="font-bold">Información importante</p>
+          <p className="mt-1">El registro de nuevos productos debe realizarse a través del módulo de Compras. De esta forma:</p>
+          <ul className="list-disc ml-5 mt-1">
+            <li>Se mantiene un registro completo de los proveedores y facturas de compra</li>
+            <li>El stock se actualiza correctamente según las compras realizadas</li>
+            <li>Los precios de compra y venta quedan vinculados a cada transacción</li>
+          </ul>
+          <p className="mt-2 font-medium">Utiliza el botón "Registrar Compra" para agregar nuevos productos al inventario.</p>
+        </div>
+      </div>
 
         {/* Filtros */}
         <div className="bg-white shadow rounded-lg p-4 mb-6">

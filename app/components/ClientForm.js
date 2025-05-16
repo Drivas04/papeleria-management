@@ -22,11 +22,7 @@ export default function ClientForm({ cliente = null }) {
       apellido: cliente?.apellido || "",
       direccion: cliente?.direccion || "",
       email: cliente?.email || "",
-      telefono: cliente?.telefono || "",
-      compras_semanales: cliente?.compras_semanales?.toString() || "0",
-      deuda_total: cliente?.deuda_total?.toString() || "0",
-      total_compras: cliente?.total_compras?.toString() || "0",
-      ultima_compra: cliente?.ultima_compra ? new Date(cliente.ultima_compra).toISOString().split('T')[0] : ""
+      telefono: cliente?.telefono || ""
     }
   });
 
@@ -42,12 +38,9 @@ export default function ClientForm({ cliente = null }) {
       
       const method = cliente ? "PUT" : "POST";
       
-      // Convertir datos numéricos
+      // Preparar datos para enviar
       const clienteData = {
-        ...data,
-        compras_semanales: parseFloat(data.compras_semanales || 0),
-        deuda_total: parseFloat(data.deuda_total || 0),
-        total_compras: parseInt(data.total_compras || 0)
+        ...data
       };
       
       const response = await fetch(url, {
@@ -177,65 +170,41 @@ export default function ClientForm({ cliente = null }) {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Compras Semanales
-          </label>
-          <div className="mt-1 relative rounded-md shadow-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <span className="text-gray-500 sm:text-sm">$</span>
-            </div>
+        {cliente && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Total Compras
+            </label>
             <input
               type="number"
-              step="0.01"
-              min="0"
-              {...register("compras_semanales")}
-              className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              disabled
+              readOnly
+              value={cliente?.total_compras || 0}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 text-gray-700 cursor-not-allowed"
             />
+            <p className="mt-1 text-xs text-gray-500">
+              Este valor se actualiza automáticamente cuando el cliente realiza compras
+            </p>
           </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Deuda Total
-          </label>
-          <div className="mt-1 relative rounded-md shadow-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <span className="text-gray-500 sm:text-sm">$</span>
-            </div>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              {...register("deuda_total")}
-              className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
-          </div>
-        </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Total Compras
-          </label>
-          <input
-            type="number"
-            step="1"
-            min="0"
-            {...register("total_compras")}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
-        </div>
+        )}
         
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Última Compra
-          </label>
-          <input
-            type="date"
-            {...register("ultima_compra")}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
-        </div>
+        {cliente && cliente.ultima_compra && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Última Compra
+            </label>
+            <input
+              type="date"
+              disabled
+              readOnly
+              value={new Date(cliente.ultima_compra).toISOString().split('T')[0]}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 text-gray-700 cursor-not-allowed"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              Esta fecha se actualiza automáticamente cuando el cliente realiza una compra
+            </p>
+          </div>
+        )}
       </div>
 
       <div className="flex justify-end space-x-3">

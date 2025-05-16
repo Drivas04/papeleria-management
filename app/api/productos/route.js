@@ -123,15 +123,17 @@ export async function POST(request) {
     
     // Crear el producto
     const stock = parseFloat(data.stock || 0);
-    const stock_minimo = parseFloat(data.stock_minimo || 10);
+    const stock_minimo = parseFloat(data.stock_minimo || 5);
     
     const producto = await prisma.producto.create({
       data: {
         nombre_producto: data.nombre_producto,
         descripcion: data.descripcion || null,
-        stock: stock,
+        stock: stock, // Siempre iniciará en 0 para nuevos productos
+        precio_compra: parseFloat(data.precio_compra || 0), // Iniciará en 0
+        precio_venta: parseFloat(data.precio_venta || 0), // Iniciará en 0
         stock_minimo: stock_minimo,
-        nivel_alerta: stock < stock_minimo ? 'bajo' : 'normal',
+        nivel_alerta: 'bajo', // Para nuevos productos siempre empezará como bajo
         categoria_id_categoria: parseInt(data.categoria_id_categoria)
       }
     });

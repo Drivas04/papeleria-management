@@ -294,6 +294,7 @@ export default function SaleForm({ sale }) {
             min="0"
             max="100"
             step="0.1"
+            readOnly
             value={ivaPorcentaje} 
             onChange={handleIvaChange}
             className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"

@@ -90,18 +90,24 @@ export default function PurchaseForm({ compra }) {
     if (productoSeleccionado) {
       // Usar el precio de compra del producto como valor inicial para el precio unitario
       const precio_unitario = parseFloat(productoSeleccionado.precio_compra || 0);
-      const precio_venta = parseFloat(productoSeleccionado.precio_venta || 0);
+      
+      // Calcular un precio de venta sugerido (30% margen por defecto)
+      let precio_venta = 0;
+      if (productoSeleccionado.precio_venta && parseFloat(productoSeleccionado.precio_venta) > 0) {
+        precio_venta = parseFloat(productoSeleccionado.precio_venta);
+      } else {
+        // Asegurarnos de hacer el cálculo correctamente para evitar problemas de punto flotante
+        precio_venta = precio_unitario * 1.3;
+      }
+      
       const cantidad = parseInt(nuevoDetalle.cantidad) || 1;
       const subtotal = precio_unitario * cantidad;
-      
-      // Sugerir precio de venta con un 30% de margen si no existe un precio de venta
-      const precio_venta_sugerido = precio_venta > 0 ? precio_venta : parseFloat((precio_unitario * 1.3).toFixed(2));
       
       setNuevoDetalle({
         ...nuevoDetalle,
         producto_id_producto,
         precio_unitario,
-        precio_venta: precio_venta_sugerido,
+        precio_venta,
         cantidad,
         subtotal
       });
@@ -155,9 +161,13 @@ export default function PurchaseForm({ compra }) {
     // Calcular subtotal con dos decimales para mayor precisión
     const subtotal = parseFloat((precio_unitario * cantidad).toFixed(2));
     
+    // Sugerir un precio de venta con un 30% de margen sobre el precio de compra
+    const precio_venta_sugerido = precio_unitario * 1.3;
+    
     setNuevoDetalle({
       ...nuevoDetalle,
       precio_unitario,
+      precio_venta: precio_venta_sugerido,
       subtotal
     });
   };
@@ -342,9 +352,6 @@ export default function PurchaseForm({ compra }) {
         }
       };
       
-      console.log('Enviando datos:', JSON.stringify(payload, null, 2));
-      console.log('Productos en formData:', formData.detalles);
-      console.log('Productos formateados:', detallesFormateados);
       
       const url = compra ? `/api/compras/${compra.id_compra}` : '/api/compras';
       const method = compra ? 'PUT' : 'POST';
@@ -376,6 +383,16 @@ export default function PurchaseForm({ compra }) {
   
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      <div className="bg-blue-50 border-l-4 border-blue-500 p-4 mb-6">
+        <p className="font-bold">Información importante</p>
+        <p>Este formulario permite registrar compras a proveedores y actualizar el inventario. Puede:</p>
+        <ul className="list-disc ml-5 mt-2">
+          <li>Agregar nuevos productos al registrar una compra</li>
+          <li>Actualizar el stock de productos existentes</li>
+          <li>Actualizar precios de compra y venta</li>
+        </ul>
+      </div>
+    
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Datos de la Compra</h2>
         
@@ -437,6 +454,15 @@ export default function PurchaseForm({ compra }) {
       {/* Agregar productos */}
       <div className="bg-white p-6 rounded-lg shadow-md">
         <h2 className="text-xl font-semibold mb-4">Agregar Productos</h2>
+        
+        <div className="alert bg-yellow-50 border-l-4 border-yellow-500 p-4 mb-4 text-yellow-800">
+          <p>Al agregar productos, los siguientes valores se actualizarán automáticamente:</p>
+          <ul className="list-disc ml-5 mt-1">
+            <li>Stock: se incrementará según la cantidad comprada</li>
+            <li>Precio de compra: se actualizará al precio unitario indicado</li>
+            <li>Precio de venta: se actualizará al precio indicado (por defecto se sugiere un 30% sobre el precio de compra)</li>
+          </ul>
+        </div>
         
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4 mb-4">
           <div>
@@ -549,7 +575,7 @@ export default function PurchaseForm({ compra }) {
                       {detalle.producto?.nombre_producto || `Producto ID: ${detalle.producto_id_producto}`}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">{detalle.cantidad}</td>
-                    <td className="px-6 py-4 whitespace-nowrap">${detalle.precio_unitario.toFixed(2)}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">${detalle.precio_unitario}</td>
                     <td className="px-6 py-4 whitespace-nowrap">${detalle.precio_venta.toFixed(2)}</td>
                     <td className="px-6 py-4 whitespace-nowrap">${detalle.subtotal.toFixed(2)}</td>
                     <td className="px-6 py-4 whitespace-nowrap">

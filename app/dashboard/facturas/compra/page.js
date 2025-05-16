@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
+import { formatDate } from '@/app/lib/utils';
 
 export default function FacturasCompraPage() {
   const [facturas, setFacturas] = useState([]);
@@ -27,17 +28,6 @@ export default function FacturasCompraPage() {
     fetchCompras();
   }, []);
   
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return isNaN(date.getTime()) 
-      ? 'Fecha inválida'
-      : date.toLocaleDateString('es-ES', {
-          day: '2-digit',
-          month: '2-digit',
-          year: 'numeric'
-        });
-  };
 
   const formatCurrency = (value) => {
     const num = parseFloat(value);

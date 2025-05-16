@@ -21,16 +21,13 @@ export async function GET(request) {
     
     let where = {};
     
-    // Filtrar por rango de fechas
     if (fechaInicio && fechaFin) {
-      // Normalizar las fechas para evitar problemas de zona horaria
       where.fecha_compra = {
         gte: normalizeDate(fechaInicio),
         lte: normalizeDate(fechaFin)
       };
     }
     
-    // Filtrar por proveedor
     if (proveedorId) {
       where.proveedor_id_proveedor = parseInt(proveedorId);
     }
@@ -61,55 +58,79 @@ export async function GET(request) {
   }
 }
 
-// POST - Crear una nueva compra
 export async function POST(request) {
   try {
+    console.log('Iniciando POST /api/compras');
+    
     const session = await getServerSession(authOptions);
     
+    console.log('Sesión:', session ? 'Activa' : 'No hay sesión');
+    
     if (!session) {
+      console.log('Error: No hay sesión de usuario autenticado');
       return NextResponse.json({ error: 'No autorizado' }, { status: 401 });
     }
     
-    const data = await request.json();
+    console.log('Usuario autenticado:', session.user);
     
-    // Validaciones básicas
+    let data;
+    try {
+      data = await request.json();
+    } catch (parseError) {
+      console.error('Error al parsear JSON de la solicitud:', parseError);
+      return NextResponse.json({ error: 'Formato de datos inválido' }, { status: 400 });
+    }
+    
     if (!data.proveedor_id_proveedor) {
+      console.log('Error: No se especificó un proveedor');
       return NextResponse.json({ error: 'El proveedor es requerido' }, { status: 400 });
     }
     
     console.log('Datos recibidos en API:', JSON.stringify(data, null, 2));
     
     if (!data.productos || !data.productos.length) {
+      console.log('Error: No hay productos en la compra');
       return NextResponse.json({ error: 'La compra debe tener al menos un producto' }, { status: 400 });
     }
     
-    // Iniciar transacción
+    for (const producto of data.productos) {
+      if (!producto.producto_id_producto) {
+        return NextResponse.json({ error: 'Todos los productos deben tener un ID' }, { status: 400 });
+      }
+      if (!producto.cantidad || producto.cantidad <= 0) {
+        return NextResponse.json({ error: 'Todos los productos deben tener una cantidad válida' }, { status: 400 });
+      }
+      if (!producto.precio_unitario || producto.precio_unitario <= 0) {
+        return NextResponse.json({ error: 'Todos los productos deben tener un precio de compra válido' }, { status: 400 });
+      }
+      if (!producto.precio_venta || producto.precio_venta <= 0) {
+        return NextResponse.json({ error: 'Todos los productos deben tener un precio de venta válido' }, { status: 400 });
+      }
+    }
+    
     const result = await prisma.$transaction(async (tx) => {
-      // Calcular el total de la compra
       const totalCompra = data.productos.reduce((sum, producto) => {
         const cantidad = parseFloat(producto.cantidad);
         const precio_unitario = parseFloat(producto.precio_unitario);
         return sum + (cantidad * precio_unitario);
       }, 0);
       
-      // 1. Crear la compra
-      // Crear una nueva fecha y ajustarla para la zona horaria local
       const fechaActual = new Date();
-      // Restar un día para compensar el ajuste posterior en formatDate
       const fechaAjustada = new Date(fechaActual.getTime() - 24 * 60 * 60 * 1000);
       console.log("Fecha original:", fechaActual, "Fecha ajustada:", fechaAjustada);
+      
+      const estado = data.estado || 'COMPLETADA';
       
       const compra = await tx.compra.create({
         data: {
           proveedor_id_proveedor: parseInt(data.proveedor_id_proveedor),
           fecha_compra: fechaAjustada, // Usar la fecha ajustada
-          estado: 'COMPLETADA',
+          estado: estado,
           total: parseFloat(totalCompra.toFixed(2)),  // Asegurar dos decimales
-          usuario_id_usuario: parseInt(session.user.id)
+          usuario_id_usuario: parseInt(session.user.id || 1) // Usar ID 1 como fallback
         }
       });
       
-      // 2. Crear los detalles de la compra
       for (const producto of data.productos) {
         const cantidad = parseFloat(producto.cantidad);
         const precio_unitario = parseFloat(producto.precio_unitario);
@@ -125,21 +146,17 @@ export async function POST(request) {
           }
         });
         
-        // 3. Actualizar el stock y precio de venta de productos
-        // Primero obtenemos el producto para sus valores actuales
+
         const productoInfo = await tx.producto.findUnique({
           where: { id_producto: parseInt(producto.producto_id_producto) }
         });
         
         if (productoInfo) {
-          // Calcular el nuevo stock
           const nuevoStock = parseFloat(productoInfo.stock) + parseFloat(producto.cantidad);
           const stockMinimo = parseFloat(productoInfo.stock_minimo || 5);
           
-          // Determinar el nivel de alerta basado en el nuevo stock
           const nivel_alerta = nuevoStock < stockMinimo ? 'bajo' : 'normal';
           
-          // Actualizar el producto con el nuevo stock y nivel de alerta
           await tx.producto.update({
             where: { id_producto: parseInt(producto.producto_id_producto) },
             data: {
@@ -149,10 +166,20 @@ export async function POST(request) {
               precio_venta: parseFloat(producto.precio_venta || 0)
             }
           });
+          
+          await tx.movimientoInventario.create({
+            data: {
+              tipo_movimiento: 'ENTRADA',
+              fecha_movimiento: fechaAjustada,
+              cantidad: parseFloat(producto.cantidad),
+              producto_id_producto: parseInt(producto.producto_id_producto)
+            }
+          });
+        } else {
+          console.log(`Producto con ID ${producto.producto_id_producto} no encontrado, podría ser necesario crearlo.`);
         }
       }
       
-      // 4. Crear la factura de compra si se proporcionan los datos
       if (data.factura) {
         await tx.facturaCompra.create({
           data: {
@@ -165,7 +192,6 @@ export async function POST(request) {
         });
       }
       
-      // Retornar la compra creada
       return tx.compra.findUnique({
         where: { id_compra: compra.id_compra },
         include: {

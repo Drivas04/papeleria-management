@@ -3,7 +3,6 @@ import { prisma } from '@/app/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { authOptions } from '@/app/lib/auth';
 
-// GET - Obtener todas las cajas
 export async function GET(request) {
   try {
     const session = await getServerSession(authOptions);
@@ -30,7 +29,6 @@ export async function GET(request) {
   }
 }
 
-// POST - Abrir una nueva caja
 export async function POST(request) {
   try {
     const session = await getServerSession(authOptions);
@@ -41,7 +39,6 @@ export async function POST(request) {
     
     const data = await request.json();
     
-    // Verificar si ya existe una caja abierta
     const cajaAbierta = await prisma.caja.findFirst({
       where: {
         estado: 'abierta'
@@ -55,12 +52,10 @@ export async function POST(request) {
       );
     }
     
-    // Validaciones básicas
     if (!data.monto_inicial || isNaN(parseFloat(data.monto_inicial)) || parseFloat(data.monto_inicial) <= 0) {
       return NextResponse.json({ error: 'El monto inicial debe ser un valor numérico positivo' }, { status: 400 });
     }
     
-    // Crear nueva caja
     const nuevaCaja = await prisma.caja.create({
       data: {
         fecha_apertura: new Date(),

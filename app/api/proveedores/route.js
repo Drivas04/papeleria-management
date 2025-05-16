@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from '@/app/lib/prisma';
 
-// GET - Listar proveedores
 export async function GET(request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -9,18 +8,17 @@ export async function GET(request) {
     const estado = searchParams.get('estado');
     const limit = searchParams.get('limit') ? parseInt(searchParams.get('limit')) : 100;
     
-    // Construir filtros
     const where = {};
     
     if (nombre) {
       where.nombre = {
         contains: nombre
-        // MySQL no utiliza mode: 'insensitive'
       };
     }
     
-    // El campo estado no existe en el esquema actual, así que omitimos esta parte
-    // Si necesitas agregar un campo estado en el futuro, descomenta y actualiza esta parte
+    if (estado) {
+      where.estado = estado;
+    }
     
     const proveedores = await prisma.proveedor.findMany({
       where,
@@ -47,12 +45,10 @@ export async function GET(request) {
   }
 }
 
-// POST - Crear nuevo proveedor
 export async function POST(request) {
   try {
     const data = await request.json();
     
-    // Validaciones básicas
     if (!data.nombre) {
       return NextResponse.json(
         { error: "El nombre del proveedor es obligatorio" },
@@ -60,7 +56,6 @@ export async function POST(request) {
       );
     }
     
-    // Verificar que no exista un proveedor con el mismo nombre
     const existente = await prisma.proveedor.findFirst({
       where: {
         nombre: {
@@ -76,15 +71,16 @@ export async function POST(request) {
       );
     }
     
-    // Preparar datos para la creación (solo incluir campos válidos según el modelo)
     const proveedorData = {
       nombre: data.nombre,
       direccion: data.direccion || null,
       telefono: data.telefono || null,
-      estado: true // Por defecto el proveedor está activo
+      contacto: data.contacto || null,
+      email: data.email || null,
+      notas: data.notas || null,
+      estado: data.estado !== undefined ? data.estado : "activo" // Por defecto el proveedor está activo
     };
     
-    // Crear el proveedor
     const nuevoProveedor = await prisma.proveedor.create({
       data: proveedorData
     });
