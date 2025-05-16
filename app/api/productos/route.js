@@ -26,21 +26,16 @@ export async function GET(request) {
     }
     
     if (search) {
-      // MySQL no tiene mode: 'insensitive' como PostgreSQL
-      // Para MySQL usamos contains y dependemos de la configuración de collation de la base de datos
       where.OR = [
         { nombre_producto: { contains: search } },
-        { descripcion: { contains: search } },
-        { codigo_barras: { contains: search } }
+        { descripcion: { contains: search } }
       ];
     }
     
     // No usar filters inicialmente
     let filters = {};
     
-    // Después de la consulta, filtraremos los resultados para stock bajo y alto
     
-    // Ejecutar la consulta
     const productos = await prisma.producto.findMany({
       where,
       include: {
