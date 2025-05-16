@@ -29,6 +29,7 @@ export function getCurrentDateNormalized() {
 export function normalizeDate(date) {
   if (!date) return null;
   
+  
   const dateObj = new Date(date);
   
   // Crear fecha UTC con la misma fecha local pero a mediodía
