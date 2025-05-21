@@ -101,8 +101,9 @@ export async function PUT(request, { params }) {
       nombre: data.nombre,
       apellido: data.apellido,
       telefono: data.telefono,
-      compras_semanales: data.compras_semanales,
-      deuda_total: data.deuda_total
+      direccion: data.direccion, 
+      email: data.email
+      // compras_semanales, deuda_total, total_compras y ultima_compra se manejan automáticamente
     };
 
     // Eliminar campos indefinidos

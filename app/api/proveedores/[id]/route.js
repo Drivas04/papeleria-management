@@ -1,20 +1,19 @@
 import { NextResponse } from "next/server";
 import { prisma } from '@/app/lib/prisma';
 
-// GET - Obtener un proveedor por ID
 export async function GET(request, { params }) {
   try {
     const { id } = params;
     
     const proveedor = await prisma.proveedor.findUnique({
       where: {
-        id: parseInt(id)
+        id_proveedor: parseInt(id)
       },
       include: {
         compras: {
           take: 5,
           orderBy: {
-            fecha: 'desc'
+            fecha_compra: 'desc'
           }
         },
         _count: {
@@ -42,7 +41,6 @@ export async function GET(request, { params }) {
   }
 }
 
-// PUT - Actualizar un proveedor
 export async function PUT(request, { params }) {
   try {
     const { id } = params;
@@ -56,10 +54,9 @@ export async function PUT(request, { params }) {
       );
     }
     
-    // Verificar que el proveedor existe
     const proveedorExistente = await prisma.proveedor.findUnique({
       where: {
-        id: parseInt(id)
+        id_proveedor: parseInt(id)
       }
     });
     
@@ -70,13 +67,12 @@ export async function PUT(request, { params }) {
       );
     }
     
-    // Verificar que no exista otro proveedor con el mismo nombre
     const nombreExistente = await prisma.proveedor.findFirst({
       where: {
         nombre: {
           equals: data.nombre
         },
-        id: {
+        id_proveedor: {
           not: parseInt(id)
         }
       }
@@ -89,22 +85,23 @@ export async function PUT(request, { params }) {
       );
     }
     
-    // Preparar datos para la actualización (solo campos válidos)
     const proveedorData = {
       nombre: data.nombre,
       telefono: data.telefono || null,
-      direccion: data.direccion || null
+      direccion: data.direccion || null,
+      contacto: data.contacto || null,
+      email: data.email || null,
+      notas: data.notas || null,
+      estado: data.estado || "activo"
     };
     
-    // Actualizar el estado solo si viene en los datos
     if (data.estado !== undefined) {
-      proveedorData.estado = data.estado === "true" || data.estado === true;
+      proveedorData.estado = data.estado;
     }
     
-    // Actualizar el proveedor
     const proveedorActualizado = await prisma.proveedor.update({
       where: {
-        id: parseInt(id)
+        id_proveedor: parseInt(id)
       },
       data: proveedorData
     });
@@ -122,15 +119,20 @@ export async function PUT(request, { params }) {
   }
 }
 
-// DELETE - Desactivar (softdelete) un proveedor
 export async function DELETE(request, { params }) {
   try {
     const { id } = params;
     
-    // Verificar que el proveedor existe
     const proveedorExistente = await prisma.proveedor.findUnique({
       where: {
-        id: parseInt(id)
+        id_proveedor: parseInt(id)
+      },
+      include: {
+        _count: {
+          select: {
+            compras: true
+          }
+        }
       }
     });
     
@@ -140,25 +142,35 @@ export async function DELETE(request, { params }) {
         { status: 404 }
       );
     }
-    
-    // Actualizar el estado a inactivo (en lugar de eliminar)
-    const proveedorDesactivado = await prisma.proveedor.update({
-      where: {
-        id: parseInt(id)
-      },
-      data: {
-        estado: false
-      }
-    });
-    
-    return NextResponse.json({
-      message: "Proveedor desactivado con éxito",
-      proveedor: proveedorDesactivado
-    });
+
+    if (proveedorExistente._count.compras > 0) {
+      await prisma.proveedor.update({
+        where: {
+          id_proveedor: parseInt(id)
+        },
+        data: {
+          estado: "inactivo"
+        }
+      });
+      
+      return NextResponse.json({
+        message: "El proveedor ha sido desactivado porque tiene compras asociadas"
+      });
+    } else {
+      await prisma.proveedor.delete({
+        where: {
+          id_proveedor: parseInt(id)
+        }
+      });
+      
+      return NextResponse.json({
+        message: "Proveedor eliminado con éxito"
+      });
+    }
   } catch (error) {
-    console.error("Error al desactivar proveedor:", error);
+    console.error("Error al eliminar proveedor:", error);
     return NextResponse.json(
-      { error: "Error al desactivar el proveedor" },
+      { error: "Error al eliminar el proveedor" },
       { status: 500 }
     );
   }

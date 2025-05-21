@@ -34,7 +34,7 @@ export default function EditarCategoriaPage() {
     if (params.id) {
       fetchCategoria();
     }
-  }, [params.id]);
+  }, [params]);
   
   if (loading) {
     return (

@@ -13,7 +13,6 @@ export async function GET(request) {
       );
     }
     
-    // Obtener parámetros de la URL
     const { searchParams } = new URL(request.url);
     const search = searchParams.get('search');
     
@@ -44,12 +43,10 @@ export async function GET(request) {
   }
 }
 
-// POST - Crear un nuevo cliente
 export async function POST(request) {
   try {
     const data = await request.json();
     
-    // Validaciones básicas
     if (!data.nombre || !data.apellido || !data.cedula) {
       return NextResponse.json(
         { error: "El nombre, apellido y cédula son campos requeridos" }, 
@@ -57,7 +54,6 @@ export async function POST(request) {
       );
     }
 
-    // Verificar si la cédula ya existe
     const clienteExistente = await prisma.cliente.findUnique({
       where: { cedula: data.cedula }
     });
@@ -69,7 +65,6 @@ export async function POST(request) {
       );
     }
 
-    // Crear el cliente
     const cliente = await prisma.cliente.create({
       data: {
         cedula: data.cedula,
@@ -78,9 +73,7 @@ export async function POST(request) {
         telefono: data.telefono || null,
         direccion: data.direccion || null,
         email: data.email || null,
-        compras_semanales: data.compras_semanales || 0,
-        deuda_total: data.deuda_total || 0,
-        total_compras: data.total_compras || 0
+        total_compras: 0
       }
     });
 

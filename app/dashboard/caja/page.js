@@ -24,11 +24,9 @@ export default function CajaPage() {
         
         const data = await res.json();
         
-        // Buscar caja abierta
         const cajaAbierta = data.find(caja => caja.estado === 'abierta');
         setCajaActual(cajaAbierta || null);
         
-        // Historial de cajas cerradas
         setHistorialCajas(data.filter(caja => caja.estado === 'cerrada'));
       } catch (error) {
         console.error('Error:', error);

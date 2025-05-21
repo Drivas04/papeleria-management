@@ -4117,15 +4117,11 @@ export namespace Prisma {
 
   export type ClienteAvgAggregateOutputType = {
     id_cliente: number | null
-    compras_semanales: Decimal | null
-    deuda_total: Decimal | null
     total_compras: number | null
   }
 
   export type ClienteSumAggregateOutputType = {
     id_cliente: number | null
-    compras_semanales: Decimal | null
-    deuda_total: Decimal | null
     total_compras: number | null
   }
 
@@ -4137,8 +4133,6 @@ export namespace Prisma {
     direccion: string | null
     email: string | null
     telefono: string | null
-    compras_semanales: Decimal | null
-    deuda_total: Decimal | null
     total_compras: number | null
     ultima_compra: Date | null
   }
@@ -4151,8 +4145,6 @@ export namespace Prisma {
     direccion: string | null
     email: string | null
     telefono: string | null
-    compras_semanales: Decimal | null
-    deuda_total: Decimal | null
     total_compras: number | null
     ultima_compra: Date | null
   }
@@ -4165,8 +4157,6 @@ export namespace Prisma {
     direccion: number
     email: number
     telefono: number
-    compras_semanales: number
-    deuda_total: number
     total_compras: number
     ultima_compra: number
     _all: number
@@ -4175,15 +4165,11 @@ export namespace Prisma {
 
   export type ClienteAvgAggregateInputType = {
     id_cliente?: true
-    compras_semanales?: true
-    deuda_total?: true
     total_compras?: true
   }
 
   export type ClienteSumAggregateInputType = {
     id_cliente?: true
-    compras_semanales?: true
-    deuda_total?: true
     total_compras?: true
   }
 
@@ -4195,8 +4181,6 @@ export namespace Prisma {
     direccion?: true
     email?: true
     telefono?: true
-    compras_semanales?: true
-    deuda_total?: true
     total_compras?: true
     ultima_compra?: true
   }
@@ -4209,8 +4193,6 @@ export namespace Prisma {
     direccion?: true
     email?: true
     telefono?: true
-    compras_semanales?: true
-    deuda_total?: true
     total_compras?: true
     ultima_compra?: true
   }
@@ -4223,8 +4205,6 @@ export namespace Prisma {
     direccion?: true
     email?: true
     telefono?: true
-    compras_semanales?: true
-    deuda_total?: true
     total_compras?: true
     ultima_compra?: true
     _all?: true
@@ -4324,8 +4304,6 @@ export namespace Prisma {
     direccion: string | null
     email: string | null
     telefono: string | null
-    compras_semanales: Decimal | null
-    deuda_total: Decimal | null
     total_compras: number | null
     ultima_compra: Date | null
     _count: ClienteCountAggregateOutputType | null
@@ -4357,8 +4335,6 @@ export namespace Prisma {
     direccion?: boolean
     email?: boolean
     telefono?: boolean
-    compras_semanales?: boolean
-    deuda_total?: boolean
     total_compras?: boolean
     ultima_compra?: boolean
     ventas?: boolean | Cliente$ventasArgs<ExtArgs>
@@ -4375,13 +4351,11 @@ export namespace Prisma {
     direccion?: boolean
     email?: boolean
     telefono?: boolean
-    compras_semanales?: boolean
-    deuda_total?: boolean
     total_compras?: boolean
     ultima_compra?: boolean
   }
 
-  export type ClienteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id_cliente" | "cedula" | "nombre" | "apellido" | "direccion" | "email" | "telefono" | "compras_semanales" | "deuda_total" | "total_compras" | "ultima_compra", ExtArgs["result"]["cliente"]>
+  export type ClienteOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id_cliente" | "cedula" | "nombre" | "apellido" | "direccion" | "email" | "telefono" | "total_compras" | "ultima_compra", ExtArgs["result"]["cliente"]>
   export type ClienteInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     ventas?: boolean | Cliente$ventasArgs<ExtArgs>
     _count?: boolean | ClienteCountOutputTypeDefaultArgs<ExtArgs>
@@ -4400,8 +4374,6 @@ export namespace Prisma {
       direccion: string | null
       email: string | null
       telefono: string | null
-      compras_semanales: Prisma.Decimal | null
-      deuda_total: Prisma.Decimal | null
       total_compras: number | null
       ultima_compra: Date | null
     }, ExtArgs["result"]["cliente"]>
@@ -4781,8 +4753,6 @@ export namespace Prisma {
     readonly direccion: FieldRef<"Cliente", 'String'>
     readonly email: FieldRef<"Cliente", 'String'>
     readonly telefono: FieldRef<"Cliente", 'String'>
-    readonly compras_semanales: FieldRef<"Cliente", 'Decimal'>
-    readonly deuda_total: FieldRef<"Cliente", 'Decimal'>
     readonly total_compras: FieldRef<"Cliente", 'Int'>
     readonly ultima_compra: FieldRef<"Cliente", 'DateTime'>
   }
@@ -11285,6 +11255,10 @@ export namespace Prisma {
     nombre: string | null
     telefono: string | null
     direccion: string | null
+    contacto: string | null
+    email: string | null
+    notas: string | null
+    estado: string | null
   }
 
   export type ProveedorMaxAggregateOutputType = {
@@ -11292,6 +11266,10 @@ export namespace Prisma {
     nombre: string | null
     telefono: string | null
     direccion: string | null
+    contacto: string | null
+    email: string | null
+    notas: string | null
+    estado: string | null
   }
 
   export type ProveedorCountAggregateOutputType = {
@@ -11299,6 +11277,10 @@ export namespace Prisma {
     nombre: number
     telefono: number
     direccion: number
+    contacto: number
+    email: number
+    notas: number
+    estado: number
     _all: number
   }
 
@@ -11316,6 +11298,10 @@ export namespace Prisma {
     nombre?: true
     telefono?: true
     direccion?: true
+    contacto?: true
+    email?: true
+    notas?: true
+    estado?: true
   }
 
   export type ProveedorMaxAggregateInputType = {
@@ -11323,6 +11309,10 @@ export namespace Prisma {
     nombre?: true
     telefono?: true
     direccion?: true
+    contacto?: true
+    email?: true
+    notas?: true
+    estado?: true
   }
 
   export type ProveedorCountAggregateInputType = {
@@ -11330,6 +11320,10 @@ export namespace Prisma {
     nombre?: true
     telefono?: true
     direccion?: true
+    contacto?: true
+    email?: true
+    notas?: true
+    estado?: true
     _all?: true
   }
 
@@ -11424,6 +11418,10 @@ export namespace Prisma {
     nombre: string | null
     telefono: string | null
     direccion: string | null
+    contacto: string | null
+    email: string | null
+    notas: string | null
+    estado: string | null
     _count: ProveedorCountAggregateOutputType | null
     _avg: ProveedorAvgAggregateOutputType | null
     _sum: ProveedorSumAggregateOutputType | null
@@ -11450,6 +11448,10 @@ export namespace Prisma {
     nombre?: boolean
     telefono?: boolean
     direccion?: boolean
+    contacto?: boolean
+    email?: boolean
+    notas?: boolean
+    estado?: boolean
     compras?: boolean | Proveedor$comprasArgs<ExtArgs>
     _count?: boolean | ProveedorCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["proveedor"]>
@@ -11461,9 +11463,13 @@ export namespace Prisma {
     nombre?: boolean
     telefono?: boolean
     direccion?: boolean
+    contacto?: boolean
+    email?: boolean
+    notas?: boolean
+    estado?: boolean
   }
 
-  export type ProveedorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id_proveedor" | "nombre" | "telefono" | "direccion", ExtArgs["result"]["proveedor"]>
+  export type ProveedorOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id_proveedor" | "nombre" | "telefono" | "direccion" | "contacto" | "email" | "notas" | "estado", ExtArgs["result"]["proveedor"]>
   export type ProveedorInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     compras?: boolean | Proveedor$comprasArgs<ExtArgs>
     _count?: boolean | ProveedorCountOutputTypeDefaultArgs<ExtArgs>
@@ -11479,6 +11485,10 @@ export namespace Prisma {
       nombre: string | null
       telefono: string | null
       direccion: string | null
+      contacto: string | null
+      email: string | null
+      notas: string | null
+      estado: string | null
     }, ExtArgs["result"]["proveedor"]>
     composites: {}
   }
@@ -11853,6 +11863,10 @@ export namespace Prisma {
     readonly nombre: FieldRef<"Proveedor", 'String'>
     readonly telefono: FieldRef<"Proveedor", 'String'>
     readonly direccion: FieldRef<"Proveedor", 'String'>
+    readonly contacto: FieldRef<"Proveedor", 'String'>
+    readonly email: FieldRef<"Proveedor", 'String'>
+    readonly notas: FieldRef<"Proveedor", 'String'>
+    readonly estado: FieldRef<"Proveedor", 'String'>
   }
     
 
@@ -15325,8 +15339,6 @@ export namespace Prisma {
     direccion: 'direccion',
     email: 'email',
     telefono: 'telefono',
-    compras_semanales: 'compras_semanales',
-    deuda_total: 'deuda_total',
     total_compras: 'total_compras',
     ultima_compra: 'ultima_compra'
   };
@@ -15411,7 +15423,11 @@ export namespace Prisma {
     id_proveedor: 'id_proveedor',
     nombre: 'nombre',
     telefono: 'telefono',
-    direccion: 'direccion'
+    direccion: 'direccion',
+    contacto: 'contacto',
+    email: 'email',
+    notas: 'notas',
+    estado: 'estado'
   };
 
   export type ProveedorScalarFieldEnum = (typeof ProveedorScalarFieldEnum)[keyof typeof ProveedorScalarFieldEnum]
@@ -15518,7 +15534,11 @@ export namespace Prisma {
   export const ProveedorOrderByRelevanceFieldEnum: {
     nombre: 'nombre',
     telefono: 'telefono',
-    direccion: 'direccion'
+    direccion: 'direccion',
+    contacto: 'contacto',
+    email: 'email',
+    notas: 'notas',
+    estado: 'estado'
   };
 
   export type ProveedorOrderByRelevanceFieldEnum = (typeof ProveedorOrderByRelevanceFieldEnum)[keyof typeof ProveedorOrderByRelevanceFieldEnum]
@@ -15722,8 +15742,6 @@ export namespace Prisma {
     direccion?: StringNullableFilter<"Cliente"> | string | null
     email?: StringNullableFilter<"Cliente"> | string | null
     telefono?: StringNullableFilter<"Cliente"> | string | null
-    compras_semanales?: DecimalNullableFilter<"Cliente"> | Decimal | DecimalJsLike | number | string | null
-    deuda_total?: DecimalNullableFilter<"Cliente"> | Decimal | DecimalJsLike | number | string | null
     total_compras?: IntNullableFilter<"Cliente"> | number | null
     ultima_compra?: DateTimeNullableFilter<"Cliente"> | Date | string | null
     ventas?: VentaListRelationFilter
@@ -15737,8 +15755,6 @@ export namespace Prisma {
     direccion?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     telefono?: SortOrderInput | SortOrder
-    compras_semanales?: SortOrderInput | SortOrder
-    deuda_total?: SortOrderInput | SortOrder
     total_compras?: SortOrderInput | SortOrder
     ultima_compra?: SortOrderInput | SortOrder
     ventas?: VentaOrderByRelationAggregateInput
@@ -15756,8 +15772,6 @@ export namespace Prisma {
     direccion?: StringNullableFilter<"Cliente"> | string | null
     email?: StringNullableFilter<"Cliente"> | string | null
     telefono?: StringNullableFilter<"Cliente"> | string | null
-    compras_semanales?: DecimalNullableFilter<"Cliente"> | Decimal | DecimalJsLike | number | string | null
-    deuda_total?: DecimalNullableFilter<"Cliente"> | Decimal | DecimalJsLike | number | string | null
     total_compras?: IntNullableFilter<"Cliente"> | number | null
     ultima_compra?: DateTimeNullableFilter<"Cliente"> | Date | string | null
     ventas?: VentaListRelationFilter
@@ -15771,8 +15785,6 @@ export namespace Prisma {
     direccion?: SortOrderInput | SortOrder
     email?: SortOrderInput | SortOrder
     telefono?: SortOrderInput | SortOrder
-    compras_semanales?: SortOrderInput | SortOrder
-    deuda_total?: SortOrderInput | SortOrder
     total_compras?: SortOrderInput | SortOrder
     ultima_compra?: SortOrderInput | SortOrder
     _count?: ClienteCountOrderByAggregateInput
@@ -15793,8 +15805,6 @@ export namespace Prisma {
     direccion?: StringNullableWithAggregatesFilter<"Cliente"> | string | null
     email?: StringNullableWithAggregatesFilter<"Cliente"> | string | null
     telefono?: StringNullableWithAggregatesFilter<"Cliente"> | string | null
-    compras_semanales?: DecimalNullableWithAggregatesFilter<"Cliente"> | Decimal | DecimalJsLike | number | string | null
-    deuda_total?: DecimalNullableWithAggregatesFilter<"Cliente"> | Decimal | DecimalJsLike | number | string | null
     total_compras?: IntNullableWithAggregatesFilter<"Cliente"> | number | null
     ultima_compra?: DateTimeNullableWithAggregatesFilter<"Cliente"> | Date | string | null
   }
@@ -16209,6 +16219,10 @@ export namespace Prisma {
     nombre?: StringNullableFilter<"Proveedor"> | string | null
     telefono?: StringNullableFilter<"Proveedor"> | string | null
     direccion?: StringNullableFilter<"Proveedor"> | string | null
+    contacto?: StringNullableFilter<"Proveedor"> | string | null
+    email?: StringNullableFilter<"Proveedor"> | string | null
+    notas?: StringNullableFilter<"Proveedor"> | string | null
+    estado?: StringNullableFilter<"Proveedor"> | string | null
     compras?: CompraListRelationFilter
   }
 
@@ -16217,6 +16231,10 @@ export namespace Prisma {
     nombre?: SortOrderInput | SortOrder
     telefono?: SortOrderInput | SortOrder
     direccion?: SortOrderInput | SortOrder
+    contacto?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
+    notas?: SortOrderInput | SortOrder
+    estado?: SortOrderInput | SortOrder
     compras?: CompraOrderByRelationAggregateInput
     _relevance?: ProveedorOrderByRelevanceInput
   }
@@ -16229,6 +16247,10 @@ export namespace Prisma {
     nombre?: StringNullableFilter<"Proveedor"> | string | null
     telefono?: StringNullableFilter<"Proveedor"> | string | null
     direccion?: StringNullableFilter<"Proveedor"> | string | null
+    contacto?: StringNullableFilter<"Proveedor"> | string | null
+    email?: StringNullableFilter<"Proveedor"> | string | null
+    notas?: StringNullableFilter<"Proveedor"> | string | null
+    estado?: StringNullableFilter<"Proveedor"> | string | null
     compras?: CompraListRelationFilter
   }, "id_proveedor">
 
@@ -16237,6 +16259,10 @@ export namespace Prisma {
     nombre?: SortOrderInput | SortOrder
     telefono?: SortOrderInput | SortOrder
     direccion?: SortOrderInput | SortOrder
+    contacto?: SortOrderInput | SortOrder
+    email?: SortOrderInput | SortOrder
+    notas?: SortOrderInput | SortOrder
+    estado?: SortOrderInput | SortOrder
     _count?: ProveedorCountOrderByAggregateInput
     _avg?: ProveedorAvgOrderByAggregateInput
     _max?: ProveedorMaxOrderByAggregateInput
@@ -16252,6 +16278,10 @@ export namespace Prisma {
     nombre?: StringNullableWithAggregatesFilter<"Proveedor"> | string | null
     telefono?: StringNullableWithAggregatesFilter<"Proveedor"> | string | null
     direccion?: StringNullableWithAggregatesFilter<"Proveedor"> | string | null
+    contacto?: StringNullableWithAggregatesFilter<"Proveedor"> | string | null
+    email?: StringNullableWithAggregatesFilter<"Proveedor"> | string | null
+    notas?: StringNullableWithAggregatesFilter<"Proveedor"> | string | null
+    estado?: StringNullableWithAggregatesFilter<"Proveedor"> | string | null
   }
 
   export type UsuarioWhereInput = {
@@ -16571,8 +16601,6 @@ export namespace Prisma {
     direccion?: string | null
     email?: string | null
     telefono?: string | null
-    compras_semanales?: Decimal | DecimalJsLike | number | string | null
-    deuda_total?: Decimal | DecimalJsLike | number | string | null
     total_compras?: number | null
     ultima_compra?: Date | string | null
     ventas?: VentaCreateNestedManyWithoutClienteInput
@@ -16586,8 +16614,6 @@ export namespace Prisma {
     direccion?: string | null
     email?: string | null
     telefono?: string | null
-    compras_semanales?: Decimal | DecimalJsLike | number | string | null
-    deuda_total?: Decimal | DecimalJsLike | number | string | null
     total_compras?: number | null
     ultima_compra?: Date | string | null
     ventas?: VentaUncheckedCreateNestedManyWithoutClienteInput
@@ -16600,8 +16626,6 @@ export namespace Prisma {
     direccion?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
-    compras_semanales?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    deuda_total?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     total_compras?: NullableIntFieldUpdateOperationsInput | number | null
     ultima_compra?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ventas?: VentaUpdateManyWithoutClienteNestedInput
@@ -16615,8 +16639,6 @@ export namespace Prisma {
     direccion?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
-    compras_semanales?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    deuda_total?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     total_compras?: NullableIntFieldUpdateOperationsInput | number | null
     ultima_compra?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     ventas?: VentaUncheckedUpdateManyWithoutClienteNestedInput
@@ -16630,8 +16652,6 @@ export namespace Prisma {
     direccion?: string | null
     email?: string | null
     telefono?: string | null
-    compras_semanales?: Decimal | DecimalJsLike | number | string | null
-    deuda_total?: Decimal | DecimalJsLike | number | string | null
     total_compras?: number | null
     ultima_compra?: Date | string | null
   }
@@ -16643,8 +16663,6 @@ export namespace Prisma {
     direccion?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
-    compras_semanales?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    deuda_total?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     total_compras?: NullableIntFieldUpdateOperationsInput | number | null
     ultima_compra?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -16657,8 +16675,6 @@ export namespace Prisma {
     direccion?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
-    compras_semanales?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    deuda_total?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     total_compras?: NullableIntFieldUpdateOperationsInput | number | null
     ultima_compra?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -17049,6 +17065,10 @@ export namespace Prisma {
     nombre?: string | null
     telefono?: string | null
     direccion?: string | null
+    contacto?: string | null
+    email?: string | null
+    notas?: string | null
+    estado?: string | null
     compras?: CompraCreateNestedManyWithoutProveedorInput
   }
 
@@ -17057,6 +17077,10 @@ export namespace Prisma {
     nombre?: string | null
     telefono?: string | null
     direccion?: string | null
+    contacto?: string | null
+    email?: string | null
+    notas?: string | null
+    estado?: string | null
     compras?: CompraUncheckedCreateNestedManyWithoutProveedorInput
   }
 
@@ -17064,6 +17088,10 @@ export namespace Prisma {
     nombre?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
     direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    contacto?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    notas?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: NullableStringFieldUpdateOperationsInput | string | null
     compras?: CompraUpdateManyWithoutProveedorNestedInput
   }
 
@@ -17072,6 +17100,10 @@ export namespace Prisma {
     nombre?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
     direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    contacto?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    notas?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: NullableStringFieldUpdateOperationsInput | string | null
     compras?: CompraUncheckedUpdateManyWithoutProveedorNestedInput
   }
 
@@ -17080,12 +17112,20 @@ export namespace Prisma {
     nombre?: string | null
     telefono?: string | null
     direccion?: string | null
+    contacto?: string | null
+    email?: string | null
+    notas?: string | null
+    estado?: string | null
   }
 
   export type ProveedorUpdateManyMutationInput = {
     nombre?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
     direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    contacto?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    notas?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProveedorUncheckedUpdateManyInput = {
@@ -17093,6 +17133,10 @@ export namespace Prisma {
     nombre?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
     direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    contacto?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    notas?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type UsuarioCreateInput = {
@@ -17558,16 +17602,12 @@ export namespace Prisma {
     direccion?: SortOrder
     email?: SortOrder
     telefono?: SortOrder
-    compras_semanales?: SortOrder
-    deuda_total?: SortOrder
     total_compras?: SortOrder
     ultima_compra?: SortOrder
   }
 
   export type ClienteAvgOrderByAggregateInput = {
     id_cliente?: SortOrder
-    compras_semanales?: SortOrder
-    deuda_total?: SortOrder
     total_compras?: SortOrder
   }
 
@@ -17579,8 +17619,6 @@ export namespace Prisma {
     direccion?: SortOrder
     email?: SortOrder
     telefono?: SortOrder
-    compras_semanales?: SortOrder
-    deuda_total?: SortOrder
     total_compras?: SortOrder
     ultima_compra?: SortOrder
   }
@@ -17593,16 +17631,12 @@ export namespace Prisma {
     direccion?: SortOrder
     email?: SortOrder
     telefono?: SortOrder
-    compras_semanales?: SortOrder
-    deuda_total?: SortOrder
     total_compras?: SortOrder
     ultima_compra?: SortOrder
   }
 
   export type ClienteSumOrderByAggregateInput = {
     id_cliente?: SortOrder
-    compras_semanales?: SortOrder
-    deuda_total?: SortOrder
     total_compras?: SortOrder
   }
 
@@ -18010,6 +18044,10 @@ export namespace Prisma {
     nombre?: SortOrder
     telefono?: SortOrder
     direccion?: SortOrder
+    contacto?: SortOrder
+    email?: SortOrder
+    notas?: SortOrder
+    estado?: SortOrder
   }
 
   export type ProveedorAvgOrderByAggregateInput = {
@@ -18021,6 +18059,10 @@ export namespace Prisma {
     nombre?: SortOrder
     telefono?: SortOrder
     direccion?: SortOrder
+    contacto?: SortOrder
+    email?: SortOrder
+    notas?: SortOrder
+    estado?: SortOrder
   }
 
   export type ProveedorMinOrderByAggregateInput = {
@@ -18028,6 +18070,10 @@ export namespace Prisma {
     nombre?: SortOrder
     telefono?: SortOrder
     direccion?: SortOrder
+    contacto?: SortOrder
+    email?: SortOrder
+    notas?: SortOrder
+    estado?: SortOrder
   }
 
   export type ProveedorSumOrderByAggregateInput = {
@@ -19348,6 +19394,10 @@ export namespace Prisma {
     nombre?: string | null
     telefono?: string | null
     direccion?: string | null
+    contacto?: string | null
+    email?: string | null
+    notas?: string | null
+    estado?: string | null
   }
 
   export type ProveedorUncheckedCreateWithoutComprasInput = {
@@ -19355,6 +19405,10 @@ export namespace Prisma {
     nombre?: string | null
     telefono?: string | null
     direccion?: string | null
+    contacto?: string | null
+    email?: string | null
+    notas?: string | null
+    estado?: string | null
   }
 
   export type ProveedorCreateOrConnectWithoutComprasInput = {
@@ -19449,6 +19503,10 @@ export namespace Prisma {
     nombre?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
     direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    contacto?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    notas?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ProveedorUncheckedUpdateWithoutComprasInput = {
@@ -19456,6 +19514,10 @@ export namespace Prisma {
     nombre?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
     direccion?: NullableStringFieldUpdateOperationsInput | string | null
+    contacto?: NullableStringFieldUpdateOperationsInput | string | null
+    email?: NullableStringFieldUpdateOperationsInput | string | null
+    notas?: NullableStringFieldUpdateOperationsInput | string | null
+    estado?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type CompraProductoUpsertWithWhereUniqueWithoutCompraInput = {
@@ -20204,8 +20266,6 @@ export namespace Prisma {
     direccion?: string | null
     email?: string | null
     telefono?: string | null
-    compras_semanales?: Decimal | DecimalJsLike | number | string | null
-    deuda_total?: Decimal | DecimalJsLike | number | string | null
     total_compras?: number | null
     ultima_compra?: Date | string | null
   }
@@ -20218,8 +20278,6 @@ export namespace Prisma {
     direccion?: string | null
     email?: string | null
     telefono?: string | null
-    compras_semanales?: Decimal | DecimalJsLike | number | string | null
-    deuda_total?: Decimal | DecimalJsLike | number | string | null
     total_compras?: number | null
     ultima_compra?: Date | string | null
   }
@@ -20311,8 +20369,6 @@ export namespace Prisma {
     direccion?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
-    compras_semanales?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    deuda_total?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     total_compras?: NullableIntFieldUpdateOperationsInput | number | null
     ultima_compra?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
@@ -20325,8 +20381,6 @@ export namespace Prisma {
     direccion?: NullableStringFieldUpdateOperationsInput | string | null
     email?: NullableStringFieldUpdateOperationsInput | string | null
     telefono?: NullableStringFieldUpdateOperationsInput | string | null
-    compras_semanales?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
-    deuda_total?: NullableDecimalFieldUpdateOperationsInput | Decimal | DecimalJsLike | number | string | null
     total_compras?: NullableIntFieldUpdateOperationsInput | number | null
     ultima_compra?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }

@@ -86,7 +86,6 @@ export async function GET(request) {
   }
 }
 
-// POST - Crear una nueva venta
 export async function POST(request) {
   try {
     const session = await getServerSession(authOptions);
@@ -97,7 +96,6 @@ export async function POST(request) {
     
     const data = await request.json();
     
-    // Validaciones básicas
     if (!data.cliente_id_cliente) {
       return NextResponse.json({ error: 'El cliente es requerido' }, { status: 400 });
     }
@@ -106,9 +104,7 @@ export async function POST(request) {
       return NextResponse.json({ error: 'La venta debe tener al menos un producto' }, { status: 400 });
     }
     
-    // Iniciar transacción
     const result = await prisma.$transaction(async (tx) => {
-      // 1. Crear la venta
       const venta = await tx.venta.create({
         data: {
           tipo_venta: 'NORMAL',
@@ -118,7 +114,6 @@ export async function POST(request) {
           usuario_id_usuario: parseInt(session.user.id || 1), // Usar un ID por defecto si no hay sesión
           factura_venta: {
             create: {
-              // Crear la fecha actual ajustada para compensar el desplazamiento de +24h en formatDate
               fecha: new Date(new Date().getTime() - 24 * 60 * 60 * 1000),
               subtotal: parseFloat(data.factura.subtotal),
               impuestos: parseFloat(data.factura.impuestos || 0),
@@ -128,7 +123,6 @@ export async function POST(request) {
         }
       });
       
-      // 2. Crear los detalles de la venta (venta_productos)
       for (const detalle of data.productos) {
         await tx.ventaProducto.create({
           data: {
@@ -139,19 +133,15 @@ export async function POST(request) {
           }
         });
         
-        // 3. Actualizar el stock de productos
         const producto = await tx.producto.findUnique({
           where: { id_producto: parseInt(detalle.producto_id_producto) }
         });
         
         if (producto) {
-          // Calcular el nuevo stock
           const nuevoStock = parseFloat(producto.stock) - parseFloat(detalle.cantidad);
           const stockMinimo = parseFloat(producto.stock_minimo || 5);
-          // Determinar el nivel de alerta basado en el nuevo stock
           const nivel_alerta = nuevoStock < stockMinimo ? 'bajo' : 'normal';
           
-          // Actualizar el producto con el nuevo stock y nivel de alerta
           await tx.producto.update({
             where: { id_producto: parseInt(detalle.producto_id_producto) },
             data: {
@@ -162,7 +152,6 @@ export async function POST(request) {
         }
       }
       
-      // 4. Actualizar contador de compras del cliente y fecha última compra
       await tx.cliente.update({
         where: { id_cliente: parseInt(data.cliente_id_cliente) },
         data: {
@@ -173,7 +162,6 @@ export async function POST(request) {
         }
       });
       
-      // Retornar la venta creada
       return tx.venta.findUnique({
         where: { id_venta: venta.id_venta },
         include: {

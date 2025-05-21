@@ -12,6 +12,7 @@ export default function DetalleCompraPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
+  
   useEffect(() => {
     const fetchCompra = async () => {
       try {
@@ -112,14 +113,7 @@ export default function DetalleCompraPage() {
             </button>
           )}
           
-          {compra && compra.estado === 'COMPLETADA' && (
-            <Link
-              href={`/dashboard/compras/editar/${id}`}
-              className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-            >
-              Editar
-            </Link>
-          )}
+
         </div>
       </div>
       
@@ -233,7 +227,7 @@ export default function DetalleCompraPage() {
                     <tr key={detalle.compra_id_compra+detalle.producto_id_producto} className="hover:bg-gray-50">
                       <td className="px-6 py-4 whitespace-nowrap">
                         {detalle.producto?.nombre_producto}
-                        <div className="text-xs text-gray-500">Código: {detalle.producto?.codigo || 'Sin código'}</div>
+                        <div className="text-xs text-gray-500">Código: {detalle.producto?.id_producto || 'Sin código'}</div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">{detalle.cantidad}</td>
                       <td className="px-6 py-4 whitespace-nowrap">{formatCurrency(detalle.precio_unitario)}</td>

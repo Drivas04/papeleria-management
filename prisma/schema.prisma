@@ -46,8 +46,6 @@ model Cliente {
   direccion          String?   @db.VarChar(100)
   email              String?   @db.VarChar(50)
   telefono           String?   @db.VarChar(15)
-  compras_semanales  Decimal?  @db.Decimal(10, 2)
-  deuda_total        Decimal?  @db.Decimal(10, 2)
   total_compras      Int?      @default(0)
   ultima_compra      DateTime? @db.Date
   ventas             Venta[]
@@ -148,6 +146,10 @@ model Proveedor {
   nombre          String?   @db.VarChar(30)
   telefono        String?   @db.VarChar(15)
   direccion       String?   @db.VarChar(50)
+  contacto        String?   @db.VarChar(50)     // Nuevo campo: nombre de la persona de contacto
+  email           String?   @db.VarChar(100)    // Nuevo campo: correo electrónico
+  notas           String?   @db.VarChar(255)    // Nuevo campo: notas adicionales
+  estado          String?   @db.VarChar(20) @default("activo") // Nuevo campo: estado (activo/inactivo)
   compras         Compra[]
 
   @@map("proveedor")

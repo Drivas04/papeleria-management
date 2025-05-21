@@ -155,10 +155,10 @@ export default function ProveedoresPage() {
                     Nombre
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Teléfono
+                    Contacto
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Dirección
+                    Teléfono / Email
                   </th>
                   <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Compras
@@ -185,15 +185,21 @@ export default function ProveedoresPage() {
                         <div className="text-sm font-medium text-gray-900">
                           {proveedor.nombre}
                         </div>
-                      </td>
-                      <td className="px-6 py-4 whitespace-nowrap">
-                        <div className="text-sm text-gray-900">
-                          {proveedor.telefono || "No registrado"}
+                        <div className="text-xs text-gray-500">
+                          {proveedor.direccion || "Sin dirección"}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <div className="text-sm text-gray-900">
-                          {proveedor.direccion || "No registrada"}
+                          {proveedor.contacto || "No registrado"}
+                        </div>
+                      </td>
+                      <td className="px-6 py-4 whitespace-nowrap">
+                        <div className="text-sm text-gray-900">
+                          {proveedor.telefono || "Sin teléfono"}
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          {proveedor.email || "Sin email"}
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -203,11 +209,11 @@ export default function ProveedoresPage() {
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
                         <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          proveedor.estado 
+                          proveedor.estado === "activo" 
                             ? "bg-green-100 text-green-800" 
                             : "bg-red-100 text-red-800"
                         }`}>
-                          {proveedor.estado ? "Activo" : "Inactivo"}
+                          {proveedor.estado === "activo" ? "Activo" : "Inactivo"}
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">

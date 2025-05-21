@@ -4,9 +4,9 @@ import { prisma } from '@/app/lib/prisma';
 // GET - Obtener una categoría por ID
 export async function GET(request, { params }) {
   try {
-    const id = parseInt(params.id);
+    const id_categoria = parseInt(params.id);
     
-    if (isNaN(id)) {
+    if (isNaN(id_categoria)) {
       return NextResponse.json(
         { error: "ID de categoría inválido" },
         { status: 400 }
@@ -14,24 +14,8 @@ export async function GET(request, { params }) {
     }
 
     const categoria = await prisma.categoria.findUnique({
-      where: { id },
-      include: {
-        productos: {
-          take: 10, // Limitamos a 10 productos por rendimiento
-          select: {
-            id_producto: true,
-            nombre_producto: true,
-            descripcion: true,
-            stock: true,
-            nivel_alerta: true
-          }
-        },
-        _count: {
-          select: {
-            productos: true
-          }
-        }
-      }
+      where: { id_categoria },
+      
     });
 
     if (!categoria) {
@@ -54,9 +38,9 @@ export async function GET(request, { params }) {
 // PUT - Actualizar una categoría por ID
 export async function PUT(request, { params }) {
   try {
-    const id = parseInt(params.id);
+    const id_categoria = parseInt(params.id);
     
-    if (isNaN(id)) {
+    if (isNaN(id_categoria)) {
       return NextResponse.json(
         { error: "ID de categoría inválido" },
         { status: 400 }
@@ -75,7 +59,7 @@ export async function PUT(request, { params }) {
 
     // Verificar que la categoría existe
     const categoriaExistente = await prisma.categoria.findUnique({
-      where: { id }
+      where: { id_categoria }
     });
 
     if (!categoriaExistente) {
@@ -101,11 +85,10 @@ export async function PUT(request, { params }) {
 
     // Actualizar categoría
     const categoriaActualizada = await prisma.categoria.update({
-      where: { id },
+      where: { id_categoria },
       data: {
         nombre: data.nombre,
-        descripcion: data.descripcion,
-        estado: data.estado !== undefined ? data.estado : categoriaExistente.estado
+
       }
     });
 
@@ -125,9 +108,9 @@ export async function PUT(request, { params }) {
 // DELETE - Eliminar una categoría por ID (soft delete)
 export async function DELETE(request, { params }) {
   try {
-    const id = parseInt(params.id);
+    const id_categoria = parseInt(params.id);
     
-    if (isNaN(id)) {
+    if (isNaN(id_categoria)) {
       return NextResponse.json(
         { error: "ID de categoría inválido" },
         { status: 400 }
@@ -136,7 +119,7 @@ export async function DELETE(request, { params }) {
 
     // Verificar que la categoría existe
     const categoriaExistente = await prisma.categoria.findUnique({
-      where: { id },
+      where: { id_categoria },
       include: {
         _count: {
           select: {
@@ -166,7 +149,7 @@ export async function DELETE(request, { params }) {
 
     // Soft delete - solo marcar como inactivo
     await prisma.categoria.update({
-      where: { id },
+      where: { id_categoria },
       data: { estado: false }
     });
 

@@ -31,12 +31,16 @@ export default function ComprasPage() {
 
   return (
     <div className="p-6">
-      <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Gestión de Compras</h1>
-        <Link href="/dashboard/compras/nueva" 
-              className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow">
-          Nueva Compra
-        </Link>
+      <div className="mb-6">
+        <div className="flex justify-between items-center">
+          <h1 className="text-2xl font-bold">Gestión de Compras</h1>
+          <Link href="/dashboard/compras/nueva" 
+                className="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow">
+            Nueva Compra
+          </Link>
+        </div>
+        
+        
       </div>
       
       {isLoading ? (
@@ -83,12 +87,7 @@ export default function ComprasPage() {
                         </span>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                        <button
-                          onClick={() => router.push(`/dashboard/compras/editar/${compra.id_compra}`)}
-                          className="text-indigo-600 hover:text-indigo-900 mr-4"
-                        >
-                          Editar
-                        </button>
+                        
                         <Link
                           href={`/dashboard/compras/${compra.id_compra}`}
                           className="text-blue-600 hover:text-blue-900"

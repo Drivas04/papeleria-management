@@ -153,14 +153,7 @@ export default function DetalleVentaPage() {
             </button>
           )}
           
-          {venta && venta.estado === 'COMPLETADA' && (
-            <Link
-              href={`/dashboard/ventas/editar/${id}`}
-              className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-            >
-              Editar
-            </Link>
-          )}
+          
         </div>
       </div>
       

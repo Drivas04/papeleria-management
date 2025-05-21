@@ -44,7 +44,11 @@ async function main() {
       data: {
         nombre: 'Distribuidora Nacional',
         telefono: '555-1234',
-        direccion: 'Calle Principal #123'
+        direccion: 'Calle Principal #123',
+        contacto: 'Maria Rodríguez',
+        email: 'contacto@distribuidoranacional.com',
+        notas: 'Entrega los martes y jueves',
+        estado: 'activo'
       }
     });
     console.log('Proveedor creado:', proveedor);
@@ -56,8 +60,8 @@ async function main() {
         nombre: 'Juan',
         apellido: 'Pérez',
         telefono: '555-6789',
-        compras_semanales: 0,
-        deuda_total: 0
+        email: 'juan.perez@example.com',
+        total_compras: 0
       }
     });
     console.log('Cliente creado:', cliente);

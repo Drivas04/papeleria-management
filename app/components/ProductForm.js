@@ -5,14 +5,14 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 
-export default function ProductForm({ producto = null }) {
+export default function ProductForm({ producto }) {
   const router = useRouter();
+  const isNewProduct = !producto;
   const [categorias, setCategorias] = useState([]);
   const [loading, setLoading] = useState(false);
   const [loadingCategorias, setLoadingCategorias] = useState(true);
   const [error, setError] = useState("");
   
-  // Configuración de react-hook-form
   const { 
     register, 
     handleSubmit, 
@@ -32,17 +32,14 @@ export default function ProductForm({ producto = null }) {
     }
   });
 
-  // Observar campos para cálculos y validaciones en tiempo real
   const stock = watch("stock");
   const precioCompra = watch("precio_compra");
   const stockMinimo = watch("stock_minimo");
 
-  // Sugerir precio de venta con un 30% de margen cuando cambia el precio de compra
   useEffect(() => {
     if (precioCompra) {
       const precioCompraNum = parseFloat(precioCompra);
       const sugeridoPrecioVenta = (precioCompraNum * 1.3).toFixed(2);
-      // Solo establecer si el usuario no ha ingresado un precio de venta o si es 0
       const currentPrecioVenta = parseFloat(watch("precio_venta") || 0);
       if (currentPrecioVenta === 0) {
         setValue("precio_venta", sugeridoPrecioVenta);
@@ -50,7 +47,6 @@ export default function ProductForm({ producto = null }) {
     }
   }, [precioCompra, setValue, watch]);
   
-  // Actualizar nivel_alerta automáticamente cuando cambia el stock o stock_minimo
   useEffect(() => {
     const stockNum = parseFloat(stock || 0);
     const stockMinimoNum = parseFloat(stockMinimo || 5);
@@ -58,7 +54,6 @@ export default function ProductForm({ producto = null }) {
     setValue("nivel_alerta", nivelAlerta);
   }, [stock, stockMinimo, setValue]);
 
-  // Cargar categorías
   useEffect(() => {
     const fetchCategorias = async () => {
       try {
@@ -70,7 +65,7 @@ export default function ProductForm({ producto = null }) {
         }
         
         const data = await response.json();
-        setCategorias(data); // En PostgreSQL no tenemos campo estado en categorias
+        setCategorias(data); 
       } catch (error) {
         console.error("Error al cargar categorías:", error);
         setError("Error al cargar las categorías. Por favor, intente de nuevo.");
@@ -87,21 +82,23 @@ export default function ProductForm({ producto = null }) {
       setLoading(true);
       setError("");
       
-      // Convertir campos numéricos
+      // Preparar datos dependiendo si es creación o actualización
       const productoData = {
-        ...data,
-        stock: parseFloat(data.stock),
-        precio_compra: parseFloat(data.precio_compra),
-        precio_venta: parseFloat(data.precio_venta),
+        nombre_producto: data.nombre_producto,
+        descripcion: data.descripcion,
         stock_minimo: parseFloat(data.stock_minimo),
         categoria_id_categoria: parseInt(data.categoria_id_categoria),
+        nivel_alerta: data.nivel_alerta
       };
-
-      // Validaciones adicionales
-      if (productoData.stock < 0) {
-        setError("El stock no puede ser negativo");
-        setLoading(false);
-        return;
+      
+      // Si es un nuevo producto, establecer valores iniciales
+      if (isNewProduct) {
+        productoData.stock = 0;
+        productoData.precio_compra = 0;
+        productoData.precio_venta = 0;
+      } else {
+        // Si es actualización, solo modificar precio de venta
+        productoData.precio_venta = parseFloat(data.precio_venta);
       }
 
       // Determinar si es creación o actualización
@@ -142,6 +139,15 @@ export default function ProductForm({ producto = null }) {
           {error}
         </div>
       )}
+      
+      <div className="alert bg-blue-100 border-l-4 border-blue-500 p-4 mb-4 text-blue-700">
+        <p className="font-bold">Información importante</p>
+        {isNewProduct ? (
+          <p>Al crear un nuevo producto, solo necesitas ingresar su información básica. El stock iniciará en 0 y se actualizará cuando realices una compra.</p>
+        ) : (
+          <p>Este formulario es solo para editar la información básica del producto. Para modificar el stock, use el formulario de compras.</p>
+        )}
+      </div>
       
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
         <div>
@@ -195,27 +201,30 @@ export default function ProductForm({ producto = null }) {
           />
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Stock *
-          </label>
-          <input
-            type="number"
-            step="1"
-            min="0"
-            {...register("stock", { 
-              required: "El stock es requerido",
-              min: {
-                value: 0,
-                message: "El stock no puede ser negativo"
-              }
-            })}
-            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-          />
-          {errors.stock && (
-            <p className="mt-1 text-sm text-red-600">{errors.stock.message}</p>
-          )}
-        </div>
+        {!isNewProduct && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Stock
+            </label>
+            <input
+              type="number"
+              step="1"
+              min="0"
+              disabled
+              readOnly
+              {...register("stock")}
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 text-gray-700 cursor-not-allowed"
+            />
+            <p className="mt-1 text-xs text-gray-500">
+              El stock solo se puede modificar mediante compras
+            </p>
+          </div>
+        )}
+        
+        {/* Campo oculto para stock cuando es nuevo producto */}
+        {isNewProduct && (
+          <input type="hidden" {...register("stock")} value="0" />
+        )}
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -233,59 +242,66 @@ export default function ProductForm({ producto = null }) {
           </p>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Precio de Compra *
-          </label>
-          <div className="mt-1 relative rounded-md shadow-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <span className="text-gray-500 sm:text-sm">$</span>
+        {!isNewProduct && (
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Precio de Compra
+            </label>
+            <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <span className="text-gray-500 sm:text-sm">$</span>
+              </div>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                disabled
+                readOnly
+                {...register("precio_compra")}
+                className="pl-7 block w-full rounded-md border-gray-300 shadow-sm bg-gray-100 text-gray-700 cursor-not-allowed"
+              />
             </div>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              {...register("precio_compra", {
-                required: "El precio de compra es requerido",
-                min: {
-                  value: 0,
-                  message: "El precio de compra no puede ser negativo"
-                }
-              })}
-              className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
+            <p className="mt-1 text-xs text-gray-500">
+              El precio de compra solo se puede actualizar al realizar una compra
+            </p>
           </div>
-          {errors.precio_compra && (
-            <p className="mt-1 text-sm text-red-600">{errors.precio_compra.message}</p>
-          )}
-        </div>
+        )}
+        
+        {/* Campo oculto para precio de compra cuando es nuevo producto */}
+        {isNewProduct && (
+          <input type="hidden" {...register("precio_compra")} value="0" />
+        )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700">
-            Precio de Venta *
-          </label>
-          <div className="mt-1 relative rounded-md shadow-sm">
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
-              <span className="text-gray-500 sm:text-sm">$</span>
+        {!isNewProduct ? (
+          <div>
+            <label className="block text-sm font-medium text-gray-700">
+              Precio de Venta *
+            </label>
+            <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+                <span className="text-gray-500 sm:text-sm">$</span>
+              </div>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                {...register("precio_venta", {
+                  required: "El precio de venta es requerido",
+                  min: {
+                    value: 0,
+                    message: "El precio de venta no puede ser negativo"
+                  }
+                })}
+                className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
+              />
             </div>
-            <input
-              type="number"
-              step="0.01"
-              min="0"
-              {...register("precio_venta", {
-                required: "El precio de venta es requerido",
-                min: {
-                  value: 0,
-                  message: "El precio de venta no puede ser negativo"
-                }
-              })}
-              className="pl-7 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"
-            />
+            {errors.precio_venta && (
+              <p className="mt-1 text-sm text-red-600">{errors.precio_venta.message}</p>
+            )}
           </div>
-          {errors.precio_venta && (
-            <p className="mt-1 text-sm text-red-600">{errors.precio_venta.message}</p>
-          )}
-        </div>
+        ) : (
+          <input type="hidden" {...register("precio_venta")} value="0" />
+        )}
 
         <div>
           <label className="block text-sm font-medium text-gray-700">
@@ -303,7 +319,9 @@ export default function ProductForm({ producto = null }) {
             value={parseFloat(stock || 0) < parseFloat(watch("stock_minimo") || 5) ? "bajo" : "normal"}
           />
           <p className="mt-1 text-xs text-gray-500">
-            El nivel de alerta se calcula automáticamente en base al stock y stock mínimo
+            {isNewProduct 
+              ? "Al crear el producto, el nivel de alerta se establecerá como 'bajo' ya que el stock inicial es 0"
+              : "El nivel de alerta se calcula automáticamente en base al stock y stock mínimo"}
           </p>
         </div>
       </div>

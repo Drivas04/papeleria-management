@@ -15,7 +15,7 @@ export default function EditarProveedorPage() {
     const fetchProveedor = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`/api/proveedores/${params.id}`);
+        const response = await fetch(`/api/proveedores/${params.id_proveedor}`);
         
         if (!response.ok) {
           throw new Error('Error al cargar los datos del proveedor');
@@ -31,10 +31,10 @@ export default function EditarProveedorPage() {
       }
     };
 
-    if (params.id) {
+    if (params.id_proveedor) {
       fetchProveedor();
     }
-  }, [params.id]);
+  }, [params.id_proveedor]);
 
   if (loading) {
     return (
@@ -97,12 +97,12 @@ export default function EditarProveedorPage() {
                   </thead>
                   <tbody className="bg-white divide-y divide-gray-200">
                     {proveedor.compras.map(compra => (
-                      <tr key={compra.id}>
+                      <tr key={compra.id_compra}>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                          #{compra.id}
+                          #{compra.id_compra}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                          {new Date(compra.fecha).toLocaleDateString()}
+                          {new Date(compra.fecha_compra).toLocaleDateString()}
                         </td>
                         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                           ${compra.total.toFixed(2)}
@@ -111,13 +111,7 @@ export default function EditarProveedorPage() {
                     ))}
                   </tbody>
                 </table>
-                {proveedor._count.compras > 5 && (
-                  <div className="mt-4 text-center">
-                    <p className="text-sm text-gray-500">
-                      Mostrando las 5 compras más recientes de un total de {proveedor._count.compras}
-                    </p>
-                  </div>
-                )}
+                
               </div>
             )}
           </div>

@@ -146,8 +146,6 @@ exports.Prisma.ClienteScalarFieldEnum = {
   direccion: 'direccion',
   email: 'email',
   telefono: 'telefono',
-  compras_semanales: 'compras_semanales',
-  deuda_total: 'deuda_total',
   total_compras: 'total_compras',
   ultima_compra: 'ultima_compra'
 };
@@ -211,7 +209,11 @@ exports.Prisma.ProveedorScalarFieldEnum = {
   id_proveedor: 'id_proveedor',
   nombre: 'nombre',
   telefono: 'telefono',
-  direccion: 'direccion'
+  direccion: 'direccion',
+  contacto: 'contacto',
+  email: 'email',
+  notas: 'notas',
+  estado: 'estado'
 };
 
 exports.Prisma.UsuarioScalarFieldEnum = {
@@ -282,7 +284,11 @@ exports.Prisma.ProductoOrderByRelevanceFieldEnum = {
 exports.Prisma.ProveedorOrderByRelevanceFieldEnum = {
   nombre: 'nombre',
   telefono: 'telefono',
-  direccion: 'direccion'
+  direccion: 'direccion',
+  contacto: 'contacto',
+  email: 'email',
+  notas: 'notas',
+  estado: 'estado'
 };
 
 exports.Prisma.UsuarioOrderByRelevanceFieldEnum = {

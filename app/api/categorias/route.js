@@ -3,7 +3,6 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/app/lib/auth";
 
-// GET - Obtener todas las categorías
 export async function GET(request) {
   try {
     const session = await getServerSession(authOptions);
@@ -35,7 +34,6 @@ export async function GET(request) {
   }
 }
 
-// POST - Crear una nueva categoría
 export async function POST(request) {
   try {
     const session = await getServerSession(authOptions);
@@ -46,7 +44,6 @@ export async function POST(request) {
     
     const data = await request.json();
     
-    // Validaciones básicas
     if (!data.nombre) {
       return NextResponse.json(
         { error: "El nombre de la categoría es requerido" }, 
@@ -54,7 +51,6 @@ export async function POST(request) {
       );
     }
 
-    // Verificar si la categoría ya existe
     const categoriaExistente = await prisma.categoria.findFirst({
       where: { nombre: data.nombre }
     });
@@ -66,11 +62,9 @@ export async function POST(request) {
       );
     }
 
-    // Crear la categoría
     const categoria = await prisma.categoria.create({
       data: {
         nombre: data.nombre,
-        descripcion: data.descripcion || null
       }
     });
 
