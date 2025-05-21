@@ -113,14 +113,7 @@ export default function DetalleCompraPage() {
             </button>
           )}
           
-          {compra && compra.estado === 'COMPLETADA' && (
-            <Link
-              href={`/dashboard/compras/editar/${id}`}
-              className="py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700"
-            >
-              Editar
-            </Link>
-          )}
+
         </div>
       </div>
       
