@@ -12,6 +12,7 @@ export default function DetalleCompraPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
   
+  
   useEffect(() => {
     const fetchCompra = async () => {
       try {
