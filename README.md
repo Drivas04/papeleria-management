@@ -1,5 +1,7 @@
 # Pasos para Instalar y Ejecutar Papelería Management
 
+# NOTA: Pra windows ver; ***INSTALACION_WINDOWS.md***
+
 ## 1. Instalar requisitos previos
 
 ### Instalar Node.js
